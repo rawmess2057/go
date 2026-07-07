@@ -1,0 +1,165 @@
+{
+  "nav": {
+    "browse": "ब्राउज गर्नुहोस्",
+    "create": "सिर्जना गर्नुहोस्",
+    "dashboard": "ड्यासबोर्ड"
+  },
+  "home": {
+    "hero": {
+      "title": "कार्य पोस्ट गर्नुहोस्। काम गराउनुहोस्।",
+      "subtitle": "तुरुन्त भुक्तानी पाउनुहोस्।",
+      "description": "१००% गैर-हिरासत escrow। कुनै बिचौलिया छैन, कुनै ढिलाइ छैन, केवल परिणाम।"
+    },
+    "badge": "Solana मा निर्मित",
+    "createCta": "इनाम सिर्जना गर्नुहोस्",
+    "browseCta": "इनामहरू ब्राउज गर्नुहोस्",
+    "trust": [
+      { "title": "गैर-हिरासत", "desc": "स्मार्ट अनुबंधमा रकम लक गरियो" },
+      { "title": "मध्यस्थकर्ता समीक्षा", "desc": "निष्पक्ष विवाद समाधान सहित" },
+      { "title": "तत्काल भुक्तानी", "desc": "Solana मा सेकेन्डमा स्वचालित" }
+    ]
+  },
+  "status": {
+    "open": "खुला",
+    "submitted": "पेश गरियो",
+    "winnerSelected": "विजेता चयन",
+    "completed": "सम्पन्न",
+    "disputed": "विवादित",
+    "expired": "म्याद सकियो",
+    "unknown": "अज्ञात"
+  },
+  "bountyCard": {
+    "untitled": "इनाम #",
+    "noDescription": "कुनै विवरण छैन",
+    "created": "सिर्जना गरियो",
+    "winners": "विजेता",
+    "expired": "म्याद सकियो"
+  },
+  "bountyList": {
+    "all": "सबै",
+    "refresh": "ताजा गर्नुहोस्",
+    "emptyTitle": "कुनै इनाम फेला परेन",
+    "emptyDescAll": "पहिलो इनाम सिर्जना गर्नुहोस्!",
+    "emptyDescFilter": "यस फिल्टरसँग मेल खाने कुनै इनाम छैन।",
+    "emptyAction": "इनाम सिर्जना गर्नुहोस्"
+  },
+  "create": {
+    "title": "इनाम सिर्जना गर्नुहोस्",
+    "subtitle": "कार्य पोस्ट गर्नुहोस्, escrow फन्ड गर्नुहोस्, र काम गराउनुहोस्।",
+    "brandHeader": "Solana मा गैर-हिरासत escrow",
+    "brandDesc": "रकम स्मार्ट अनुबंधमा लक गरिन्छ — तपाईं नियन्त्रणमा रहनुहुन्छ",
+    "steps": ["विवरण", "भुक्तानी", "समीक्षा"],
+    "fields": {
+      "title": "कार्य शीर्षक",
+      "description": "विवरण",
+      "referenceUri": "सन्दर्भ URI",
+      "referenceHint": "स्पेस, डिजाइन, वा सन्दर्भ सामग्रीको लिङ्क",
+      "thumbnail": "थम्बनेल",
+      "thumbnailHint": "URL पेस्ट गर्नुहोस् वा इमेज अपलोड गर्नुहोस्",
+      "thumbnailUpload": "कम्प्युटरबाट अपलोड गर्नुहोस्",
+      "reward": "पुरस्कार (SOL)",
+      "maxWinners": "अधिकतम विजेताहरू",
+      "maxWinnersHint": "पुरस्कार पूल विजेताहरूमा बराबर बाँडिन्छ",
+      "deadline": "म्याद (दिन)",
+      "moderator": "मध्यस्थकर्ता सार्वजनिक कुञ्जी",
+      "moderatorPlaceholder": "मध्यस्थकर्ता वालेट ठेगाना प्रविष्ट गर्नुहोस्"
+    },
+    "review": {
+      "reward": "पुरस्कार",
+      "maxWinners": "अधिकतम विजेताहरू",
+      "deadline": "म्याद",
+      "moderator": "मध्यस्थकर्ता",
+      "reference": "सन्दर्भ",
+      "thumbnail": "थम्बनेल"
+    },
+    "infoBox": "रकम non-custodial escrow स्मार्ट कन्ट्र्याक्टमा लक हुन्छ। मध्यस्थकर्ताले स्वीकृत गरेपछि पुरस्कार जारी हुन्छ।",
+    "aboutTo": "तपाईं यो गर्न लाग्दै हुनुहुन्छ:",
+    "aboutLines": [
+      "Solana devnet मा इनाम सिर्जना गर्नुहोस्",
+      "escrow भल्टमा {amount} SOL स्थानान्तरण गर्नुहोस्",
+      "{days}-दिनको म्याद र {winners} विजेता स्लट(हरू)"
+    ],
+    "toastSuccess": "इनाम सिर्जना गरियो!",
+    "toastError": "इनाम सिर्जना गर्न असफल",
+    "next": "अर्को",
+    "back": "पछाडि",
+    "submit": "इनाम पोस्ट गर्नुहोस्",
+    "creating": "सिर्जना हुँदै..."
+  },
+  "detail": {
+    "untitled": "शीर्षकविहीन इनाम",
+    "rewardPool": "पुरस्कार पूल",
+    "perWinner": "प्रति विजेता",
+    "deadline": "म्याद",
+    "winners": "विजेताहरू",
+    "creator": "सिर्जनाकर्ता",
+    "moderator": "मध्यस्थकर्ता",
+    "status": "स्थिति",
+    "reference": "सन्दर्भ",
+    "latestSubmission": "पछिल्लो पेशी",
+    "actions": "कार्यहरू",
+    "timeline": "समयरेखा",
+    "timelineCreated": "सिर्जना गरियो",
+    "timelineSubmitted": "काम पेश गरियो",
+    "timelineWinner": "विजेता चयन गरियो",
+    "timelineWinnerCount": "{selected} मध्ये {max} चयन",
+    "timelineCompleted": "सम्पन्न",
+    "timelineCompletedDesc": "सबै विजेताहरूलाई भुक्तानी गरियो",
+    "timelineDisputed": "विवादित",
+    "timelineDisputedDesc": "मध्यस्थकर्ता समाधानको प्रतीक्षामा",
+    "timelineExpired": "म्याद सकियो",
+    "timelineExpiredDesc": "म्याद सकियो, रकम फिर्ता लिन सकिन्छ",
+    "submissionUri": "पेश गर्ने URI",
+    "submitWork": "काम पेश गर्नुहोस्",
+    "selectWinner": "विजेता चयन गर्नुहोस्",
+    "rejectSubmission": "पेशी अस्वीकार गर्नुहोस्",
+    "raiseDispute": "विवाद उठाउनुहोस्",
+    "processing": "प्रक्रिया हुँदै...",
+    "moderatorActions": "मध्यस्थकर्ता कार्यहरू",
+    "recipientSelect": "प्राप्तकर्ता (विजेता चयनको लागि)",
+    "recipientSelectPlaceholder": "वालेट ठेगाना",
+    "recipientWorker": "प्राप्तकर्ता (कर्मचारीको लागि)",
+    "recipientWorkerPlaceholder": "कर्मचारी वालेट ठेगाना",
+    "moderatorResolve": "मध्यस्थकर्ता: विवाद समाधान गर्नुहोस्",
+    "resolvePay": "कर्मचारीलाई भुक्तानी गर्नुहोस्",
+    "resolveRefund": "सिर्जनाकर्तालाई फिर्ता गर्नुहोस्",
+    "refundExpired": "म्याद सकियो फिर्ता गर्नुहोस्",
+    "connectWallet": "ड्यासबोर्ड हेर्न आफ्नो वालेट जडान गर्नुहोस्।",
+    "noSubmissions": "कुनै पेशी छैन",
+    "winnerBadge": "विजेता!",
+    "cannotSubmit": "तपाईं आफूले सिर्जना वा मध्यस्थता गरेको इनाममा काम पेश गर्न सक्नुहुन्न"
+  },
+  "dashboard": {
+    "title": "ड्यासबोर्ड",
+    "refresh": "ताजा गर्नुहोस्",
+    "totalSpent": "कुल खर्च",
+    "totalEarned": "कुल कमाइ",
+    "active": "सक्रिय इनाम",
+    "completed": "सम्पन्न",
+    "tabs": {
+      "myInaams": "मेरो इनाम",
+      "history": "इतिहास"
+    },
+    "emptyCreated": "अहिलेसम्म कुनै इनाम सिर्जना गरिएको छैन।",
+    "historyComing": "इतिहास चाँडै आउँदैछ।",
+    "table": {
+      "title": "शीर्षक",
+      "reward": "पुरस्कार",
+      "status": "स्थिति",
+      "winners": "विजेताहरू",
+      "deadline": "म्याद",
+      "view": "हेर्नुहोस्"
+    }
+  },
+  "inaamPage": {
+    "notFound": "इनाम भेटिएन",
+    "backHome": "गृहपृष्ठमा जानुहोस्",
+    "back": "पछाडि"
+  },
+  "header": {
+    "switchLanguage": "EN"
+  },
+  "common": {
+    "loading": "लोड हुँदै..."
+  }
+}

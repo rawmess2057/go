@@ -1,0 +1,165 @@
+{
+  "nav": {
+    "browse": "Browse",
+    "create": "Create",
+    "dashboard": "Dashboard"
+  },
+  "home": {
+    "hero": {
+      "title": "Post Tasks. Get Work Done.",
+      "subtitle": "Get Paid Instantly.",
+      "description": "100% non-custodial escrow. No middlemen, no delays, just results."
+    },
+    "badge": "Built on Solana",
+    "createCta": "Create an Inaam",
+    "browseCta": "Browse Inaams",
+    "trust": [
+      { "title": "Non-Custodial", "desc": "Funds locked in escrow smart contract" },
+      { "title": "Moderator Review", "desc": "Fair dispute resolution included" },
+      { "title": "Instant Payout", "desc": "Automatic on Solana in seconds" }
+    ]
+  },
+  "status": {
+    "open": "Open",
+    "submitted": "Submitted",
+    "winnerSelected": "Winner Selected",
+    "completed": "Completed",
+    "disputed": "Disputed",
+    "expired": "Expired",
+    "unknown": "Unknown"
+  },
+  "bountyCard": {
+    "untitled": "Inaam #",
+    "noDescription": "No description",
+    "created": "Created",
+    "winners": "Winners",
+    "expired": "Expired"
+  },
+  "bountyList": {
+    "all": "All",
+    "refresh": "Refresh",
+    "emptyTitle": "No inaams found",
+    "emptyDescAll": "Be the first to create an inaam!",
+    "emptyDescFilter": "No inaams match this filter.",
+    "emptyAction": "Create Inaam"
+  },
+  "create": {
+    "title": "Create an Inaam",
+    "subtitle": "Post a task, fund the escrow, and get work done.",
+    "brandHeader": "Non-custodial escrow on Solana",
+    "brandDesc": "Funds are locked in a smart contract — you stay in control",
+    "steps": ["Details", "Payment", "Review"],
+    "fields": {
+      "title": "Task Title",
+      "description": "Description",
+      "referenceUri": "Reference URI",
+      "referenceHint": "Link to specs, designs, or reference materials",
+      "thumbnail": "Thumbnail",
+      "thumbnailHint": "Paste a URL or upload an image",
+      "thumbnailUpload": "Upload from computer",
+      "reward": "Reward (SOL)",
+      "maxWinners": "Max Winners",
+      "maxWinnersHint": "Reward pool is split equally among winners",
+      "deadline": "Deadline (days)",
+      "moderator": "Moderator Public Key",
+      "moderatorPlaceholder": "Enter moderator wallet address"
+    },
+    "review": {
+      "reward": "Reward",
+      "maxWinners": "Max Winners",
+      "deadline": "Deadline",
+      "moderator": "Moderator",
+      "reference": "Reference",
+      "thumbnail": "Thumbnail"
+    },
+    "infoBox": "Funds are locked in a non-custodial escrow smart contract. Rewards are released by the moderator upon approval.",
+    "aboutTo": "You are about to:",
+    "aboutLines": [
+      "Create an inaam on Solana devnet",
+      "{amount} SOL to an escrow vault",
+      "A {days}-day deadline with {winners} winner slot(s)"
+    ],
+    "toastSuccess": "Inaam created!",
+    "toastError": "Failed to create inaam",
+    "next": "Next",
+    "back": "Back",
+    "submit": "Post Inaam",
+    "creating": "Creating..."
+  },
+  "detail": {
+    "untitled": "Untitled Inaam",
+    "rewardPool": "Reward Pool",
+    "perWinner": "per winner",
+    "deadline": "Deadline",
+    "winners": "Winners",
+    "creator": "Creator",
+    "moderator": "Moderator",
+    "status": "Status",
+    "reference": "Reference",
+    "latestSubmission": "Latest Submission",
+    "actions": "Actions",
+    "timeline": "Timeline",
+    "timelineCreated": "Created",
+    "timelineSubmitted": "Work submitted",
+    "timelineWinner": "Winner selected",
+    "timelineWinnerCount": "{selected} of {max} selected",
+    "timelineCompleted": "Completed",
+    "timelineCompletedDesc": "All winners paid",
+    "timelineDisputed": "Disputed",
+    "timelineDisputedDesc": "Awaiting moderator resolution",
+    "timelineExpired": "Expired",
+    "timelineExpiredDesc": "Deadline passed, funds can be reclaimed",
+    "submissionUri": "Submission URI",
+    "submitWork": "Submit Work",
+    "selectWinner": "Select Winner",
+    "rejectSubmission": "Reject Submission",
+    "raiseDispute": "Raise Dispute",
+    "processing": "Processing...",
+    "moderatorActions": "Moderator Actions",
+    "recipientSelect": "Recipient (for select winner)",
+    "recipientSelectPlaceholder": "Wallet address to receive reward",
+    "recipientWorker": "Recipient (if resolving for worker)",
+    "recipientWorkerPlaceholder": "Worker wallet address",
+    "moderatorResolve": "Moderator: Resolve Dispute",
+    "resolvePay": "Resolve — Pay Worker",
+    "resolveRefund": "Resolve — Refund Creator",
+    "refundExpired": "Refund Expired",
+    "connectWallet": "Connect your wallet to view your dashboard.",
+  "noSubmissions": "No submissions yet",
+  "winnerBadge": "Winner!",
+  "cannotSubmit": "You cannot submit work to a bounty you created or moderate"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "refresh": "Refresh",
+    "totalSpent": "Total Spent",
+    "totalEarned": "Total Earned",
+    "active": "Active Inaams",
+    "completed": "Completed",
+    "tabs": {
+      "myInaams": "My Inaams",
+      "history": "History"
+    },
+    "emptyCreated": "No inaams created yet.",
+    "historyComing": "History coming soon.",
+    "table": {
+      "title": "Title",
+      "reward": "Reward",
+      "status": "Status",
+      "winners": "Winners",
+      "deadline": "Deadline",
+      "view": "View"
+    }
+  },
+  "inaamPage": {
+    "notFound": "Inaam not found",
+    "backHome": "Back to home",
+    "back": "Back"
+  },
+  "header": {
+    "switchLanguage": "ने"
+  },
+  "common": {
+    "loading": "Loading..."
+  }
+}

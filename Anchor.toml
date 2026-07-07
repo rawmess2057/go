@@ -1,0 +1,21 @@
+[toolchain]
+package_manager = "yarn"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.devnet]
+bounty_platform = "7WsPtEhY89n4yj9GshwQNgqQDGfUUdvonSto3XFVGwgQ"
+
+[programs.localnet]
+bounty_platform = "7WsPtEhY89n4yj9GshwQNgqQDGfUUdvonSto3XFVGwgQ"
+
+[provider]
+cluster = "Devnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "npx ts-mocha tests/**/*.ts --exit --timeout 30000"
+
+[hooks]
