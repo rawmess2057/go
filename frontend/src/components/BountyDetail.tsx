@@ -1,6 +1,10 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import confetti from "canvas-confetti";
+import UserAvatar from "./UserAvatar";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey, SystemProgram, LAMPORTS_PER_SOL, SendTransactionError } from "@solana/web3.js";
 import toast from "react-hot-toast";
@@ -8,21 +12,32 @@ import { useProgram } from "@/hooks/useProgram";
 import { BountyData } from "@/hooks/useBounties";
 import { BountyStatus, SOL_MINT, vaultAddress, submissionAddress } from "@/lib/constants";
 import { useSubmissions } from "@/hooks/useSubmissions";
+import { useSolPrice } from "@/hooks/useSolPrice";
 import CountdownTimer from "./CountdownTimer";
 import { useThumbnailUrl } from "@/hooks/useThumbnail";
 import { useTranslation } from "@/lib/i18n";
+import { useNotifications } from "@/hooks/useNotifications";
 
-const statusLabels: Record<number, { labelKey: string; color: string }> = {
-  [BountyStatus.Open]: { labelKey: "status.open", color: "bg-brand/10 text-brand" },
-  [BountyStatus.Submitted]: { labelKey: "status.submitted", color: "bg-amber-100 text-amber-700" },
-  [BountyStatus.WinnerSelected]: { labelKey: "status.winnerSelected", color: "bg-blue-100 text-blue-700" },
-  [BountyStatus.Completed]: { labelKey: "status.completed", color: "bg-zinc-100 text-zinc-500" },
-  [BountyStatus.Disputed]: { labelKey: "status.disputed", color: "bg-red-100 text-red-700" },
-  [BountyStatus.Expired]: { labelKey: "status.expired", color: "bg-zinc-100 text-zinc-400" },
+const STATUS_META: Record<number, { labelKey: string; color: string }> = {
+  [BountyStatus.Open]: { labelKey: "status.open", color: "bg-brand/10 text-brand border-brand/20" },
+  [BountyStatus.Submitted]: { labelKey: "status.submitted", color: "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800" },
+  [BountyStatus.WinnerSelected]: { labelKey: "status.winnerSelected", color: "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800" },
+  [BountyStatus.Completed]: { labelKey: "status.completed", color: "bg-zinc-50 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700" },
+  [BountyStatus.Disputed]: { labelKey: "status.disputed", color: "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800" },
+  [BountyStatus.Expired]: { labelKey: "status.expired", color: "bg-zinc-50 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-500 border-zinc-200 dark:border-zinc-700" },
 };
 
 function shortPk(pk: string) {
   return `${pk.slice(0, 4)}...${pk.slice(-4)}`;
+}
+
+function fireConfetti() {
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ["#55d292", "#8b5cf6", "#f59e0b"],
+  });
 }
 
 export default function BountyDetail({
@@ -36,16 +51,20 @@ export default function BountyDetail({
   const program = useProgram();
   const wallet = useWallet();
   const { connection } = useConnection();
+  const solPrice = useSolPrice();
+  const { addNotification } = useNotifications();
   const [uri, setUri] = useState("");
   const [sending, setSending] = useState<string | null>(null);
   const { submissions, loading: subsLoading } = useSubmissions(bounty.publicKey);
   const thumbUrl = useThumbnailUrl(bounty.thumbnailUri);
 
-  const status = statusLabels[bounty.status] || statusLabels[BountyStatus.Open];
+  const status = STATUS_META[bounty.status] || STATUS_META[BountyStatus.Open];
   const deadlineNum = Number(bounty.deadline);
   const now = Math.floor(Date.now() / 1000);
   const isExpired = deadlineNum < now;
   const rewardPerWinner = Number(bounty.amount) / Math.max(bounty.maxWinners, 1);
+  const solAmount = Number(bounty.amount) / LAMPORTS_PER_SOL;
+  const usdAmount = solPrice ? (solAmount * solPrice).toFixed(2) : null;
 
   const exec = useCallback(
     async (action: string, worker?: PublicKey) => {
@@ -77,6 +96,7 @@ export default function BountyDetail({
               toast.error("Select a submission first");
               return;
             }
+            fireConfetti();
             const [submissionPda] = submissionAddress(bounty.publicKey, worker);
             const [vaultPda] = vaultAddress(bounty.publicKey);
             tx = await program.methods
@@ -157,12 +177,26 @@ export default function BountyDetail({
               .rpc();
             break;
           }
+          case "close": {
+            tx = await program.methods
+              .closeBounty(bounty.bountyId)
+              .accounts({ caller: wallet.publicKey, bounty: bounty.publicKey })
+              .rpc();
+            break;
+          }
           default:
             return;
         }
 
         await connection.confirmTransaction(tx, "confirmed");
         toast.success(`${action} successful`);
+
+        if (action === "submit") {
+          addNotification({ type: "submission", title: "Work submitted", body: `You submitted work to "${bounty.title || "Untitled"}"`, href: `/inaam/${bounty.publicKey.toBase58()}` });
+        } else if (action === "select-winner") {
+          addNotification({ type: "completed", title: "Winner selected", body: `You selected a winner for "${bounty.title || "Untitled"}"`, href: `/inaam/${bounty.publicKey.toBase58()}` });
+        }
+
         onRefresh?.();
       } catch (err: any) {
         if (err instanceof SendTransactionError) {
@@ -185,115 +219,119 @@ export default function BountyDetail({
   const p = t("detail.processing");
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-xl border border-border bg-white p-6 border-l-4 border-l-brand">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <h1 className="text-2xl font-bold">{bounty.title || t("detail.untitled")}</h1>
-            <p className="mt-1 text-sm text-zinc-500 break-all font-mono">
-              {bounty.publicKey.toBase58()}
-            </p>
-          </div>
-          <span className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium ${status.color}`}>
-            {t(status.labelKey)}
-          </span>
-        </div>
-
-        {bounty.description && (
-          <p className="mt-4 text-sm text-zinc-700 leading-relaxed">{bounty.description}</p>
-        )}
-
-        {thumbUrl && (
-          <div className="mt-4">
-            <img
-              src={thumbUrl}
-              alt={bounty.title || "Thumbnail"}
-              className="w-full max-w-[200px] rounded-lg object-cover border border-border"
-            />
-          </div>
-        )}
-
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-          <div>
-            <span className="text-zinc-400 text-xs">{t("detail.rewardPool")}</span>
-            <p className="font-semibold text-lg text-brand">
-              {(Number(bounty.amount) / LAMPORTS_PER_SOL).toFixed(3)} SOL
-            </p>
-            {bounty.maxWinners > 1 && (
-              <p className="text-xs text-zinc-400 mt-0.5">
-                {(rewardPerWinner / LAMPORTS_PER_SOL).toFixed(3)} SOL {t("detail.perWinner")}
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+      <div className="relative rounded-2xl border border-border bg-card overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-purple-500/10" />
+        <div className="relative p-6 sm:p-8">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{bounty.title || t("detail.untitled")}</h1>
+              <p className="mt-1.5 text-sm text-muted-foreground/60 break-all font-mono">
+                {shortPk(bounty.publicKey.toBase58())}
               </p>
-            )}
+            </div>
+            <span className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium border ${status.color}`}>
+              {t(status.labelKey)}
+            </span>
           </div>
-          <div>
-            <span className="text-zinc-400 text-xs">{t("detail.deadline")}</span>
-            <p className="font-semibold">
-              {isExpired ? (
-                <span className="text-red-500">{t("status.expired")}</span>
-              ) : (
-                <CountdownTimer target={deadlineNum} />
+
+          {bounty.description && (
+            <p className="mt-5 text-sm text-muted-foreground/80 leading-relaxed max-w-3xl">{bounty.description}</p>
+          )}
+
+          {thumbUrl && (
+            <div className="mt-5">
+              <img
+                src={thumbUrl}
+                alt={bounty.title || "Thumbnail"}
+                className="w-full max-w-[240px] rounded-xl object-cover border border-border"
+              />
+            </div>
+          )}
+
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-5">
+            <div className="bg-muted/50 rounded-xl p-4">
+              <span className="text-xs text-muted-foreground/60">{t("detail.rewardPool")}</span>
+              <p className="font-bold text-xl text-foreground mt-1">{solAmount.toFixed(3)} SOL</p>
+              {usdAmount && <p className="text-xs text-muted-foreground/50 mt-0.5">${usdAmount}</p>}
+              {bounty.maxWinners > 1 && (
+                <p className="text-xs text-muted-foreground/50 mt-1">
+                  {(rewardPerWinner / LAMPORTS_PER_SOL).toFixed(3)} SOL {t("detail.perWinner")}
+                </p>
               )}
-            </p>
-            <p className="text-xs text-zinc-400 mt-0.5">
-              {new Date(deadlineNum * 1000).toLocaleDateString()}
-            </p>
+            </div>
+            <div className="bg-muted/50 rounded-xl p-4">
+              <span className="text-xs text-muted-foreground/60">{t("detail.deadline")}</span>
+              <p className="font-bold text-lg mt-1">
+                {isExpired ? (
+                  <span className="text-red-500">{t("status.expired")}</span>
+                ) : (
+                  <CountdownTimer target={deadlineNum} />
+                )}
+              </p>
+              <p className="text-xs text-muted-foreground/50 mt-0.5">
+                {new Date(deadlineNum * 1000).toLocaleDateString()}
+              </p>
+            </div>
+            <div className="bg-muted/50 rounded-xl p-4">
+              <span className="text-xs text-muted-foreground/60">{t("detail.winners")}</span>
+              <p className="font-bold text-lg mt-1">{bounty.winnersSelected} / {bounty.maxWinners}</p>
+            </div>
+            <div className="bg-muted/50 rounded-xl p-4">
+              <span className="text-xs text-muted-foreground/60">{t("detail.status")}</span>
+              <p className="font-semibold text-sm mt-1">{t(status.labelKey)}</p>
+            </div>
           </div>
-          <div>
-            <span className="text-zinc-400 text-xs">{t("detail.winners")}</span>
-            <p className="font-semibold">{bounty.winnersSelected} / {bounty.maxWinners}</p>
-          </div>
-          <div>
-            <span className="text-zinc-400 text-xs">{t("detail.creator")}</span>
-            <p className="font-mono text-xs mt-0.5">{shortPk(bounty.creator.toBase58())}</p>
-          </div>
-          <div>
-            <span className="text-zinc-400 text-xs">{t("detail.moderator")}</span>
-            <p className="font-mono text-xs mt-0.5">{shortPk(bounty.moderator.toBase58())}</p>
-          </div>
-          <div>
-            <span className="text-zinc-400 text-xs">{t("detail.status")}</span>
-            <p className="font-semibold text-xs mt-0.5">{t(status.labelKey)}</p>
-          </div>
-        </div>
 
-        {bounty.referenceUri && (
-          <div className="mt-3 pt-3 border-t border-border">
-            <span className="text-xs text-zinc-400">{t("detail.reference")}:</span>
-            <p className="mt-1 font-mono text-xs break-all text-blue-600">{bounty.referenceUri}</p>
+          <div className="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-sm">
+            <div className="flex items-center gap-2">
+              <UserAvatar pubkey={bounty.creator.toBase58()} size={24} />
+              <div>
+                <span className="text-muted-foreground/60 text-xs">{t("detail.creator")}</span>
+                <Link href={`/profile/${bounty.creator.toBase58()}`} className="block font-mono text-xs hover:text-brand transition-colors">
+                  {shortPk(bounty.creator.toBase58())}
+                </Link>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <UserAvatar pubkey={bounty.moderator.toBase58()} size={24} />
+              <div>
+                <span className="text-muted-foreground/60 text-xs">{t("detail.moderator")}</span>
+                <Link href={`/profile/${bounty.moderator.toBase58()}`} className="block font-mono text-xs hover:text-brand transition-colors">
+                  {shortPk(bounty.moderator.toBase58())}
+                </Link>
+              </div>
+            </div>
           </div>
-        )}
 
-        {bounty.submissionUri && (
-          <div className="mt-3 pt-3 border-t border-border">
-            <span className="text-xs text-zinc-400">{t("detail.latestSubmission")}:</span>
-            <p className="mt-1 font-mono text-xs break-all text-blue-600">{bounty.submissionUri}</p>
-          </div>
-        )}
-
-        <div className="mt-6 pt-4 border-t border-border">
-          <h3 className="text-sm font-semibold mb-3">{t("detail.timeline")}</h3>
-          <div className="space-y-3">
-            <TimelineItem label={t("detail.timelineCreated")} time={new Date(Number(bounty.createdAt) * 1000).toLocaleString()} active />
-            {bounty.status >= BountyStatus.Submitted && (
-              <TimelineItem label={t("detail.timelineSubmitted")} time="See transaction" active />
-            )}
-            {bounty.status >= BountyStatus.WinnerSelected && (
-              <TimelineItem label={t("detail.timelineWinner")} time={t("detail.timelineWinnerCount", { selected: bounty.winnersSelected, max: bounty.maxWinners })} active />
-            )}
-            {bounty.status >= BountyStatus.Completed && (
-              <TimelineItem label={t("detail.timelineCompleted")} time={t("detail.timelineCompletedDesc")} active={bounty.status === BountyStatus.Completed} />
-            )}
-            {bounty.status === BountyStatus.Disputed && (
-              <TimelineItem label={t("detail.timelineDisputed")} time={t("detail.timelineDisputedDesc")} active warning />
-            )}
-            {bounty.status === BountyStatus.Expired && (
-              <TimelineItem label={t("detail.timelineExpired")} time={t("detail.timelineExpiredDesc")} active />
-            )}
+          <div className="mt-6 pt-6 border-t border-border">
+            <h3 className="text-sm font-semibold mb-4">{t("detail.timeline")}</h3>
+            <div className="relative">
+              <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-brand via-purple-500 to-muted rounded-full" />
+              <div className="space-y-5">
+                <TimelineItem label={t("detail.timelineCreated")} time={new Date(Number(bounty.createdAt) * 1000).toLocaleString()} active />
+                {bounty.status >= BountyStatus.Submitted && (
+                  <TimelineItem label={t("detail.timelineSubmitted")} time="See transaction" active />
+                )}
+                {bounty.status >= BountyStatus.WinnerSelected && (
+                  <TimelineItem label={t("detail.timelineWinner")} time={t("detail.timelineWinnerCount", { selected: bounty.winnersSelected, max: bounty.maxWinners })} active />
+                )}
+                {bounty.status >= BountyStatus.Completed && (
+                  <TimelineItem label={t("detail.timelineCompleted")} time={t("detail.timelineCompletedDesc")} active={bounty.status === BountyStatus.Completed} />
+                )}
+                {bounty.status === BountyStatus.Disputed && (
+                  <TimelineItem label={t("detail.timelineDisputed")} time={t("detail.timelineDisputedDesc")} active warning />
+                )}
+                {bounty.status === BountyStatus.Expired && (
+                  <TimelineItem label={t("detail.timelineExpired")} time={t("detail.timelineExpiredDesc")} active />
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-white p-6">
+      <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
         <h2 className="text-lg font-semibold mb-4">{t("detail.actions")}</h2>
 
         {bounty.status === BountyStatus.Open && (
@@ -473,8 +511,91 @@ export default function BountyDetail({
             </button>
           </div>
         )}
+        {(bounty.status === BountyStatus.Completed || bounty.status === BountyStatus.Expired) && (
+          <div>
+            <button
+              onClick={() => exec("close")}
+              disabled={sending !== null}
+              className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {sending === "close" ? p : t("detail.closeBounty")}
+            </button>
+          </div>
+        )}
       </div>
-    </div>
+
+      <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+        <h2 className="text-lg font-semibold mb-4">{t("detail.submissions")} ({submissions.length})</h2>
+        {subsLoading ? (
+          <div className="space-y-3">
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className="rounded-xl border border-border bg-muted/30 p-4 animate-pulse space-y-2">
+                <div className="h-3 bg-muted rounded w-32" />
+                <div className="h-3 bg-muted rounded w-64" />
+              </div>
+            ))}
+          </div>
+        ) : submissions.length === 0 ? (
+          <p className="text-sm text-muted-foreground/60 text-center py-8">{t("detail.noSubmissions")}</p>
+        ) : (
+          <div className="space-y-3">
+            {submissions.map((sub) => (
+              <div
+                key={sub.publicKey.toBase58()}
+                className={`rounded-xl border p-4 transition-all ${
+                  sub.selected
+                    ? "border-brand/30 bg-brand/5"
+                    : sub.rejected
+                    ? "border-red-200 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10"
+                    : "border-border bg-muted/20"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Link href={`/profile/${sub.worker.toBase58()}`}>
+                      <UserAvatar pubkey={sub.worker.toBase58()} size={32} />
+                    </Link>
+                    <div className="min-w-0">
+                      <Link
+                        href={`/profile/${sub.worker.toBase58()}`}
+                        className="text-sm font-medium hover:text-brand transition-colors"
+                      >
+                        {shortPk(sub.worker.toBase58())}
+                      </Link>
+                      <p className="text-xs text-muted-foreground/60 mt-0.5">
+                        {new Date(Number(sub.submittedAt) * 1000).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {sub.selected && (
+                      <span className="text-xs font-medium text-brand bg-brand/10 px-2.5 py-0.5 rounded-full">
+                        {t("detail.winnerBadge")}
+                      </span>
+                    )}
+                    {sub.rejected && (
+                      <span className="text-xs font-medium text-red-500 bg-red-50 dark:bg-red-900/20 px-2.5 py-0.5 rounded-full">
+                        {t("detail.rejectedBadge")}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                {sub.uri && (
+                  <a
+                    href={sub.uri}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 block text-xs text-blue-500 hover:text-blue-600 truncate"
+                  >
+                    {sub.uri}
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 
@@ -492,13 +613,28 @@ function TimelineItem({
   return (
     <div className="flex items-start gap-3">
       <div
-        className={`mt-1.5 w-2.5 h-2.5 rounded-full shrink-0 ${
-          warning ? "bg-red-400" : active ? "bg-brand" : "bg-zinc-200"
+        className={`mt-1.5 w-[22px] h-[22px] rounded-full shrink-0 flex items-center justify-center ring-4 ring-background ${
+          warning
+            ? "bg-red-500"
+            : active
+            ? "bg-gradient-to-br from-brand to-purple-500"
+            : "bg-muted"
         }`}
-      />
-      <div>
-        <p className={`text-sm ${active ? "font-medium" : "text-zinc-400"}`}>{label}</p>
-        <p className="text-xs text-zinc-400">{time}</p>
+      >
+        {active && !warning && (
+          <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+          </svg>
+        )}
+        {warning && (
+          <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 9v2m0 4h.01" />
+          </svg>
+        )}
+      </div>
+      <div className="pt-1">
+        <p className={`text-sm ${active ? "font-medium text-foreground" : "text-muted-foreground"}`}>{label}</p>
+        <p className="text-xs text-muted-foreground/60 mt-0.5">{time}</p>
       </div>
     </div>
   );

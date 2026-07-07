@@ -4,6 +4,7 @@ import "./globals.css";
 import AppWalletProvider from "@/components/AppWalletProvider";
 import Header from "@/components/Header";
 import I18nClient from "@/components/I18nClient";
+import ThemeProviders from "@/components/ThemeProviders";
 import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
@@ -27,12 +28,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="min-h-screen flex flex-col antialiased bg-white text-zinc-900">
+    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className="min-h-screen flex flex-col antialiased bg-background text-foreground">
+        <ThemeProviders>
         <AppWalletProvider>
           <I18nClient>
             <Header />
-            <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
+            <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 pb-24 md:pb-8">
               {children}
             </main>
             <Toaster
@@ -46,6 +48,7 @@ export default function RootLayout({
             />
           </I18nClient>
         </AppWalletProvider>
+        </ThemeProviders>
       </body>
     </html>
   );

@@ -11,6 +11,7 @@ import { useProgram } from "@/hooks/useProgram";
 import { SOL_MINT, bountyAddress, vaultAddress, MIN_DEADLINE_SECONDS } from "@/lib/constants";
 import { storeImage, getImage, generateKey } from "@/lib/localStore";
 import { useTranslation } from "@/lib/i18n";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const STEPS_KEYS = ["create.steps.0", "create.steps.1", "create.steps.2"];
 
@@ -20,6 +21,7 @@ export default function CreateBountyForm() {
   const wallet = useWallet();
   const { connection } = useConnection();
   const router = useRouter();
+  const { addNotification } = useNotifications();
 
   const [step, setStep] = useState(0);
   const [title, setTitle] = useState("");
@@ -125,6 +127,7 @@ export default function CreateBountyForm() {
 
       await connection.confirmTransaction(tx, "confirmed");
       toast.success(t("create.toastSuccess"));
+      addNotification({ type: "created", title: "Inaam created", body: `"${title.trim() || "Untitled"}" is now live`, href: `/inaam/${bountyPda.toBase58()}` });
       router.push(`/inaam/${bountyPda.toBase58()}`);
     } catch (err: any) {
       if (err instanceof SendTransactionError) {

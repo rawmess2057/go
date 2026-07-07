@@ -4,9 +4,13 @@ import { useState, useMemo } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useBounties, BountyData } from "@/hooks/useBounties";
 import StatsCard from "@/components/StatsCard";
+import ActivityChart from "@/components/ActivityChart";
+import RecentActivity from "@/components/RecentActivity";
+import PageTransition from "@/components/PageTransition";
 import Link from "next/link";
 import { BountyStatus } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n";
+import { useSolPrice } from "@/hooks/useSolPrice";
 
 type Tab = "created" | "history";
 
@@ -14,6 +18,7 @@ export default function DashboardPage() {
   const { t } = useTranslation();
   const wallet = useWallet();
   const { bounties, loading, refetch } = useBounties();
+  const solPrice = useSolPrice();
   const [tab, setTab] = useState<Tab>("created");
 
   const created = useMemo(() => {
@@ -57,6 +62,7 @@ export default function DashboardPage() {
   ];
 
   return (
+    <PageTransition>
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">{t("dashboard.title")}</h1>
@@ -69,10 +75,29 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-        <StatsCard label={t("dashboard.totalSpent")} value={`${totalSpent.toFixed(2)} SOL`} color="brand" />
-        <StatsCard label={t("dashboard.totalEarned")} value={`${totalEarned.toFixed(2)} SOL`} color="brand" />
+        <StatsCard
+          label={t("dashboard.totalSpent")}
+          value={`${totalSpent.toFixed(2)} SOL`}
+          sub={solPrice ? `$${(totalSpent * solPrice).toFixed(2)}` : undefined}
+          color="brand"
+        />
+        <StatsCard
+          label={t("dashboard.totalEarned")}
+          value={`${totalEarned.toFixed(2)} SOL`}
+          sub={solPrice ? `$${(totalEarned * solPrice).toFixed(2)}` : undefined}
+          color="brand"
+        />
         <StatsCard label={t("dashboard.active")} value={`${created.filter((b) => b.status < BountyStatus.Completed).length}`} />
         <StatsCard label={t("dashboard.completed")} value={`${created.filter((b) => b.status === BountyStatus.Completed).length}`} />
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-3 mb-8">
+        <div className="lg:col-span-2">
+          <ActivityChart bounties={bounties} />
+        </div>
+        <div>
+          <RecentActivity bounties={bounties} />
+        </div>
       </div>
 
       <div className="flex gap-1 border-b border-border mb-6">
@@ -103,6 +128,7 @@ export default function DashboardPage() {
         </div>
       )}
     </div>
+    </PageTransition>
   );
 }
 

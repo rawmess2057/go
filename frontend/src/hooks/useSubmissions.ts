@@ -12,6 +12,7 @@ export interface SubmissionData {
   uri: string;
   submittedAt: BN;
   selected: boolean;
+  rejected: boolean;
   bump: number;
 }
 
