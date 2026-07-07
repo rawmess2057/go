@@ -12,10 +12,18 @@ pub struct RejectSubmission<'info> {
         bump = bounty.bump,
     )]
     pub bounty: Account<'info, Bounty>,
+
+    #[account(
+        mut,
+        seeds = [SUBMISSION_SEED, bounty.key().as_ref(), submission.worker.as_ref()],
+        bump = submission.bump,
+    )]
+    pub submission: Account<'info, Submission>,
 }
 
 pub fn handler(ctx: Context<RejectSubmission>, _bounty_id: u64) -> Result<()> {
     let bounty = &mut ctx.accounts.bounty;
+    let submission = &mut ctx.accounts.submission;
 
     require!(
         bounty.status == BountyStatus::Submitted,
@@ -26,8 +34,14 @@ pub fn handler(ctx: Context<RejectSubmission>, _bounty_id: u64) -> Result<()> {
         BountyError::NotModerator
     );
 
+    submission.rejected = true;
     bounty.submission_uri = String::new();
     bounty.status = BountyStatus::Open;
+
+    emit!(SubmissionRejectedEvent {
+        bounty: bounty.key(),
+        worker: submission.worker,
+    });
 
     Ok(())
 }

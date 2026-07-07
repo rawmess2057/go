@@ -19,6 +19,7 @@ pub struct Submission {
     pub uri: String,
     pub submitted_at: i64,
     pub selected: bool,
+    pub rejected: bool,
     pub bump: u8,
 }
 

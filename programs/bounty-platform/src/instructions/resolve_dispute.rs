@@ -39,6 +39,10 @@ pub fn handler(ctx: Context<ResolveDispute>, _bounty_id: u64, approve: bool) -> 
         BountyError::NotModerator
     );
 
+    let reward_per_winner = bounty.amount / (bounty.max_winners as u64);
+    let already_paid = reward_per_winner * (bounty.winners_selected as u64);
+    let remaining = bounty.amount.saturating_sub(already_paid);
+
     let bounty_key = bounty.key();
     let vault_bump = Pubkey::find_program_address(
         &[bounty_key.as_ref(), VAULT_SEED],
@@ -60,7 +64,7 @@ pub fn handler(ctx: Context<ResolveDispute>, _bounty_id: u64, approve: bool) -> 
                 },
                 &[&vault_signer[..]],
             ),
-            bounty.amount,
+            remaining,
         )?;
     } else {
         let bounty_signer = &[
@@ -79,7 +83,7 @@ pub fn handler(ctx: Context<ResolveDispute>, _bounty_id: u64, approve: bool) -> 
                 },
                 &[&bounty_signer[..]],
             ),
-            bounty.amount,
+            remaining,
         )?;
     }
 
@@ -88,6 +92,13 @@ pub fn handler(ctx: Context<ResolveDispute>, _bounty_id: u64, approve: bool) -> 
     } else {
         BountyStatus::Expired
     };
+
+    emit!(DisputeResolvedEvent {
+        bounty: bounty.key(),
+        approve,
+        recipient: ctx.accounts.recipient.key(),
+        amount: remaining,
+    });
 
     Ok(())
 }

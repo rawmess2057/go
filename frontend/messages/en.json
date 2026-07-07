@@ -124,9 +124,11 @@
     "resolvePay": "Resolve — Pay Worker",
     "resolveRefund": "Resolve — Refund Creator",
     "refundExpired": "Refund Expired",
+    "closeBounty": "Close Account (Refund Rent)",
     "connectWallet": "Connect your wallet to view your dashboard.",
   "noSubmissions": "No submissions yet",
   "winnerBadge": "Winner!",
+  "rejectedBadge": "Rejected",
   "cannotSubmit": "You cannot submit work to a bounty you created or moderate"
   },
   "dashboard": {

@@ -312,7 +312,7 @@ describe("bounty-platform", () => {
 
     await program.methods
       .rejectSubmission(id)
-      .accounts({ moderator: moderator.publicKey, bounty: bountyPda })
+      .accounts({ moderator: moderator.publicKey, bounty: bountyPda, submission: subPdaReject })
       .signers([moderator])
       .rpc();
 
@@ -325,11 +325,12 @@ describe("bounty-platform", () => {
     // Bounty 1 is in Submitted state
     const id = new BN(1);
     const [bountyPda] = bountyAddress(creator.publicKey, id);
+    const [subPdaReject] = submissionAddress(bountyPda, worker.publicKey);
 
     try {
       await program.methods
         .rejectSubmission(id)
-        .accounts({ moderator: worker.publicKey, bounty: bountyPda })
+        .accounts({ moderator: worker.publicKey, bounty: bountyPda, submission: subPdaReject })
         .signers([worker])
         .rpc();
       expect.fail("Should have thrown");
