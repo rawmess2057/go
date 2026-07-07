@@ -1,14 +1,16 @@
 pub mod constants;
 pub mod error;
+pub mod events;
 pub mod instructions;
 pub mod state;
 
 use anchor_lang::prelude::*;
 
 pub use constants::*;
+pub use error::*;
+pub use events::*;
 pub use instructions::*;
 pub use state::*;
-pub use error::*;
 
 declare_id!("7WsPtEhY89n4yj9GshwQNgqQDGfUUdvonSto3XFVGwgQ");
 
@@ -77,5 +79,12 @@ pub mod bounty_platform {
         bounty_id: u64,
     ) -> Result<()> {
         instructions::refund_expired::handler(ctx, bounty_id)
+    }
+
+    pub fn close_bounty(
+        ctx: Context<CloseBounty>,
+        bounty_id: u64,
+    ) -> Result<()> {
+        instructions::close_bounty::handler(ctx, bounty_id)
     }
 }

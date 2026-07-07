@@ -1,14 +1,20 @@
-{
+/**
+ * Program IDL in camelCase format in order to be used in JS/TS.
+ *
+ * Note that this is only a type helper and is not the actual IDL. The original
+ * IDL can be found at `target/idl/bounty_platform.json`.
+ */
+export type BountyPlatform = {
   "address": "7WsPtEhY89n4yj9GshwQNgqQDGfUUdvonSto3XFVGwgQ",
   "metadata": {
-    "name": "bounty_platform",
+    "name": "bountyPlatform",
     "version": "0.1.0",
     "spec": "0.1.0",
     "description": "Created with Anchor"
   },
   "instructions": [
     {
-      "name": "close_bounty",
+      "name": "closeBounty",
       "discriminator": [
         90,
         33,
@@ -43,12 +49,12 @@
               {
                 "kind": "account",
                 "path": "bounty.creator",
-                "account": "Bounty"
+                "account": "bounty"
               },
               {
                 "kind": "account",
                 "path": "bounty.bounty_id",
-                "account": "Bounty"
+                "account": "bounty"
               }
             ]
           }
@@ -56,13 +62,13 @@
       ],
       "args": [
         {
-          "name": "bounty_id",
+          "name": "bountyId",
           "type": "u64"
         }
       ]
     },
     {
-      "name": "create_bounty",
+      "name": "createBounty",
       "discriminator": [
         122,
         90,
@@ -101,7 +107,7 @@
               },
               {
                 "kind": "arg",
-                "path": "bounty_id"
+                "path": "bountyId"
               }
             ]
           }
@@ -111,22 +117,22 @@
           "writable": true
         },
         {
-          "name": "creator_token_account",
+          "name": "creatorTokenAccount",
           "writable": true,
           "optional": true
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         },
         {
-          "name": "token_program",
+          "name": "tokenProgram",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         }
       ],
       "args": [
         {
-          "name": "bounty_id",
+          "name": "bountyId",
           "type": "u64"
         },
         {
@@ -134,7 +140,7 @@
           "type": "pubkey"
         },
         {
-          "name": "token_mint",
+          "name": "tokenMint",
           "type": "pubkey"
         },
         {
@@ -154,21 +160,21 @@
           "type": "string"
         },
         {
-          "name": "reference_uri",
+          "name": "referenceUri",
           "type": "string"
         },
         {
-          "name": "thumbnail_uri",
+          "name": "thumbnailUri",
           "type": "string"
         },
         {
-          "name": "max_winners",
+          "name": "maxWinners",
           "type": "u8"
         }
       ]
     },
     {
-      "name": "raise_dispute",
+      "name": "raiseDispute",
       "discriminator": [
         41,
         243,
@@ -204,12 +210,12 @@
               {
                 "kind": "account",
                 "path": "bounty.creator",
-                "account": "Bounty"
+                "account": "bounty"
               },
               {
                 "kind": "account",
                 "path": "bounty.bounty_id",
-                "account": "Bounty"
+                "account": "bounty"
               }
             ]
           }
@@ -217,13 +223,13 @@
       ],
       "args": [
         {
-          "name": "bounty_id",
+          "name": "bountyId",
           "type": "u64"
         }
       ]
     },
     {
-      "name": "refund_expired",
+      "name": "refundExpired",
       "discriminator": [
         118,
         153,
@@ -258,12 +264,12 @@
               {
                 "kind": "account",
                 "path": "bounty.creator",
-                "account": "Bounty"
+                "account": "bounty"
               },
               {
                 "kind": "account",
                 "path": "bounty.bounty_id",
-                "account": "Bounty"
+                "account": "bounty"
               }
             ]
           }
@@ -273,7 +279,7 @@
           "writable": true
         },
         {
-          "name": "creator_recipient",
+          "name": "creatorRecipient",
           "writable": true
         },
         {
@@ -281,23 +287,23 @@
           "address": "SysvarC1ock11111111111111111111111111111111"
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         },
         {
-          "name": "token_program",
+          "name": "tokenProgram",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         }
       ],
       "args": [
         {
-          "name": "bounty_id",
+          "name": "bountyId",
           "type": "u64"
         }
       ]
     },
     {
-      "name": "reject_submission",
+      "name": "rejectSubmission",
       "discriminator": [
         2,
         92,
@@ -333,12 +339,12 @@
               {
                 "kind": "account",
                 "path": "bounty.creator",
-                "account": "Bounty"
+                "account": "bounty"
               },
               {
                 "kind": "account",
                 "path": "bounty.bounty_id",
-                "account": "Bounty"
+                "account": "bounty"
               }
             ]
           }
@@ -370,7 +376,7 @@
               {
                 "kind": "account",
                 "path": "submission.worker",
-                "account": "Submission"
+                "account": "submission"
               }
             ]
           }
@@ -378,13 +384,13 @@
       ],
       "args": [
         {
-          "name": "bounty_id",
+          "name": "bountyId",
           "type": "u64"
         }
       ]
     },
     {
-      "name": "resolve_dispute",
+      "name": "resolveDispute",
       "discriminator": [
         231,
         6,
@@ -420,12 +426,12 @@
               {
                 "kind": "account",
                 "path": "bounty.creator",
-                "account": "Bounty"
+                "account": "bounty"
               },
               {
                 "kind": "account",
                 "path": "bounty.bounty_id",
-                "account": "Bounty"
+                "account": "bounty"
               }
             ]
           }
@@ -439,17 +445,17 @@
           "writable": true
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         },
         {
-          "name": "token_program",
+          "name": "tokenProgram",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         }
       ],
       "args": [
         {
-          "name": "bounty_id",
+          "name": "bountyId",
           "type": "u64"
         },
         {
@@ -459,7 +465,7 @@
       ]
     },
     {
-      "name": "select_winner",
+      "name": "selectWinner",
       "discriminator": [
         119,
         66,
@@ -495,12 +501,12 @@
               {
                 "kind": "account",
                 "path": "bounty.creator",
-                "account": "Bounty"
+                "account": "bounty"
               },
               {
                 "kind": "account",
                 "path": "bounty.bounty_id",
-                "account": "Bounty"
+                "account": "bounty"
               }
             ]
           }
@@ -532,7 +538,7 @@
               {
                 "kind": "account",
                 "path": "submission.worker",
-                "account": "Submission"
+                "account": "submission"
               }
             ]
           }
@@ -546,23 +552,23 @@
           "writable": true
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         },
         {
-          "name": "token_program",
+          "name": "tokenProgram",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         }
       ],
       "args": [
         {
-          "name": "bounty_id",
+          "name": "bountyId",
           "type": "u64"
         }
       ]
     },
     {
-      "name": "submit_completion",
+      "name": "submitCompletion",
       "discriminator": [
         155,
         236,
@@ -598,12 +604,12 @@
               {
                 "kind": "account",
                 "path": "bounty.creator",
-                "account": "Bounty"
+                "account": "bounty"
               },
               {
                 "kind": "account",
                 "path": "bounty.bounty_id",
-                "account": "Bounty"
+                "account": "bounty"
               }
             ]
           }
@@ -640,17 +646,17 @@
           }
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "bounty_id",
+          "name": "bountyId",
           "type": "u64"
         },
         {
-          "name": "submission_uri",
+          "name": "submissionUri",
           "type": "string"
         }
       ]
@@ -658,7 +664,7 @@
   ],
   "accounts": [
     {
-      "name": "Bounty",
+      "name": "bounty",
       "discriminator": [
         237,
         16,
@@ -671,7 +677,7 @@
       ]
     },
     {
-      "name": "Submission",
+      "name": "submission",
       "discriminator": [
         58,
         194,
@@ -686,7 +692,7 @@
   ],
   "events": [
     {
-      "name": "BountyClosedEvent",
+      "name": "bountyClosedEvent",
       "discriminator": [
         126,
         88,
@@ -699,7 +705,7 @@
       ]
     },
     {
-      "name": "BountyCreatedEvent",
+      "name": "bountyCreatedEvent",
       "discriminator": [
         38,
         84,
@@ -712,7 +718,7 @@
       ]
     },
     {
-      "name": "BountyRefundedEvent",
+      "name": "bountyRefundedEvent",
       "discriminator": [
         86,
         149,
@@ -725,7 +731,7 @@
       ]
     },
     {
-      "name": "DisputeRaisedEvent",
+      "name": "disputeRaisedEvent",
       "discriminator": [
         89,
         136,
@@ -738,7 +744,7 @@
       ]
     },
     {
-      "name": "DisputeResolvedEvent",
+      "name": "disputeResolvedEvent",
       "discriminator": [
         152,
         37,
@@ -751,7 +757,7 @@
       ]
     },
     {
-      "name": "SubmissionEvent",
+      "name": "submissionEvent",
       "discriminator": [
         86,
         48,
@@ -764,7 +770,7 @@
       ]
     },
     {
-      "name": "SubmissionRejectedEvent",
+      "name": "submissionRejectedEvent",
       "discriminator": [
         27,
         147,
@@ -777,7 +783,7 @@
       ]
     },
     {
-      "name": "WinnerSelectedEvent",
+      "name": "winnerSelectedEvent",
       "discriminator": [
         88,
         68,
@@ -793,108 +799,108 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidStateTransition",
+      "name": "invalidStateTransition",
       "msg": "Bounty not in the required state for this operation"
     },
     {
       "code": 6001,
-      "name": "DeadlinePassed",
+      "name": "deadlinePassed",
       "msg": "Deadline has already passed"
     },
     {
       "code": 6002,
-      "name": "DeadlineTooSoon",
+      "name": "deadlineTooSoon",
       "msg": "Deadline must be at least 1 hour in the future"
     },
     {
       "code": 6003,
-      "name": "InvalidAmount",
+      "name": "invalidAmount",
       "msg": "Reward amount must be greater than zero"
     },
     {
       "code": 6004,
-      "name": "NotCreator",
+      "name": "notCreator",
       "msg": "Only the bounty creator can perform this action"
     },
     {
       "code": 6005,
-      "name": "NotModerator",
+      "name": "notModerator",
       "msg": "Only the moderator can perform this action"
     },
     {
       "code": 6006,
-      "name": "EmptySubmissionUri",
+      "name": "emptySubmissionUri",
       "msg": "Submission URI cannot be empty"
     },
     {
       "code": 6007,
-      "name": "NotExpired",
+      "name": "notExpired",
       "msg": "Bounty has not expired yet"
     },
     {
       "code": 6008,
-      "name": "InsufficientVaultBalance",
+      "name": "insufficientVaultBalance",
       "msg": "Insufficient balance in the vault"
     },
     {
       "code": 6009,
-      "name": "ArithmeticOverflow",
+      "name": "arithmeticOverflow",
       "msg": "Arithmetic operation overflowed"
     },
     {
       "code": 6010,
-      "name": "EmptyTitle",
+      "name": "emptyTitle",
       "msg": "Title cannot be empty"
     },
     {
       "code": 6011,
-      "name": "TitleTooLong",
+      "name": "titleTooLong",
       "msg": "Title exceeds maximum length"
     },
     {
       "code": 6012,
-      "name": "DescriptionTooLong",
+      "name": "descriptionTooLong",
       "msg": "Description exceeds maximum length"
     },
     {
       "code": 6013,
-      "name": "InvalidMaxWinners",
+      "name": "invalidMaxWinners",
       "msg": "Max winners must be greater than zero"
     },
     {
       "code": 6014,
-      "name": "MaxWinnersReached",
+      "name": "maxWinnersReached",
       "msg": "All winners have already been selected"
     },
     {
       "code": 6015,
-      "name": "ReferenceUriTooLong",
+      "name": "referenceUriTooLong",
       "msg": "Reference URI exceeds maximum length"
     },
     {
       "code": 6016,
-      "name": "ThumbnailUriTooLong",
+      "name": "thumbnailUriTooLong",
       "msg": "Thumbnail URI exceeds maximum length"
     },
     {
       "code": 6017,
-      "name": "SubmissionAlreadySelected",
+      "name": "submissionAlreadySelected",
       "msg": "This submission has already been selected as a winner"
     },
     {
       "code": 6018,
-      "name": "CreatorCannotSubmit",
+      "name": "creatorCannotSubmit",
       "msg": "The bounty creator cannot submit work to their own bounty"
     },
     {
       "code": 6019,
-      "name": "ModeratorCannotSubmit",
+      "name": "moderatorCannotSubmit",
       "msg": "The moderator cannot submit work to a bounty they moderate"
     }
   ],
   "types": [
     {
-      "name": "Bounty",
+      "name": "bounty",
       "type": {
         "kind": "struct",
         "fields": [
@@ -907,11 +913,11 @@
             "type": "pubkey"
           },
           {
-            "name": "bounty_id",
+            "name": "bountyId",
             "type": "u64"
           },
           {
-            "name": "token_mint",
+            "name": "tokenMint",
             "type": "pubkey"
           },
           {
@@ -923,7 +929,7 @@
             "type": "i64"
           },
           {
-            "name": "created_at",
+            "name": "createdAt",
             "type": "i64"
           },
           {
@@ -935,22 +941,22 @@
             "type": "string"
           },
           {
-            "name": "reference_uri",
+            "name": "referenceUri",
             "type": "string"
           },
           {
-            "name": "thumbnail_uri",
+            "name": "thumbnailUri",
             "type": "string"
           },
           {
-            "name": "submission_uri",
+            "name": "submissionUri",
             "type": "string"
           },
           {
             "name": "status",
             "type": {
               "defined": {
-                "name": "BountyStatus"
+                "name": "bountyStatus"
               }
             }
           },
@@ -959,18 +965,18 @@
             "type": "u8"
           },
           {
-            "name": "max_winners",
+            "name": "maxWinners",
             "type": "u8"
           },
           {
-            "name": "winners_selected",
+            "name": "winnersSelected",
             "type": "u8"
           }
         ]
       }
     },
     {
-      "name": "BountyClosedEvent",
+      "name": "bountyClosedEvent",
       "type": {
         "kind": "struct",
         "fields": [
@@ -979,14 +985,14 @@
             "type": "pubkey"
           },
           {
-            "name": "closed_by",
+            "name": "closedBy",
             "type": "pubkey"
           }
         ]
       }
     },
     {
-      "name": "BountyCreatedEvent",
+      "name": "bountyCreatedEvent",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1003,7 +1009,7 @@
             "type": "pubkey"
           },
           {
-            "name": "token_mint",
+            "name": "tokenMint",
             "type": "pubkey"
           },
           {
@@ -1015,7 +1021,7 @@
             "type": "i64"
           },
           {
-            "name": "max_winners",
+            "name": "maxWinners",
             "type": "u8"
           },
           {
@@ -1026,7 +1032,7 @@
       }
     },
     {
-      "name": "BountyRefundedEvent",
+      "name": "bountyRefundedEvent",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1039,40 +1045,40 @@
             "type": "pubkey"
           },
           {
-            "name": "refund_amount",
+            "name": "refundAmount",
             "type": "u64"
           }
         ]
       }
     },
     {
-      "name": "BountyStatus",
+      "name": "bountyStatus",
       "type": {
         "kind": "enum",
         "variants": [
           {
-            "name": "Open"
+            "name": "open"
           },
           {
-            "name": "Submitted"
+            "name": "submitted"
           },
           {
-            "name": "WinnerSelected"
+            "name": "winnerSelected"
           },
           {
-            "name": "Completed"
+            "name": "completed"
           },
           {
-            "name": "Disputed"
+            "name": "disputed"
           },
           {
-            "name": "Expired"
+            "name": "expired"
           }
         ]
       }
     },
     {
-      "name": "DisputeRaisedEvent",
+      "name": "disputeRaisedEvent",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1081,14 +1087,14 @@
             "type": "pubkey"
           },
           {
-            "name": "raised_by",
+            "name": "raisedBy",
             "type": "pubkey"
           }
         ]
       }
     },
     {
-      "name": "DisputeResolvedEvent",
+      "name": "disputeResolvedEvent",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1112,7 +1118,7 @@
       }
     },
     {
-      "name": "Submission",
+      "name": "submission",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1129,7 +1135,7 @@
             "type": "string"
           },
           {
-            "name": "submitted_at",
+            "name": "submittedAt",
             "type": "i64"
           },
           {
@@ -1148,7 +1154,7 @@
       }
     },
     {
-      "name": "SubmissionEvent",
+      "name": "submissionEvent",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1168,7 +1174,7 @@
       }
     },
     {
-      "name": "SubmissionRejectedEvent",
+      "name": "submissionRejectedEvent",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1184,7 +1190,7 @@
       }
     },
     {
-      "name": "WinnerSelectedEvent",
+      "name": "winnerSelectedEvent",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1201,15 +1207,15 @@
             "type": "u64"
           },
           {
-            "name": "winners_selected",
+            "name": "winnersSelected",
             "type": "u8"
           },
           {
-            "name": "max_winners",
+            "name": "maxWinners",
             "type": "u8"
           }
         ]
       }
     }
   ]
-}
+};

@@ -33,13 +33,19 @@ pub fn handler(ctx: Context<RefundExpired>, _bounty_id: u64) -> Result<()> {
     let clock = &ctx.accounts.clock;
 
     require!(
-        bounty.status == BountyStatus::Open || bounty.status == BountyStatus::Submitted,
+        bounty.status == BountyStatus::Open
+            || bounty.status == BountyStatus::Submitted
+            || bounty.status == BountyStatus::WinnerSelected,
         BountyError::InvalidStateTransition
     );
     require!(
         clock.unix_timestamp >= bounty.deadline,
         BountyError::NotExpired
     );
+
+    let reward_per_winner = bounty.amount / (bounty.max_winners as u64);
+    let already_paid = reward_per_winner * (bounty.winners_selected as u64);
+    let remaining = bounty.amount.saturating_sub(already_paid);
 
     let bounty_key = bounty.key();
     let vault_bump = Pubkey::find_program_address(
@@ -62,7 +68,7 @@ pub fn handler(ctx: Context<RefundExpired>, _bounty_id: u64) -> Result<()> {
                 },
                 &[&vault_signer[..]],
             ),
-            bounty.amount,
+            remaining,
         )?;
     } else {
         let bounty_signer = &[
@@ -81,11 +87,17 @@ pub fn handler(ctx: Context<RefundExpired>, _bounty_id: u64) -> Result<()> {
                 },
                 &[&bounty_signer[..]],
             ),
-            bounty.amount,
+            remaining,
         )?;
     }
 
     bounty.status = BountyStatus::Expired;
+
+    emit!(BountyRefundedEvent {
+        bounty: bounty.key(),
+        creator: bounty.creator,
+        refund_amount: remaining,
+    });
 
     Ok(())
 }

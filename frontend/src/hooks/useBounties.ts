@@ -3,8 +3,17 @@
 import { useState, useEffect, useCallback } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
+import { useConnection } from "@solana/wallet-adapter-react";
 import { useProgram } from "./useProgram";
 import { bountyAddress } from "@/lib/constants";
+import type { BountyPlatform } from "@/lib/bounty_platform";
+
+type BountyAccount = {
+  publicKey: PublicKey;
+  account: BountyPlatform["accounts"][number] extends infer A
+    ? A extends { name: "bounty" } ? A : never
+    : never;
+};
 
 const STATUS_MAP: Record<string, number> = {
   open: 0,
@@ -15,10 +24,10 @@ const STATUS_MAP: Record<string, number> = {
   expired: 5,
 };
 
-function normalizeStatus(raw: any): number {
+function normalizeStatus(raw: unknown): number {
   if (typeof raw === "number") return raw;
   if (typeof raw === "object" && raw !== null) {
-    const key = Object.keys(raw)[0]?.toLowerCase() ?? "";
+    const key = Object.keys(raw as Record<string, unknown>)[0]?.toLowerCase() ?? "";
     return STATUS_MAP[key] ?? 0;
   }
   return 0;
@@ -46,19 +55,20 @@ export interface BountyData {
 
 export function useBounties() {
   const program = useProgram();
+  const { connection } = useConnection();
   const [bounties, setBounties] = useState<BountyData[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetch = useCallback(async () => {
-    const p = program as any;
-    if (!p) return;
+    if (!program) return;
     setLoading(true);
     try {
-      const accounts = await p.account.bounty.all();
-      const mapped = accounts.map((a: any) => {
-        const data = a.account as Record<string, any>;
-        return { publicKey: a.publicKey, ...data, status: normalizeStatus(data.status) } as BountyData;
-      });
+      const accounts = await program.account.bounty.all();
+      const mapped = accounts.map(({ publicKey, account }) => ({
+        publicKey,
+        ...account,
+        status: normalizeStatus(account.status),
+      })) as BountyData[];
       setBounties(mapped);
     } catch (err) {
       console.error("Failed to fetch bounties:", err);
@@ -68,26 +78,32 @@ export function useBounties() {
   }, [program]);
 
   useEffect(() => {
+    if (!program) return;
     fetch();
-  }, [fetch]);
+    const subId = connection.onProgramAccountChange(
+      program.programId,
+      () => { fetch(); },
+      "confirmed",
+    );
+    return () => { connection.removeProgramAccountChangeListener(subId); };
+  }, [fetch, program, connection]);
 
   return { bounties, loading, refetch: fetch };
 }
 
 export function useBountyByKey(bountyKey: string) {
   const program = useProgram();
+  const { connection } = useConnection();
   const [bounty, setBounty] = useState<BountyData | null>(null);
   const [loading, setLoading] = useState(false);
 
   const fetch = useCallback(async () => {
-    const p = program as any;
-    if (!p || !bountyKey) return;
+    if (!program || !bountyKey) return;
     setLoading(true);
     const pk = new PublicKey(bountyKey);
     try {
-      const account = await p.account.bounty.fetch(pk);
-      const data = account as Record<string, any>;
-      setBounty({ publicKey: pk, ...data, status: normalizeStatus(data.status) } as BountyData);
+      const account = await program.account.bounty.fetch(pk);
+      setBounty({ publicKey: pk, ...account, status: normalizeStatus(account.status) } as BountyData);
     } catch (err) {
       console.error("Failed to fetch bounty:", err);
       setBounty(null);
@@ -97,8 +113,14 @@ export function useBountyByKey(bountyKey: string) {
   }, [program, bountyKey]);
 
   useEffect(() => {
+    if (!program || !bountyKey) return;
     fetch();
-  }, [fetch]);
+    const pk = new PublicKey(bountyKey);
+    const subId = connection.onAccountChange(pk, () => { fetch(); }, "confirmed");
+    return () => {
+      connection.removeAccountChangeListener(subId);
+    };
+  }, [fetch, program, bountyKey, connection]);
 
   return { bounty, loading, refetch: fetch };
 }
@@ -109,8 +131,8 @@ export function useBountyById(creator: PublicKey | null, id: BN) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const p = program as any;
-    if (!p || !creator) return;
+    if (!program || !creator) return;
+    const prog = program;
     const creatorPk = creator;
     let cancelled = false;
 
@@ -118,10 +140,9 @@ export function useBountyById(creator: PublicKey | null, id: BN) {
       setLoading(true);
       try {
         const [pda] = bountyAddress(creatorPk, id);
-        const account = await p.account.bounty.fetch(pda);
+        const account = await prog.account.bounty.fetch(pda);
         if (!cancelled) {
-          const data = account as Record<string, any>;
-          setBounty({ publicKey: pda, ...data, status: normalizeStatus(data.status) } as BountyData);
+          setBounty({ publicKey: pda, ...account, status: normalizeStatus(account.status) } as BountyData);
         }
       } catch {
         if (!cancelled) setBounty(null);

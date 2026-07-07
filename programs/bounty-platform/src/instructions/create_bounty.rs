@@ -123,5 +123,16 @@ pub fn handler(
         )?;
     }
 
+    emit!(BountyCreatedEvent {
+        bounty: bounty_key,
+        creator: bounty.creator,
+        moderator: bounty.moderator,
+        token_mint: bounty.token_mint,
+        amount: bounty.amount,
+        deadline: bounty.deadline,
+        max_winners: bounty.max_winners,
+        title: bounty.title.clone(),
+    });
+
     Ok(())
 }

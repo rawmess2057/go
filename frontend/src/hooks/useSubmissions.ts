@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
+import { useConnection } from "@solana/wallet-adapter-react";
 import { useProgram } from "./useProgram";
 
 export interface SubmissionData {
@@ -12,27 +13,30 @@ export interface SubmissionData {
   uri: string;
   submittedAt: BN;
   selected: boolean;
+  rejected: boolean;
   bump: number;
 }
 
 export function useSubmissions(bountyPda: PublicKey | null) {
   const program = useProgram();
+  const { connection } = useConnection();
   const [submissions, setSubmissions] = useState<SubmissionData[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetch = useCallback(async () => {
-    const p = program as any;
-    if (!p || !bountyPda) return;
+    if (!program || !bountyPda) return;
     setLoading(true);
     try {
-      const all = await p.account.submission.all();
-      const filtered = all
-        .filter((a: any) => a.account.bounty.toBase58() === bountyPda.toBase58())
-        .map((a: any) => {
-          const data = a.account as Record<string, any>;
-          return { publicKey: a.publicKey, ...data } as SubmissionData;
-        });
-      setSubmissions(filtered);
+      // offset: 8 (discriminator) + 32 (worker Pubkey) = 40 bytes for `bounty` field
+      const results = await program.account.submission.all([
+        { memcmp: { offset: 40, bytes: bountyPda.toBase58() } },
+      ]);
+      setSubmissions(
+        results.map(({ publicKey, account }) => ({
+          publicKey,
+          ...account,
+        })) as SubmissionData[]
+      );
     } catch (err) {
       console.error("Failed to fetch submissions:", err);
     } finally {
@@ -41,8 +45,15 @@ export function useSubmissions(bountyPda: PublicKey | null) {
   }, [program, bountyPda]);
 
   useEffect(() => {
+    if (!program || !bountyPda) return;
     fetch();
-  }, [fetch]);
+    const subId = connection.onProgramAccountChange(
+      program.programId,
+      () => { fetch(); },
+      "confirmed",
+    );
+    return () => { connection.removeProgramAccountChangeListener(subId); };
+  }, [fetch, program, bountyPda, connection]);
 
   return { submissions, loading, refetch: fetch };
 }

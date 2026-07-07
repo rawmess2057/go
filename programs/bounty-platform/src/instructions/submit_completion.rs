@@ -30,6 +30,10 @@ pub fn handler(ctx: Context<SubmitCompletion>, _bounty_id: u64, submission_uri: 
     let bounty = &mut ctx.accounts.bounty;
 
     require!(
+        clock.unix_timestamp <= bounty.deadline,
+        BountyError::DeadlinePassed
+    );
+    require!(
         ctx.accounts.worker.key() != bounty.creator,
         BountyError::CreatorCannotSubmit
     );
@@ -56,7 +60,13 @@ pub fn handler(ctx: Context<SubmitCompletion>, _bounty_id: u64, submission_uri: 
     if bounty.status == BountyStatus::Open {
         bounty.status = BountyStatus::Submitted;
     }
-    bounty.submission_uri = submission_uri;
+    bounty.submission_uri = submission_uri.clone();
+
+    emit!(SubmissionEvent {
+        bounty: bounty.key(),
+        worker: ctx.accounts.worker.key(),
+        uri: submission_uri,
+    });
 
     Ok(())
 }

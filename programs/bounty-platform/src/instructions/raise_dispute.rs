@@ -28,5 +28,10 @@ pub fn handler(ctx: Context<RaiseDispute>, _bounty_id: u64) -> Result<()> {
 
     bounty.status = BountyStatus::Disputed;
 
+    emit!(DisputeRaisedEvent {
+        bounty: bounty.key(),
+        raised_by: ctx.accounts.signer.key(),
+    });
+
     Ok(())
 }
