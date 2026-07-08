@@ -2,6 +2,7 @@
   "nav": {
     "browse": "Browse",
     "create": "Create",
+    "leaderboard": "Leaderboard",
     "dashboard": "Dashboard"
   },
   "home": {
@@ -11,6 +12,7 @@
       "description": "100% non-custodial escrow. No middlemen, no delays, just results."
     },
     "badge": "Built on Solana",
+    "trending": "Trending Bounties",
     "createCta": "Create an Inaam",
     "browseCta": "Browse Inaams",
     "trust": [
@@ -31,6 +33,8 @@
   "bountyCard": {
     "untitled": "Inaam #",
     "noDescription": "No description",
+    "by": "by",
+    "perWinner": "per winner",
     "created": "Created",
     "winners": "Winners",
     "expired": "Expired"
@@ -41,7 +45,9 @@
     "emptyTitle": "No inaams found",
     "emptyDescAll": "Be the first to create an inaam!",
     "emptyDescFilter": "No inaams match this filter.",
-    "emptyAction": "Create Inaam"
+    "emptyAction": "Create Inaam",
+    "emptySearch": "No bounties match your search.",
+    "loadMore": "Load More"
   },
   "create": {
     "title": "Create an Inaam",
@@ -136,14 +142,14 @@
     "refresh": "Refresh",
     "totalSpent": "Total Spent",
     "totalEarned": "Total Earned",
-    "active": "Active Inaams",
+    "active": "Active",
     "completed": "Completed",
     "tabs": {
       "myInaams": "My Inaams",
       "history": "History"
     },
     "emptyCreated": "No inaams created yet.",
-    "historyComing": "History coming soon.",
+    "emptyHistory": "No submissions yet.",
     "table": {
       "title": "Title",
       "reward": "Reward",
@@ -151,12 +157,41 @@
       "winners": "Winners",
       "deadline": "Deadline",
       "view": "View"
-    }
+    },
+    "activityChart": "Activity (30d)",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No activity yet."
   },
   "inaamPage": {
     "notFound": "Inaam not found",
     "backHome": "Back to home",
     "back": "Back"
+  },
+  "profile": {
+    "created": "Created",
+    "totalSpent": "Total Spent",
+    "noBounties": "No bounties created yet."
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "topEarners": "Top Earners",
+    "topCreators": "Top Creators",
+    "earned": "Earned",
+    "spent": "Spent",
+    "bounties": "Bounties"
+  },
+  "search": {
+    "placeholder": "Search bounties..."
+  },
+  "sort": {
+    "rewardDesc": "Highest Reward",
+    "rewardAsc": "Lowest Reward",
+    "newest": "Newest",
+    "deadline": "Ending Soon"
+  },
+  "sidebar": {
+    "highestValue": "Highest Value",
+    "topCreators": "Top Creators"
   },
   "header": {
     "switchLanguage": "ने"

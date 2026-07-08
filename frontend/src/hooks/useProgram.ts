@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
 import { Program, AnchorProvider } from "@coral-xyz/anchor";
 import { idl } from "@/lib/idl";
 import type { BountyPlatform } from "@/lib/bounty_platform";

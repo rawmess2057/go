@@ -1,12 +1,27 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "@/lib/i18n";
 import BountyList from "@/components/BountyList";
+import TrendingBounties from "@/components/TrendingBounties";
+import PageTransition from "@/components/PageTransition";
+import { useBounties } from "@/hooks/useBounties";
 
 export default function Home() {
   const { t } = useTranslation();
+  const router = useRouter();
+  const { bounties } = useBounties();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && !localStorage.getItem("inaam_onboarded")) {
+      localStorage.setItem("inaam_onboarded", "true");
+      router.push("/onboarding");
+    }
+  }, [router]);
 
   return (
+    <PageTransition>
     <div>
       <div className="relative -mx-4 -mt-8 px-4 pt-16 sm:pt-24 pb-20 sm:pb-28 bg-brand text-white text-center overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -42,24 +57,31 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 -mt-10 mb-12 relative z-10">
+      <div className="grid grid-cols-3 gap-5 -mt-10 mb-8 relative z-10">
         {(t("home.trust") as unknown as any[]).map((item: any, i: number) => (
           <div
             key={i}
-            className="text-center rounded-xl bg-white border border-border shadow-sm p-5"
+            className="rounded-2xl bg-white border border-zinc-200 shadow-sm p-5 text-center"
           >
-            <div className="w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center mx-auto mb-2">
-              <div className="w-3 h-3 rounded-full bg-brand" />
-            </div>
-            <p className="font-semibold text-sm text-zinc-800">{item.title}</p>
-            <p className="text-xs text-zinc-400 mt-1">{item.desc}</p>
+            <p className="font-semibold text-sm text-brand">{item.title}</p>
+            <p className="text-xs text-brand/70 mt-1 leading-relaxed">{item.desc}</p>
           </div>
         ))}
       </div>
+
+      {bounties.length > 0 && (
+        <div className="mb-10">
+          <h2 className="text-sm font-semibold text-foreground/60 uppercase tracking-wider mb-3">
+            {t("home.trending")}
+          </h2>
+          <TrendingBounties bounties={bounties} />
+        </div>
+      )}
 
       <div id="inaams">
         <BountyList />
       </div>
     </div>
+    </PageTransition>
   );
 }

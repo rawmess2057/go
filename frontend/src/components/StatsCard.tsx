@@ -10,13 +10,16 @@ export default function StatsCard({
   color?: string;
 }) {
   const accentClass =
-    color === "brand" ? "text-brand" : color === "blue" ? "text-blue-500" : "text-zinc-500";
+    color === "brand" ? "text-brand" : color === "blue" ? "text-blue-500" : "text-foreground";
 
   return (
-    <div className="rounded-xl border border-border bg-white p-5">
-      <p className="text-sm text-zinc-500">{label}</p>
-      <p className={`mt-1 text-2xl font-bold ${accentClass}`}>{value}</p>
-      {sub && <p className="mt-1 text-xs text-zinc-400">{sub}</p>}
+    <div className="relative rounded-2xl border border-border bg-card overflow-hidden">
+      <div className={`absolute inset-0 bg-gradient-to-br from-transparent via-transparent ${color === "brand" ? "to-brand/5" : "to-muted/50"}`} />
+      <div className="relative p-5">
+        <p className="text-sm text-muted-foreground/60">{label}</p>
+        <p className={`mt-1.5 text-2xl font-bold ${accentClass}`}>{value}</p>
+        {sub && <p className="mt-1 text-xs text-muted-foreground/50">{sub}</p>}
+      </div>
     </div>
   );
 }

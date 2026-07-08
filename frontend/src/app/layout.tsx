@@ -4,6 +4,7 @@ import "./globals.css";
 import AppWalletProvider from "@/components/AppWalletProvider";
 import Header from "@/components/Header";
 import I18nClient from "@/components/I18nClient";
+import ThemeProviders from "@/components/ThemeProviders";
 import { Toaster } from "react-hot-toast";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "@/components/ErrorFallback";
@@ -29,8 +30,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="min-h-screen flex flex-col antialiased bg-white text-zinc-900">
+    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className="min-h-screen flex flex-col antialiased bg-background text-foreground">
+        <ThemeProviders>
         <AppWalletProvider>
           <I18nClient>
             <Header />
@@ -50,6 +52,7 @@ export default function RootLayout({
             />
           </I18nClient>
         </AppWalletProvider>
+        </ThemeProviders>
       </body>
     </html>
   );

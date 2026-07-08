@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useBountyByKey } from "@/hooks/useBounties";
 import BountyDetail from "@/components/BountyDetail";
+import PageTransition from "@/components/PageTransition";
 import { useTranslation } from "@/lib/i18n";
 
 export default function InaamPage() {
@@ -35,6 +36,7 @@ export default function InaamPage() {
   }
 
   return (
+    <PageTransition>
     <div className="max-w-3xl mx-auto">
       <button
         onClick={() => router.push("/")}
@@ -44,5 +46,6 @@ export default function InaamPage() {
       </button>
       <BountyDetail bounty={bounty} onRefresh={refetch} />
     </div>
+    </PageTransition>
   );
 }
