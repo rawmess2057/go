@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useBounties, BountyData } from "@/hooks/useBounties";
+import { useWonSubmissions } from "@/hooks/useWonSubmissions";
 import StatsCard from "@/components/StatsCard";
 import ActivityChart from "@/components/ActivityChart";
 import RecentActivity from "@/components/RecentActivity";
@@ -18,7 +19,7 @@ export default function DashboardPage() {
   const { t } = useTranslation();
   const wallet = useWallet();
   const { bounties, loading, refetch } = useBounties();
-  const solPrice = useSolPrice();
+  const { totalEarned } = useWonSubmissions(wallet.publicKey ?? null);
   const [tab, setTab] = useState<Tab>("created");
 
   const created = useMemo(() => {
@@ -29,13 +30,6 @@ export default function DashboardPage() {
 
   const totalSpent = useMemo(
     () => created.reduce((s, b) => s + Number(b.amount), 0) / 1e9,
-    [created]
-  );
-  const totalEarned = useMemo(
-    () =>
-      created
-        .filter((b) => b.status === BountyStatus.Completed)
-        .reduce((s, b) => s + Number(b.amount), 0) / 1e9,
     [created]
   );
 

@@ -132,11 +132,10 @@
     "refundExpired": "Refund Expired",
     "closeBounty": "Close Account (Refund Rent)",
     "connectWallet": "Connect your wallet to view your dashboard.",
-    "noSubmissions": "No submissions yet",
-    "winnerBadge": "Winner!",
-    "rejectedBadge": "Rejected",
-    "cannotSubmit": "You cannot submit work to a bounty you created or moderate",
-    "submissions": "Submissions"
+  "noSubmissions": "No submissions yet",
+  "winnerBadge": "Winner!",
+  "rejectedBadge": "Rejected",
+  "cannotSubmit": "You cannot submit work to a bounty you created or moderate"
   },
   "dashboard": {
     "title": "Dashboard",

@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { BN } from "@coral-xyz/anchor";
-import BNJS from "bn.js";
 import { PublicKey, SystemProgram, LAMPORTS_PER_SOL, SendTransactionError } from "@solana/web3.js";
 import toast from "react-hot-toast";
 import { useProgram } from "@/hooks/useProgram";
@@ -12,6 +11,22 @@ import { SOL_MINT, bountyAddress, vaultAddress, MIN_DEADLINE_SECONDS } from "@/l
 import { storeImage, getImage, generateKey } from "@/lib/localStore";
 import { useTranslation } from "@/lib/i18n";
 import { useNotifications } from "@/hooks/useNotifications";
+
+const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+
+interface TokenOption {
+  mint: PublicKey;
+  symbol: string;
+  decimals: number;
+  balance?: number;
+}
+
+const KNOWN_TOKENS: Record<string, { symbol: string; decimals: number }> = {
+  "So11111111111111111111111111111111111111112": { symbol: "SOL", decimals: 9 },
+  "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr": { symbol: "USDC", decimals: 6 },
+  "8zGu4iryBusWepoKNfN3LaYb1yGNYiJfS6WRa72Qiyo5": { symbol: "USDT", decimals: 6 },
+  "mntE4Z5zXHo6DVs6o7WxGtpLGLeRgGCs5w5r8sGMwnF": { symbol: "mSOL", decimals: 9 },
+};
 
 const STEPS_KEYS = ["create.steps.0", "create.steps.1", "create.steps.2"];
 
@@ -34,7 +49,53 @@ export default function CreateBountyForm() {
   const [maxWinners, setMaxWinners] = useState("1");
   const [sending, setSending] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [tokenOptions, setTokenOptions] = useState<TokenOption[]>([]);
+  const [selectedToken, setSelectedToken] = useState<TokenOption>({
+    mint: SOL_MINT,
+    symbol: "SOL",
+    decimals: 9,
+  });
+  const [tokensLoading, setTokensLoading] = useState(false);
   const blobRef = useRef<string | null>(null);
+
+  // fetch user's SPL token accounts
+  useEffect(() => {
+    if (!wallet.publicKey) return;
+    let cancelled = false;
+    async function load() {
+      setTokensLoading(true);
+      try {
+        const result = await connection.getTokenAccountsByOwner(wallet.publicKey!, {
+          programId: TOKEN_PROGRAM_ID,
+        });
+        const tokens: TokenOption[] = [];
+        for (const { account } of result.value) {
+          const data = account.data;
+          const mintHex = Buffer.from(data.slice(0, 32)).toString("hex");
+          const mint = new PublicKey(mintHex);
+          const mintStr = mint.toBase58();
+          const known = KNOWN_TOKENS[mintStr];
+          if (known) {
+            tokens.push({
+              mint,
+              symbol: known.symbol,
+              decimals: known.decimals,
+            });
+          }
+        }
+        if (!cancelled) {
+          tokens.sort((a, b) => a.symbol.localeCompare(b.symbol));
+          setTokenOptions(tokens);
+        }
+      } catch {
+        // ignore — user may have no SPL tokens
+      } finally {
+        if (!cancelled) setTokensLoading(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [wallet.publicKey, connection]);
 
   useEffect(() => {
     if (blobRef.current) { URL.revokeObjectURL(blobRef.current); blobRef.current = null; }
@@ -69,8 +130,11 @@ export default function CreateBountyForm() {
       return;
     }
 
-    const amountLamports = Math.floor(parseFloat(amount) * LAMPORTS_PER_SOL);
-    if (amountLamports <= 0) {
+    const isSol = selectedToken.mint.equals(SOL_MINT);
+    const decimals = selectedToken.decimals;
+    const multiplier = Math.pow(10, decimals);
+    const rawAmount = Math.floor(parseFloat(amount) * multiplier);
+    if (rawAmount <= 0) {
       toast.error("Amount must be greater than 0");
       return;
     }
@@ -95,19 +159,33 @@ export default function CreateBountyForm() {
       return;
     }
 
-    const id = new BNJS(Math.floor(Math.random() * 1_000_000) + 1);
+    const id = new BN(Math.floor(Math.random() * 1_000_000) + 1);
 
     setSending(true);
     try {
       const [bountyPda] = bountyAddress(wallet.publicKey, id);
       const [vaultPda] = vaultAddress(bountyPda);
 
-      const tx = await (program.methods as any)
+      // for SPL tokens, derive the user's ATA as the creator token account
+      let creatorTokenAccount: PublicKey | null = null;
+      if (!isSol) {
+        const ATA_PROGRAM = new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
+        [creatorTokenAccount] = PublicKey.findProgramAddressSync(
+          [
+            wallet.publicKey.toBuffer(),
+            TOKEN_PROGRAM_ID.toBuffer(),
+            selectedToken.mint.toBuffer(),
+          ],
+          ATA_PROGRAM,
+        );
+      }
+
+      const tx = await program.methods
         .createBounty(
           new BN(id),
           moderatorPubkey,
-          SOL_MINT,
-          new BN(amountLamports),
+          selectedToken.mint,
+          new BN(rawAmount),
           new BN(deadlineSecs),
           title.trim(),
           description.trim(),
@@ -119,9 +197,9 @@ export default function CreateBountyForm() {
           creator: wallet.publicKey,
           bounty: bountyPda,
           vault: vaultPda,
-          creatorTokenAccount: null,
+          creatorTokenAccount: creatorTokenAccount,
           systemProgram: SystemProgram.programId,
-          tokenProgram: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
+          tokenProgram: TOKEN_PROGRAM_ID,
         })
         .rpc();
 
@@ -278,16 +356,48 @@ export default function CreateBountyForm() {
             <label className="block text-sm font-medium mb-1">
               {t("create.fields.reward")} <span className="text-red-400">*</span>
             </label>
-            <input
-              type="number"
-              step="0.001"
-              min="0.001"
-              required
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-lg border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50"
-              placeholder="1.0"
-            />
+            <div className="flex gap-2">
+              <input
+                type="number"
+                step={Math.pow(10, -selectedToken.decimals).toString()}
+                min={Math.pow(10, -selectedToken.decimals).toString()}
+                required
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50"
+                placeholder="1.0"
+              />
+              <select
+                value={selectedToken.mint.toBase58()}
+                onChange={(e) => {
+                  const mintStr = e.target.value;
+                  if (mintStr === SOL_MINT.toBase58()) {
+                    setSelectedToken({ mint: SOL_MINT, symbol: "SOL", decimals: 9 });
+                  } else {
+                    const found = tokenOptions.find(
+                      (t) => t.mint.toBase58() === mintStr
+                    );
+                    if (found) setSelectedToken(found);
+                  }
+                }}
+                className="rounded-lg border border-border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50 bg-white"
+              >
+                <option value={SOL_MINT.toBase58()}>SOL</option>
+                {tokensLoading && (
+                  <option disabled>Loading...</option>
+                )}
+                {tokenOptions.map((t) => (
+                  <option key={t.mint.toBase58()} value={t.mint.toBase58()}>
+                    {t.symbol}
+                  </option>
+                ))}
+                {!tokensLoading && tokenOptions.length === 0 && (
+                  <option value="" disabled>
+                    No SPL tokens found
+                  </option>
+                )}
+              </select>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -376,7 +486,7 @@ export default function CreateBountyForm() {
             )}
             <div className="flex justify-between text-sm">
               <span className="text-zinc-500">{t("create.review.reward")}</span>
-              <span className="font-semibold text-brand">{amount} SOL</span>
+              <span className="font-semibold text-brand">{amount} {selectedToken.symbol}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-zinc-500">{t("create.review.maxWinners")}</span>

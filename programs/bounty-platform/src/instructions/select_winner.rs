@@ -109,5 +109,13 @@ pub fn handler(ctx: Context<SelectWinner>, _bounty_id: u64) -> Result<()> {
         bounty.status = BountyStatus::WinnerSelected;
     }
 
+    emit!(WinnerSelectedEvent {
+        bounty: bounty.key(),
+        worker: ctx.accounts.recipient.key(),
+        reward: reward_per_winner,
+        winners_selected: bounty.winners_selected,
+        max_winners: bounty.max_winners,
+    });
+
     Ok(())
 }

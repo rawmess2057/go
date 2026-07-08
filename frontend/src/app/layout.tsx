@@ -6,6 +6,8 @@ import Header from "@/components/Header";
 import I18nClient from "@/components/I18nClient";
 import ThemeProviders from "@/components/ThemeProviders";
 import { Toaster } from "react-hot-toast";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorFallback } from "@/components/ErrorFallback";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,8 +36,10 @@ export default function RootLayout({
         <AppWalletProvider>
           <I18nClient>
             <Header />
-            <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 pb-24 md:pb-8">
-              {children}
+            <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
+              <ErrorBoundary FallbackComponent={ErrorFallback}>
+                {children}
+              </ErrorBoundary>
             </main>
             <Toaster
               position="bottom-right"

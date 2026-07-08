@@ -114,9 +114,18 @@ export default function BountyDetail({
             break;
           }
           case "reject": {
+            if (!worker) {
+              toast.error("Select a submission to reject");
+              return;
+            }
+            const [submissionPda] = submissionAddress(bounty.publicKey, worker);
             tx = await program.methods
               .rejectSubmission(bounty.bountyId)
-              .accounts({ moderator: wallet.publicKey, bounty: bounty.publicKey })
+              .accounts({
+                moderator: wallet.publicKey,
+                bounty: bounty.publicKey,
+                submission: submissionPda,
+              })
               .rpc();
             break;
           }
@@ -136,8 +145,6 @@ export default function BountyDetail({
                 bounty: bounty.publicKey,
                 vault: vaultPda,
                 recipient: worker || PublicKey.default,
-                creator: bounty.creator,
-                tokenMint: SOL_MINT,
                 tokenProgram: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
                 systemProgram: SystemProgram.programId,
               })
@@ -152,9 +159,7 @@ export default function BountyDetail({
                 moderator: wallet.publicKey,
                 bounty: bounty.publicKey,
                 vault: vaultPda,
-                recipient: worker || PublicKey.default,
-                creator: bounty.creator,
-                tokenMint: SOL_MINT,
+                recipient: bounty.creator,
                 tokenProgram: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
                 systemProgram: SystemProgram.programId,
               })
@@ -402,20 +407,25 @@ export default function BountyDetail({
                             >
                               {sending === "select-winner" ? p : t("detail.selectWinner")}
                             </button>
+                            {!sub.rejected && (
+                              <button
+                                onClick={() => exec("reject", sub.worker)}
+                                disabled={sending !== null}
+                                className="rounded bg-red-500 px-3 py-1 text-xs font-medium text-white hover:bg-red-600 disabled:opacity-50 transition-colors"
+                              >
+                                {sending === "reject" ? p : t("detail.rejectSubmission")}
+                              </button>
+                            )}
                           </div>
+                        )}
+                        {sub.rejected && (
+                          <span className="text-xs text-zinc-400 font-medium">
+                            {t("detail.rejectedBadge")}
+                          </span>
                         )}
                       </div>
                     ))
                   )}
-                </div>
-                <div className="pt-3">
-                  <button
-                    onClick={() => exec("reject")}
-                    disabled={sending !== null}
-                    className="rounded-lg bg-red-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {sending === "reject" ? p : t("detail.rejectSubmission")}
-                  </button>
                 </div>
               </div>
             )}
@@ -500,7 +510,7 @@ export default function BountyDetail({
           </div>
         )}
 
-        {bounty.status === BountyStatus.Open && isExpired && (
+        {(bounty.status === BountyStatus.Open || bounty.status === BountyStatus.WinnerSelected) && isExpired && (
           <div>
             <button
               onClick={() => exec("refund")}
@@ -516,7 +526,7 @@ export default function BountyDetail({
             <button
               onClick={() => exec("close")}
               disabled={sending !== null}
-              className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="rounded-lg border border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {sending === "close" ? p : t("detail.closeBounty")}
             </button>
