@@ -12,7 +12,6 @@ type TypedProgram = Program<BountyPlatform>;
 export function useProgram() {
   const wallet = useAnchorWallet();
   const { connection } = useConnection();
-
   return useMemo((): {
     account: TypedProgram["account"];
     methods: any;
@@ -28,5 +27,17 @@ export function useProgram() {
       provider: program.provider,
       programId: program.programId,
     };
+  const program = useMemo(() => {
+    const provider = new AnchorProvider(
+      connection,
+      wallet ?? {
+        publicKey: PublicKey.default,
+        signTransaction: async (tx) => tx,
+        signAllTransactions: async (txs) => txs,
+      },
+      {}
+    );
+    return new Program(idl, provider) as any;
+
   }, [wallet, connection]);
 }
