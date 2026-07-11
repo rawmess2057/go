@@ -1,25 +1,51 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 )
 
-func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Gobounty Solana Blink is running on Fly.io!")
-	})
+type ActionMetadata struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Icon        string `json:"icon"`
+	Label       string `json:"label"`
+}
 
-	// Add your Solana Blink routes here
-	// Example: http.HandleFunc("/api/actions/donate", donateHandler)
+func main() {
+	http.HandleFunc("/api/actions/donate", handleDonateAction)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Gobounty Solana Blink API is live!")
+	})
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "3000"
+	}
+	log.Printf("Server running on :%s", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
+func handleDonateAction(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		// Return Blink metadata
+		metadata := ActionMetadata{
+			Title:       "Donate to Gobounty",
+			Description: "Support the Gobounty project on Solana",
+			Icon:        "https://your-icon-url.com/icon.png",
+			Label:       "Send SOL",
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(metadata)
+		return
 	}
 
-	log.Printf("Server starting on port %s", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	if r.Method == "POST" {
+		// Handle transaction here (create + sign transaction)
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, `{"transaction": "base64-encoded-tx-here"}`)
+	}
 }
