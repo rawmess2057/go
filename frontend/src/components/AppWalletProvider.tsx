@@ -17,7 +17,9 @@ export default function AppWalletProvider({
   children: React.ReactNode;
 }) {
   const endpoint = RPC_URL;
-  const network = WalletAdapterNetwork.Devnet;
+  const network =
+    (process.env.NEXT_PUBLIC_SOLANA_NETWORK as WalletAdapterNetwork) ||
+    WalletAdapterNetwork.Testnet;
   const wallets: any[] = useMemo(() => [new PhantomWalletAdapter()], [network]);
 
   return (
