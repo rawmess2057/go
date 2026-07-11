@@ -32,7 +32,7 @@ export function useSubmissions(bountyPda: PublicKey | null) {
         { memcmp: { offset: 40, bytes: bountyPda.toBase58() } },
       ]);
       setSubmissions(
-        results.map(({ publicKey, account }) => ({
+        (results as { publicKey: PublicKey; account: Record<string, unknown> }[]).map(({ publicKey, account }) => ({
           publicKey,
           ...account,
         })) as SubmissionData[]

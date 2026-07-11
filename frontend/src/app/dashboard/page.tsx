@@ -20,6 +20,7 @@ export default function DashboardPage() {
   const wallet = useWallet();
   const { bounties, loading, refetch } = useBounties();
   const { totalEarned } = useWonSubmissions(wallet.publicKey ?? null);
+  const solPrice = useSolPrice();
   const [tab, setTab] = useState<Tab>("created");
 
   const created = useMemo(() => {

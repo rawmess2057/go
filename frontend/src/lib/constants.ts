@@ -2,9 +2,12 @@ import { PublicKey } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
 
 export const PROGRAM_ID = new PublicKey(
-  "7WsPtEhY89n4yj9GshwQNgqQDGfUUdvonSto3XFVGwgQ"
+  process.env.NEXT_PUBLIC_PROGRAM_ID ||
+    "7WsPtEhY89n4yj9GshwQNgqQDGfUUdvonSto3XFVGwgQ"
 );
 export const SOL_MINT = new PublicKey("11111111111111111111111111111111");
+export const RPC_URL =
+  process.env.NEXT_PUBLIC_SOLANA_RPC_URL || "https://api.devnet.solana.com";
 export const BOUNTY_SEED = Buffer.from("bounty");
 export const VAULT_SEED = Buffer.from("vault");
 export const SUBMISSION_SEED = Buffer.from("submission");

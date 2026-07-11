@@ -200,7 +200,7 @@ export default function CreateBountyForm() {
           creatorTokenAccount: creatorTokenAccount,
           systemProgram: SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
-        })
+        } as any)
         .rpc();
 
       await connection.confirmTransaction(tx, "confirmed");

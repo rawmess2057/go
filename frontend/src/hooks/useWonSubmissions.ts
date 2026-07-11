@@ -13,8 +13,7 @@ export function useWonSubmissions(wallet: PublicKey | null) {
     if (!program || !wallet) return;
     setLoading(true);
     try {
-      // fetch all submissions by this worker (offset 0 = worker Pubkey after 8-byte discriminator)
-      const all = await program.account.submission.all([
+      const all: any[] = await program.account.submission.all([
         { memcmp: { offset: 0, bytes: wallet.toBase58() } },
       ]);
 
@@ -24,7 +23,6 @@ export function useWonSubmissions(wallet: PublicKey | null) {
         return;
       }
 
-      // deduplicate and fetch parent bounties
       const keyToBountyKey = new Map(
         [...new Set(won.map((s) => s.account.bounty.toBase58()))].map((k) => [
           k,
@@ -32,7 +30,7 @@ export function useWonSubmissions(wallet: PublicKey | null) {
         ])
       );
 
-      const bounties = await Promise.all(
+      const bounties: any[] = await Promise.all(
         [...keyToBountyKey.values()].map((pk) =>
           program.account.bounty.fetch(pk).catch(() => null)
         )

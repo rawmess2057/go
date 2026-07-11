@@ -64,7 +64,7 @@ export function useBounties() {
     setLoading(true);
     try {
       const accounts = await program.account.bounty.all();
-      const mapped = accounts.map(({ publicKey, account }) => ({
+      const mapped = (accounts as { publicKey: PublicKey; account: Record<string, unknown> }[]).map(({ publicKey, account }) => ({
         publicKey,
         ...account,
         status: normalizeStatus(account.status),
