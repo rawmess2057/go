@@ -10,6 +10,7 @@ import { useThumbnailUrl } from "@/hooks/useThumbnail";
 import { useSolPrice } from "@/hooks/useSolPrice";
 import { useTranslation } from "@/lib/i18n";
 import { isValidImageUri } from "@/lib/validate";
+import { useRouter } from "next/navigation";
 
 const STATUS_META: Record<number, { labelKey: string; color: string }> = {
   [BountyStatus.Open]: { labelKey: "status.open", color: "bg-brand/10 text-brand border-brand/20" },
@@ -25,6 +26,7 @@ function shortPk(pk: string) {
 }
 
 export default function BountyCard({ bounty, index = 0 }: { bounty: BountyData; index?: number }) {
+  const router = useRouter();
   const { t } = useTranslation();
   const solPrice = useSolPrice();
   const status = STATUS_META[bounty.status] || STATUS_META[BountyStatus.Open];
@@ -64,13 +66,12 @@ export default function BountyCard({ bounty, index = 0 }: { bounty: BountyData; 
                     {bounty.title || `${t("bountyCard.untitled")}${bounty.bump}`}
                   </h3>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <Link
-                      href={`/profile/${bounty.creator.toBase58()}`}
-                      onClick={(e) => e.stopPropagation()}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); router.push(`/profile/${bounty.creator.toBase58()}`); }}
                       className="text-xs text-muted-foreground hover:text-brand transition-colors"
                     >
                       {t("bountyCard.by")} {shortPk(bounty.creator.toBase58())}
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>

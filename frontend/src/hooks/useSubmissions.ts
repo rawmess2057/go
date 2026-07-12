@@ -32,12 +32,18 @@ export function useSubmissions(bountyPda: PublicKey | null, legacy: boolean = fa
       const results = await program.account.submission.all([
         { memcmp: { offset: 40, bytes: bountyPda.toBase58() } },
       ]);
-      setSubmissions(
-        (results as { publicKey: PublicKey; account: Record<string, unknown> }[]).map(({ publicKey, account }) => ({
-          publicKey,
-          ...account,
-        })) as SubmissionData[]
-      );
+      const raw = (results as { publicKey: PublicKey; account: Record<string, unknown> }[]).map(({ publicKey, account }) => ({
+        publicKey,
+        ...account,
+      })) as SubmissionData[];
+      const seen = new Set<string>();
+      const deduped = raw.filter(s => {
+        const key = s.publicKey.toBase58();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+      setSubmissions(deduped);
     } catch (err) {
       console.error("Failed to fetch submissions:", err);
     } finally {

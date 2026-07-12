@@ -52,9 +52,10 @@ export function useWonSubmissions(wallet: PublicKey | null) {
     if (!newProgram || !wallet) return;
     setLoading(true);
     try {
+      const shouldQueryOld = oldProgram && !newProgram.programId.equals(oldProgram.programId);
       const [newEarned, oldEarned] = await Promise.all([
         computeEarnings(newProgram),
-        oldProgram ? computeEarnings(oldProgram) : 0,
+        shouldQueryOld ? computeEarnings(oldProgram) : 0,
       ]);
       setTotalEarned(newEarned + oldEarned);
     } catch (err) {

@@ -3,10 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import dynamic from "next/dynamic";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "./MobileNav";
 import NotificationBell from "./NotificationBell";
+
+const WalletMultiButtonDynamic = dynamic(
+  async () => (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
+  { ssr: false }
+);
 
 const navLinks = [
   { href: "/", key: "browse", icon: "⌂" },
@@ -77,7 +82,7 @@ export default function Header() {
             </button>
 
             <div className="hidden md:block">
-              <WalletMultiButton />
+              <WalletMultiButtonDynamic />
             </div>
 
             <button
@@ -118,7 +123,7 @@ export default function Header() {
                 );
               })}
               <div className="pt-2">
-                <WalletMultiButton />
+                <WalletMultiButtonDynamic />
               </div>
             </div>
           </div>

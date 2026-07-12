@@ -82,7 +82,14 @@ export function useBounties() {
           legacy: true,
         })),
       ] as BountyData[];
-      setBounties(mapped);
+      const seen = new Set<string>();
+      const deduped = mapped.filter(b => {
+        const key = b.publicKey.toBase58();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+      setBounties(deduped);
     } catch (err) {
       console.error("Failed to fetch bounties:", err);
     } finally {
