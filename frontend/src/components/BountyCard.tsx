@@ -9,6 +9,7 @@ import CountdownTimer from "./CountdownTimer";
 import { useThumbnailUrl } from "@/hooks/useThumbnail";
 import { useSolPrice } from "@/hooks/useSolPrice";
 import { useTranslation } from "@/lib/i18n";
+import { isValidImageUri } from "@/lib/validate";
 
 const STATUS_META: Record<number, { labelKey: string; color: string }> = {
   [BountyStatus.Open]: { labelKey: "status.open", color: "bg-brand/10 text-brand border-brand/20" },
@@ -49,7 +50,7 @@ export default function BountyCard({ bounty, index = 0 }: { bounty: BountyData; 
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-3">
-                {thumbUrl ? (
+                {thumbUrl && isValidImageUri(thumbUrl) ? (
                   <img
                     src={thumbUrl}
                     alt=""

@@ -1,5 +1,5 @@
 {
-  "address": "C7eNdMTe876bUCFYcjBcY3f6VixfiitHodxp2rTm9HgU",
+  "address": "J1joaPPEAzELE9jSLZajxZyAe6hrMAsMkQUjFJLLQK7P",
   "metadata": {
     "name": "bounty_platform",
     "version": "0.1.0",
@@ -890,6 +890,21 @@
       "code": 6019,
       "name": "ModeratorCannotSubmit",
       "msg": "The moderator cannot submit work to a bounty they moderate"
+    },
+    {
+      "code": 6020,
+      "name": "InvalidRecipient",
+      "msg": "Recipient account does not match the expected party"
+    },
+    {
+      "code": 6021,
+      "name": "InvalidVault",
+      "msg": "Vault account does not match the expected PDA or ATA"
+    },
+    {
+      "code": 6022,
+      "name": "CannotResubmitAfterSelection",
+      "msg": "Cannot resubmit after a winner has been selected"
     }
   ],
   "types": [

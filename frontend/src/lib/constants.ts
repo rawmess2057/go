@@ -3,7 +3,7 @@ import { BN } from "@coral-xyz/anchor";
 
 export const PROGRAM_ID = new PublicKey(
   process.env.NEXT_PUBLIC_PROGRAM_ID ||
-    "C7eNdMTe876bUCFYcjBcY3f6VixfiitHodxp2rTm9HgU"
+    "J1joaPPEAzELE9jSLZajxZyAe6hrMAsMkQUjFJLLQK7P"
 );
 export const SOL_MINT = new PublicKey("11111111111111111111111111111111");
 export const RPC_URL =

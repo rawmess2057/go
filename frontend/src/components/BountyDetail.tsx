@@ -16,6 +16,7 @@ import { useSolPrice } from "@/hooks/useSolPrice";
 import CountdownTimer from "./CountdownTimer";
 import { useThumbnailUrl } from "@/hooks/useThumbnail";
 import { useTranslation } from "@/lib/i18n";
+import { isValidUri, isValidImageUri } from "@/lib/validate";
 import { useNotifications } from "@/hooks/useNotifications";
 
 const STATUS_META: Record<number, { labelKey: string; color: string }> = {
@@ -205,9 +206,8 @@ export default function BountyDetail({
         onRefresh?.();
       } catch (err: any) {
         if (err instanceof SendTransactionError) {
-          const logs = err.logs || [];
-          console.error("Transaction simulation logs:", logs);
-          toast.error(logs.length > 0 ? logs.join("\n") : err.message);
+          console.error("Transaction simulation logs:", err.logs);
+          toast.error("Transaction failed. Check your wallet for details.");
         } else {
           toast.error(err.message || `Failed to ${action}`);
         }
@@ -244,7 +244,7 @@ export default function BountyDetail({
             <p className="mt-5 text-sm text-muted-foreground/80 leading-relaxed max-w-3xl">{bounty.description}</p>
           )}
 
-          {thumbUrl && (
+          {thumbUrl && isValidImageUri(thumbUrl) && (
             <div className="mt-5">
               <img
                 src={thumbUrl}
@@ -590,7 +590,7 @@ export default function BountyDetail({
                     )}
                   </div>
                 </div>
-                {sub.uri && (
+                {sub.uri && isValidUri(sub.uri) ? (
                   <a
                     href={sub.uri}
                     target="_blank"
@@ -599,7 +599,11 @@ export default function BountyDetail({
                   >
                     {sub.uri}
                   </a>
-                )}
+                ) : sub.uri ? (
+                  <span className="mt-2 block text-xs text-muted-foreground truncate">
+                    {sub.uri}
+                  </span>
+                ) : null}
               </div>
             ))}
           </div>

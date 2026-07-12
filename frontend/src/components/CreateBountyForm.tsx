@@ -209,9 +209,8 @@ export default function CreateBountyForm() {
       router.push(`/inaam/${bountyPda.toBase58()}`);
     } catch (err: any) {
       if (err instanceof SendTransactionError) {
-        const logs = err.logs || [];
-        console.error("Transaction simulation logs:", logs);
-        toast.error(logs.length > 0 ? logs.join("\n") : err.message);
+        console.error("Transaction simulation logs:", err.logs);
+        toast.error("Transaction failed. Check your wallet for details.");
       } else {
         toast.error(err.message || t("create.toastError"));
       }
