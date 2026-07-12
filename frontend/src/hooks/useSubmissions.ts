@@ -31,7 +31,7 @@ export function useSubmissions(bountyPda: PublicKey | null, legacy: boolean = fa
     try {
       const results = await program.account.submission.all([
         { memcmp: { offset: 40, bytes: bountyPda.toBase58() } },
-      ]);
+      ]).catch(() => []);
       const raw = (results as { publicKey: PublicKey; account: Record<string, unknown> }[]).map(({ publicKey, account }) => ({
         publicKey,
         ...account,

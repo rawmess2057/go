@@ -13,7 +13,7 @@ export function useWonSubmissions(wallet: PublicKey | null) {
     if (!program || !wallet) return 0;
     const all: any[] = await program.account.submission.all([
       { memcmp: { offset: 0, bytes: wallet.toBase58() } },
-    ]);
+    ]).catch(() => []);
 
     const won = all.filter((s: any) => s.account.selected);
     if (won.length === 0) return 0;

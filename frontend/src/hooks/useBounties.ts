@@ -65,8 +65,8 @@ export function useBounties() {
     setLoading(true);
     try {
       const [newAccounts, oldAccounts] = await Promise.all([
-        newProgram.account.bounty.all(),
-        oldProgram?.account.bounty.all() ?? [],
+        newProgram.account.bounty.all().catch(() => []),
+        oldProgram?.account.bounty.all().catch(() => []) ?? [],
       ]);
       const mapped = [
         ...(newAccounts as { publicKey: PublicKey; account: Record<string, unknown> }[]).map(({ publicKey, account }) => ({
