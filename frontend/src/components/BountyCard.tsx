@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import UserAvatar from "./UserAvatar";
 import { BountyData } from "@/hooks/useBounties";
 import { BountyStatus } from "@/lib/constants";
 import CountdownTimer from "./CountdownTimer";
@@ -48,32 +47,32 @@ export default function BountyCard({ bounty, index = 0 }: { bounty: BountyData; 
         className="group block relative rounded-2xl border border-border bg-card hover:border-brand/40 transition-all duration-300 overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-brand/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        <div className="relative h-32">
+          {thumbUrl && isValidImageUri(thumbUrl) ? (
+            <img
+              src={thumbUrl}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-brand/10 via-transparent to-purple-500/10" />
+          )}
+        </div>
+
         <div className="relative p-5">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-3">
-                {thumbUrl && isValidImageUri(thumbUrl) ? (
-                  <img
-                    src={thumbUrl}
-                    alt=""
-                    className="w-10 h-10 rounded-xl object-cover border border-border shrink-0"
-                  />
-                ) : (
-                  <UserAvatar pubkey={bounty.creator.toBase58()} size={40} className="shrink-0" />
-                )}
-                <div className="min-w-0">
-                  <h3 className="font-semibold text-base truncate group-hover:text-brand transition-colors">
-                    {bounty.title || `${t("bountyCard.untitled")}${bounty.bump}`}
-                  </h3>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); router.push(`/profile/${bounty.creator.toBase58()}`); }}
-                      className="text-xs text-muted-foreground hover:text-brand transition-colors"
-                    >
-                      {t("bountyCard.by")} {shortPk(bounty.creator.toBase58())}
-                    </button>
-                  </div>
-                </div>
+              <h3 className="font-semibold text-base truncate group-hover:text-brand transition-colors">
+                {bounty.title || `${t("bountyCard.untitled")}${bounty.bump}`}
+              </h3>
+              <div className="flex items-center gap-2 mt-0.5">
+                <button
+                  onClick={(e) => { e.stopPropagation(); router.push(`/profile/${bounty.creator.toBase58()}`); }}
+                  className="text-xs text-muted-foreground hover:text-brand transition-colors"
+                >
+                  {t("bountyCard.by")} {shortPk(bounty.creator.toBase58())}
+                </button>
               </div>
             </div>
             <span

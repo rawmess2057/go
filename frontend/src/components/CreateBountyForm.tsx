@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { BN } from "@coral-xyz/anchor";
@@ -8,7 +8,6 @@ import { PublicKey, SystemProgram, LAMPORTS_PER_SOL, SendTransactionError } from
 import toast from "react-hot-toast";
 import { useProgram } from "@/hooks/useProgram";
 import { SOL_MINT, bountyAddress, vaultAddress, MIN_DEADLINE_SECONDS } from "@/lib/constants";
-import { storeImage, getImage, generateKey } from "@/lib/localStore";
 import { useTranslation } from "@/lib/i18n";
 import { useNotifications } from "@/hooks/useNotifications";
 
@@ -56,7 +55,7 @@ export default function CreateBountyForm() {
     decimals: 9,
   });
   const [tokensLoading, setTokensLoading] = useState(false);
-  const blobRef = useRef<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   // fetch user's SPL token accounts
   useEffect(() => {
@@ -98,20 +97,8 @@ export default function CreateBountyForm() {
   }, [wallet.publicKey, connection]);
 
   useEffect(() => {
-    if (blobRef.current) { URL.revokeObjectURL(blobRef.current); blobRef.current = null; }
     if (!thumbnailUri) { setPreviewUrl(""); return; }
-    if (thumbnailUri.startsWith("local:")) {
-      const key = thumbnailUri.slice(6);
-      getImage(key).then((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          blobRef.current = url;
-          setPreviewUrl(url);
-        }
-      });
-    } else {
-      setPreviewUrl(thumbnailUri);
-    }
+    setPreviewUrl(thumbnailUri);
   }, [thumbnailUri]);
 
   const steps = [t("create.steps.0"), t("create.steps.1"), t("create.steps.2")];
@@ -127,6 +114,10 @@ export default function CreateBountyForm() {
     e.preventDefault();
     if (!program || !wallet.publicKey) {
       toast.error("Connect your wallet first");
+      return;
+    }
+    if (uploading) {
+      toast.error("Wait for the image upload to finish");
       return;
     }
 
@@ -316,13 +307,23 @@ export default function CreateBountyForm() {
                       const file = e.target.files?.[0];
                       if (!file) return;
                       e.target.value = "";
-                      const key = generateKey();
-                      await storeImage(key, file);
-                      setThumbnailUri(`local:${key}`);
+                      setUploading(true);
+                      try {
+                        const fd = new FormData();
+                        fd.set("file", file, file.name);
+                        const res = await fetch("/api/upload", { method: "POST", body: fd });
+                        if (!res.ok) throw new Error("Upload failed");
+                        const data = await res.json();
+                        setThumbnailUri(data.url);
+                      } catch (err) {
+                        toast.error("Image upload failed. Try pasting a URL instead.");
+                      } finally {
+                        setUploading(false);
+                      }
                     }}
                   />
-                  <span className="w-5 h-5 rounded border border-dashed border-zinc-300 flex items-center justify-center text-xs">+</span>
-                  {t("create.fields.thumbnailUpload")}
+                  <span className="w-5 h-5 rounded border border-dashed border-zinc-300 flex items-center justify-center text-xs">{uploading ? "..." : "+"}</span>
+                  {uploading ? "Uploading..." : t("create.fields.thumbnailUpload")}
                 </label>
               </div>
               {previewUrl && (
