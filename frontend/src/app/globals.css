@@ -14,14 +14,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-.dark {
-  --color-background: #0a0a0f;
-  --color-foreground: #f1f1f1;
-  --color-muted: #1a1a2e;
-  --color-border: #2a2a3e;
-  --color-card: #12121a;
-}
-
 body {
   background: var(--color-background);
   color: var(--color-foreground);
@@ -36,8 +28,8 @@ body {
 
 /* Wallet adapter button — brand themed */
 .wallet-adapter-button {
-  background-color: #ffffff20 !important;
-  color: #ffffff !important;
+  background-color: #17171720 !important;
+  color: #171717 !important;
   border-radius: 0.5rem !important;
   padding: 0 1.25rem !important;
   height: 2.5rem !important;
@@ -46,18 +38,19 @@ body {
   font-family: inherit !important;
   transition: all 0.15s !important;
   backdrop-filter: blur(8px) !important;
-  border: 1px solid rgba(255,255,255,0.15) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
 }
 .wallet-adapter-button:hover {
-  background-color: #ffffff30 !important;
+  background-color: #17171730 !important;
   border-color: var(--color-brand) !important;
 }
 .wallet-adapter-button:not([disabled]):hover {
-  background-color: #ffffff30 !important;
+  background-color: #17171730 !important;
 }
 .wallet-adapter-button-trigger {
-  background-color: #ffffff20 !important;
+  background-color: #17171720 !important;
 }
+
 .wallet-adapter-modal-wrapper .wallet-adapter-button {
   background-color: #55d292 !important;
   color: #ffffff !important;
