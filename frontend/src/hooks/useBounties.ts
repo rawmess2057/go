@@ -4,8 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
 import { useConnection } from "@solana/wallet-adapter-react";
-import { useProgram } from "./useProgram";
-import { bountyAddress } from "@/lib/constants";
+import { usePrograms } from "./useProgram";
+import { bountyAddress, PROGRAM_ID, OLD_PROGRAM_ID } from "@/lib/constants";
 import type { BountyPlatform } from "@/lib/bounty_platform";
 
 type BountyAccount = {
@@ -51,108 +51,146 @@ export interface BountyData {
   bump: number;
   maxWinners: number;
   winnersSelected: number;
+  legacy: boolean;
 }
 
 export function useBounties() {
-  const program = useProgram();
+  const { newProgram, oldProgram } = usePrograms();
   const { connection } = useConnection();
   const [bounties, setBounties] = useState<BountyData[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetch = useCallback(async () => {
-    if (!program) return;
+    if (!newProgram) return;
     setLoading(true);
     try {
-      const accounts = await program.account.bounty.all();
-      const mapped = (accounts as { publicKey: PublicKey; account: Record<string, unknown> }[]).map(({ publicKey, account }) => ({
-        publicKey,
-        ...account,
-        status: normalizeStatus(account.status),
-      })) as BountyData[];
+      const [newAccounts, oldAccounts] = await Promise.all([
+        newProgram.account.bounty.all(),
+        oldProgram?.account.bounty.all() ?? [],
+      ]);
+      const mapped = [
+        ...(newAccounts as { publicKey: PublicKey; account: Record<string, unknown> }[]).map(({ publicKey, account }) => ({
+          publicKey,
+          ...account,
+          status: normalizeStatus(account.status),
+          legacy: false,
+        })),
+        ...(oldAccounts as { publicKey: PublicKey; account: Record<string, unknown> }[]).map(({ publicKey, account }) => ({
+          publicKey,
+          ...account,
+          status: normalizeStatus(account.status),
+          legacy: true,
+        })),
+      ] as BountyData[];
       setBounties(mapped);
     } catch (err) {
       console.error("Failed to fetch bounties:", err);
     } finally {
       setLoading(false);
     }
-  }, [program]);
+  }, [newProgram, oldProgram]);
 
   useEffect(() => {
-    if (!program) return;
+    if (!newProgram) return;
     fetch();
-    const subId = connection.onProgramAccountChange(
-      program.programId,
+    const subId1 = connection.onProgramAccountChange(
+      newProgram.programId,
       () => { fetch(); },
       "confirmed",
     );
-    return () => { connection.removeProgramAccountChangeListener(subId); };
-  }, [fetch, program, connection]);
+    const subId2 = oldProgram
+      ? connection.onProgramAccountChange(
+          oldProgram.programId,
+          () => { fetch(); },
+          "confirmed",
+        )
+      : undefined;
+    return () => {
+      connection.removeProgramAccountChangeListener(subId1);
+      if (subId2 !== undefined) {
+        connection.removeProgramAccountChangeListener(subId2);
+      }
+    };
+  }, [fetch, newProgram, oldProgram, connection]);
 
   return { bounties, loading, refetch: fetch };
 }
 
 export function useBountyByKey(bountyKey: string) {
-  const program = useProgram();
+  const { newProgram, oldProgram } = usePrograms();
   const { connection } = useConnection();
   const [bounty, setBounty] = useState<BountyData | null>(null);
   const [loading, setLoading] = useState(false);
 
   const fetch = useCallback(async () => {
-    if (!program || !bountyKey) return;
+    if (!newProgram || !bountyKey) return;
     setLoading(true);
     const pk = new PublicKey(bountyKey);
     try {
-      const account = await program.account.bounty.fetch(pk);
-      setBounty({ publicKey: pk, ...account, status: normalizeStatus(account.status) } as BountyData);
-    } catch (err) {
-      console.error("Failed to fetch bounty:", err);
-      setBounty(null);
+      const account = await newProgram.account.bounty.fetch(pk);
+      setBounty({ publicKey: pk, ...account, status: normalizeStatus(account.status), legacy: false } as BountyData);
+    } catch {
+      try {
+        if (!oldProgram) throw new Error("no old program");
+        const account = await oldProgram.account.bounty.fetch(pk);
+        setBounty({ publicKey: pk, ...account, status: normalizeStatus(account.status), legacy: true } as BountyData);
+      } catch {
+        setBounty(null);
+      }
     } finally {
       setLoading(false);
     }
-  }, [program, bountyKey]);
+  }, [newProgram, oldProgram, bountyKey]);
 
   useEffect(() => {
-    if (!program || !bountyKey) return;
+    if (!newProgram || !bountyKey) return;
     fetch();
     const pk = new PublicKey(bountyKey);
     const subId = connection.onAccountChange(pk, () => { fetch(); }, "confirmed");
     return () => {
       connection.removeAccountChangeListener(subId);
     };
-  }, [fetch, program, bountyKey, connection]);
+  }, [fetch, newProgram, bountyKey, connection]);
 
   return { bounty, loading, refetch: fetch };
 }
 
 export function useBountyById(creator: PublicKey | null, id: BN) {
-  const program = useProgram();
+  const { newProgram, oldProgram } = usePrograms();
   const [bounty, setBounty] = useState<BountyData | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!program || !creator) return;
-    const prog = program;
-    const creatorPk = creator;
+    if (!newProgram || !creator) return;
+    const creatorPk: PublicKey = creator;
     let cancelled = false;
 
     async function load() {
       setLoading(true);
       try {
-        const [pda] = bountyAddress(creatorPk, id);
-        const account = await prog.account.bounty.fetch(pda);
+        const [newPda] = bountyAddress(creatorPk, id, PROGRAM_ID);
+        const acc = await newProgram.account.bounty.fetch(newPda);
         if (!cancelled) {
-          setBounty({ publicKey: pda, ...account, status: normalizeStatus(account.status) } as BountyData);
+          setBounty({ publicKey: newPda, ...acc, status: normalizeStatus(acc.status), legacy: false } as BountyData);
         }
       } catch {
-        if (!cancelled) setBounty(null);
+        try {
+          if (!oldProgram) throw new Error("no old program");
+          const [oldPda] = bountyAddress(creatorPk, id, OLD_PROGRAM_ID);
+          const acc = await oldProgram.account.bounty.fetch(oldPda);
+          if (!cancelled) {
+            setBounty({ publicKey: oldPda, ...acc, status: normalizeStatus(acc.status), legacy: true } as BountyData);
+          }
+        } catch {
+          if (!cancelled) setBounty(null);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
     load();
     return () => { cancelled = true; };
-  }, [program, creator, id]);
+  }, [newProgram, oldProgram, creator, id]);
 
   return { bounty, loading };
 }

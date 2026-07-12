@@ -5,6 +5,10 @@ export const PROGRAM_ID = new PublicKey(
   process.env.NEXT_PUBLIC_PROGRAM_ID ||
     "J1joaPPEAzELE9jSLZajxZyAe6hrMAsMkQUjFJLLQK7P"
 );
+export const OLD_PROGRAM_ID = new PublicKey(
+  process.env.NEXT_PUBLIC_OLD_PROGRAM_ID ||
+    "C7eNdMTe876bUCFYcjBcY3f6VixfiitHodxp2rTm9HgU"
+);
 export const SOL_MINT = new PublicKey("11111111111111111111111111111111");
 export const RPC_URL =
   process.env.NEXT_PUBLIC_SOLANA_RPC_URL || "https://api.devnet.solana.com";
@@ -15,28 +19,33 @@ export const MIN_DEADLINE_SECONDS = 3600;
 
 export function bountyAddress(
   creator: PublicKey,
-  id: BN
+  id: BN,
+  programId: PublicKey = PROGRAM_ID
 ): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [BOUNTY_SEED, creator.toBuffer(), id.toArrayLike(Buffer, "le", 8)],
-    PROGRAM_ID
+    programId
   );
 }
 
-export function vaultAddress(bountyPda: PublicKey): [PublicKey, number] {
+export function vaultAddress(
+  bountyPda: PublicKey,
+  programId: PublicKey = PROGRAM_ID
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [bountyPda.toBuffer(), VAULT_SEED],
-    PROGRAM_ID
+    programId
   );
 }
 
 export function submissionAddress(
   bountyPda: PublicKey,
-  worker: PublicKey
+  worker: PublicKey,
+  programId: PublicKey = PROGRAM_ID
 ): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [SUBMISSION_SEED, bountyPda.toBuffer(), worker.toBuffer()],
-    PROGRAM_ID
+    programId
   );
 }
 

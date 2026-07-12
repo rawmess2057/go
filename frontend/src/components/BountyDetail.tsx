@@ -8,9 +8,9 @@ import UserAvatar from "./UserAvatar";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey, SystemProgram, LAMPORTS_PER_SOL, SendTransactionError } from "@solana/web3.js";
 import toast from "react-hot-toast";
-import { useProgram } from "@/hooks/useProgram";
+import { usePrograms } from "@/hooks/useProgram";
 import { BountyData } from "@/hooks/useBounties";
-import { BountyStatus, SOL_MINT, vaultAddress, submissionAddress } from "@/lib/constants";
+import { BountyStatus, SOL_MINT, PROGRAM_ID, OLD_PROGRAM_ID, vaultAddress, submissionAddress } from "@/lib/constants";
 import { useSubmissions } from "@/hooks/useSubmissions";
 import { useSolPrice } from "@/hooks/useSolPrice";
 import CountdownTimer from "./CountdownTimer";
@@ -49,14 +49,14 @@ export default function BountyDetail({
   onRefresh?: () => void;
 }) {
   const { t } = useTranslation();
-  const program = useProgram();
+  const { newProgram, oldProgram } = usePrograms();
   const wallet = useWallet();
   const { connection } = useConnection();
   const solPrice = useSolPrice();
   const { addNotification } = useNotifications();
   const [uri, setUri] = useState("");
   const [sending, setSending] = useState<string | null>(null);
-  const { submissions, loading: subsLoading } = useSubmissions(bounty.publicKey);
+  const { submissions, loading: subsLoading } = useSubmissions(bounty.publicKey, bounty.legacy);
   const thumbUrl = useThumbnailUrl(bounty.thumbnailUri);
 
   const status = STATUS_META[bounty.status] || STATUS_META[BountyStatus.Open];
@@ -69,7 +69,9 @@ export default function BountyDetail({
 
   const exec = useCallback(
     async (action: string, worker?: PublicKey) => {
-      if (!program || !wallet.publicKey) return;
+      if (!newProgram || !wallet.publicKey) return;
+      const program = bounty.legacy ? oldProgram : newProgram;
+      const progId = bounty.legacy ? OLD_PROGRAM_ID : PROGRAM_ID;
       setSending(action);
       try {
         let tx: string;
@@ -80,7 +82,7 @@ export default function BountyDetail({
               toast.error("Submission URI is required");
               return;
             }
-            const [subPda] = submissionAddress(bounty.publicKey, wallet.publicKey);
+            const [subPda] = submissionAddress(bounty.publicKey, wallet.publicKey, progId);
             tx = await program.methods
               .submitCompletion(bounty.bountyId, uri.trim())
               .accounts({
@@ -98,8 +100,8 @@ export default function BountyDetail({
               return;
             }
             fireConfetti();
-            const [submissionPda] = submissionAddress(bounty.publicKey, worker);
-            const [vaultPda] = vaultAddress(bounty.publicKey);
+            const [submissionPda] = submissionAddress(bounty.publicKey, worker, progId);
+            const [vaultPda] = vaultAddress(bounty.publicKey, progId);
             tx = await program.methods
               .selectWinner(bounty.bountyId)
               .accounts({
@@ -119,7 +121,7 @@ export default function BountyDetail({
               toast.error("Select a submission to reject");
               return;
             }
-            const [submissionPda] = submissionAddress(bounty.publicKey, worker);
+            const [submissionPda] = submissionAddress(bounty.publicKey, worker, progId);
             tx = await program.methods
               .rejectSubmission(bounty.bountyId)
               .accounts({
@@ -138,7 +140,7 @@ export default function BountyDetail({
             break;
           }
           case "resolve-worker": {
-            const [vaultPda] = vaultAddress(bounty.publicKey);
+            const [vaultPda] = vaultAddress(bounty.publicKey, progId);
             tx = await program.methods
               .resolveDispute(bounty.bountyId, true)
               .accounts({
@@ -153,7 +155,7 @@ export default function BountyDetail({
             break;
           }
           case "resolve-creator": {
-            const [vaultPda] = vaultAddress(bounty.publicKey);
+            const [vaultPda] = vaultAddress(bounty.publicKey, progId);
             tx = await program.methods
               .resolveDispute(bounty.bountyId, false)
               .accounts({
@@ -168,7 +170,7 @@ export default function BountyDetail({
             break;
           }
           case "refund": {
-            const [vaultPda] = vaultAddress(bounty.publicKey);
+            const [vaultPda] = vaultAddress(bounty.publicKey, progId);
             tx = await program.methods
               .refundExpired(bounty.bountyId)
               .accounts({
@@ -215,7 +217,7 @@ export default function BountyDetail({
         setSending(null);
       }
     },
-    [program, wallet, connection, bounty, uri, onRefresh]
+    [newProgram, oldProgram, wallet, connection, bounty, uri, onRefresh]
   );
 
   const isModerator = wallet.publicKey?.toBase58() === bounty.moderator.toBase58();
