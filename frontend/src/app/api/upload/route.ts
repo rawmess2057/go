@@ -19,8 +19,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Upload not configured" }, { status: 500 });
   }
 
+  const buffer = await file.arrayBuffer();
+  const blob = new Blob([buffer], { type: file.type });
   const pinataFormData = new FormData();
-  pinataFormData.set("file", file, file.name);
+  pinataFormData.set("file", blob, file.name);
 
   const res = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
     method: "POST",
@@ -31,7 +33,7 @@ export async function POST(request: Request) {
   if (!res.ok) {
     const err = await res.text();
     console.error("Pinata upload failed:", err);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    return NextResponse.json({ error: `Upload failed: ${err}` }, { status: 500 });
   }
 
   const data = await res.json();
