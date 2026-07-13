@@ -5,7 +5,7 @@ import en from "../../messages/en.json";
 import ne from "../../messages/ne.json";
 
 const messages: Record<string, Record<string, any>> = { en, ne };
-const STORAGE_KEY = "inaam-locale";
+const STORAGE_KEY = "gig-locale";
 
 type Locale = "en" | "ne";
 

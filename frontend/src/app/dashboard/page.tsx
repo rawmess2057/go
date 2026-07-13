@@ -52,7 +52,7 @@ export default function DashboardPage() {
   }
 
   const tabs: { key: Tab; labelKey: string; count: number }[] = [
-    { key: "created", labelKey: "dashboard.tabs.myInaams", count: created.length },
+    { key: "created", labelKey: "dashboard.tabs.myGigs", count: created.length },
     { key: "history", labelKey: "dashboard.tabs.history", count: 0 },
   ];
 
@@ -167,7 +167,7 @@ function BountyTable({ bounties, emptyMsg }: { bounties: BountyData[]; emptyMsg:
               </td>
               <td className="py-3 px-2">
                 <Link
-                  href={`/inaam/${b.publicKey.toBase58()}`}
+                  href={`/gig/${b.publicKey.toBase58()}`}
                   className="text-brand text-xs hover:underline"
                 >
                   {t("dashboard.table.view")}

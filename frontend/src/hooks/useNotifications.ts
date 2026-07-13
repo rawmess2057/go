@@ -12,7 +12,7 @@ export interface Notification {
   time: number;
 }
 
-const STORAGE_KEY = "inaam_notifications";
+const STORAGE_KEY = "gig_notifications";
 
 function load(): Notification[] {
   if (typeof window === "undefined") return [];

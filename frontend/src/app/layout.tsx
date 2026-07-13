@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "इनाम",
-  description: "Solana इनाम platform — non-custodial escrow, instant payouts",
+  title: "Gig",
+  description: "Solana gig platform — non-custodial escrow, instant payouts",
 };
 
 export default function RootLayout({

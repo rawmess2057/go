@@ -15,8 +15,10 @@ import { useSubmissions } from "@/hooks/useSubmissions";
 import { useSolPrice } from "@/hooks/useSolPrice";
 import CountdownTimer from "./CountdownTimer";
 import { useThumbnailUrl } from "@/hooks/useThumbnail";
+import { useMetadata } from "@/hooks/useMetadata";
 import { useTranslation } from "@/lib/i18n";
-import { isValidUri, isValidImageUri } from "@/lib/validate";
+import { isValidUri, isValidSubmissionUri, isValidImageUri } from "@/lib/validate";
+import { TAGS } from "@/lib/tags";
 import { useNotifications } from "@/hooks/useNotifications";
 
 const STATUS_META: Record<number, { labelKey: string; color: string }> = {
@@ -58,6 +60,7 @@ export default function BountyDetail({
   const [sending, setSending] = useState<string | null>(null);
   const { submissions, loading: subsLoading } = useSubmissions(bounty.publicKey, bounty.legacy);
   const thumbUrl = useThumbnailUrl(bounty.thumbnailUri);
+  const metadata = useMetadata(bounty.referenceUri);
 
   const status = STATUS_META[bounty.status] || STATUS_META[BountyStatus.Open];
   const deadlineNum = Number(bounty.deadline);
@@ -78,13 +81,18 @@ export default function BountyDetail({
 
         switch (action) {
           case "submit": {
-            if (!uri.trim()) {
+            const cleanUri = uri.trim();
+            if (!cleanUri) {
               toast.error("Submission URI is required");
+              return;
+            }
+            if (!isValidSubmissionUri(cleanUri)) {
+              toast.error("Invalid submission URI. Must be a valid https://, ipfs://, or ar:// link");
               return;
             }
             const [subPda] = submissionAddress(bounty.publicKey, wallet.publicKey, progId);
             tx = await program.methods
-              .submitCompletion(bounty.bountyId, uri.trim())
+              .submitCompletion(bounty.bountyId, cleanUri)
               .accounts({
                 worker: wallet.publicKey,
                 bounty: bounty.publicKey,
@@ -200,9 +208,9 @@ export default function BountyDetail({
         toast.success(`${action} successful`);
 
         if (action === "submit") {
-          addNotification({ type: "submission", title: "Work submitted", body: `You submitted work to "${bounty.title || "Untitled"}"`, href: `/inaam/${bounty.publicKey.toBase58()}` });
+          addNotification({ type: "submission", title: "Work submitted", body: `You submitted work to "${bounty.title || "Untitled"}"`, href: `/gig/${bounty.publicKey.toBase58()}` });
         } else if (action === "select-winner") {
-          addNotification({ type: "completed", title: "Winner selected", body: `You selected a winner for "${bounty.title || "Untitled"}"`, href: `/inaam/${bounty.publicKey.toBase58()}` });
+          addNotification({ type: "completed", title: "Winner selected", body: `You selected a winner for "${bounty.title || "Untitled"}"`, href: `/gig/${bounty.publicKey.toBase58()}` });
         }
 
         onRefresh?.();
@@ -227,33 +235,53 @@ export default function BountyDetail({
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-      <div className="relative rounded-2xl border border-border bg-card overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-purple-500/10" />
-        <div className="relative p-6 sm:p-8">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0 flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{bounty.title || t("detail.untitled")}</h1>
-              <p className="mt-1.5 text-sm text-muted-foreground/60 break-all font-mono">
-                {shortPk(bounty.publicKey.toBase58())}
-              </p>
-            </div>
-            <span className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium border ${status.color}`}>
-              {t(status.labelKey)}
-            </span>
+      <div className="relative rounded-2xl border border-brand/10 bg-brand/[0.03] dark:bg-brand/[0.06] backdrop-blur-xl overflow-hidden">
+        <div className="relative h-56">
+          {thumbUrl && isValidImageUri(thumbUrl) ? (
+            <img
+              src={thumbUrl}
+              alt={bounty.title || "Thumbnail"}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-brand/10 via-transparent to-purple-500/10" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+
+          <span className={`absolute top-4 right-4 rounded-full px-4 py-1.5 text-sm font-medium border shadow-sm ${status.color}`}>
+            {t(status.labelKey)}
+          </span>
+
+          <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
+              {bounty.title || t("detail.untitled")}
+            </h1>
+            <p className="mt-1.5 text-sm text-white/70 break-all font-mono">
+              {shortPk(bounty.publicKey.toBase58())}
+            </p>
           </div>
+        </div>
+
+        <div className="p-6 sm:p-8">
+          {metadata && metadata.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {metadata.tags.map((key) => {
+                const tag = TAGS.find((t) => t.key === key);
+                if (!tag) return null;
+                return (
+                  <span
+                    key={key}
+                    className={`rounded-full px-3 py-1 text-xs font-medium border ${tag.color}`}
+                  >
+                    {tag.label}
+                  </span>
+                );
+              })}
+            </div>
+          )}
 
           {bounty.description && (
             <p className="mt-5 text-sm text-muted-foreground/80 leading-relaxed max-w-3xl">{bounty.description}</p>
-          )}
-
-          {thumbUrl && isValidImageUri(thumbUrl) && (
-            <div className="mt-5">
-              <img
-                src={thumbUrl}
-                alt={bounty.title || "Thumbnail"}
-                className="w-full max-w-[240px] rounded-xl object-cover border border-border"
-              />
-            </div>
           )}
 
           <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-5">
@@ -338,7 +366,7 @@ export default function BountyDetail({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+      <div className="rounded-2xl border border-brand/10 bg-brand/[0.03] dark:bg-brand/[0.06] backdrop-blur-xl p-6 sm:p-8">
         <h2 className="text-lg font-semibold mb-4">{t("detail.actions")}</h2>
 
         {bounty.status === BountyStatus.Open && (
@@ -536,7 +564,7 @@ export default function BountyDetail({
         )}
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+      <div className="rounded-2xl border border-brand/10 bg-brand/[0.03] dark:bg-brand/[0.06] backdrop-blur-xl p-6 sm:p-8">
         <h2 className="text-lg font-semibold mb-4">{t("detail.submissions")} ({submissions.length})</h2>
         {subsLoading ? (
           <div className="space-y-3">

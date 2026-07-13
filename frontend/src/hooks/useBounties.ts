@@ -134,20 +134,21 @@ export function useBountyByKey(bountyKey: string) {
     setLoading(true);
     const pk = new PublicKey(bountyKey);
     try {
-      const account = await newProgram.account.bounty.fetch(pk);
-      setBounty({ publicKey: pk, ...account, status: normalizeStatus(account.status), legacy: false } as BountyData);
+      const accountInfo = await connection.getAccountInfo(pk);
+      if (!accountInfo) { setBounty(null); return; }
+
+      const isLegacy = OLD_PROGRAM_ID ? accountInfo.owner.equals(OLD_PROGRAM_ID) : false;
+      const program = isLegacy ? oldProgram : newProgram;
+      if (!program) throw new Error("no matching program");
+
+      const account = await program.account.bounty.fetch(pk);
+      setBounty({ publicKey: pk, ...account, status: normalizeStatus(account.status), legacy: isLegacy } as BountyData);
     } catch {
-      try {
-        if (!oldProgram) throw new Error("no old program");
-        const account = await oldProgram.account.bounty.fetch(pk);
-        setBounty({ publicKey: pk, ...account, status: normalizeStatus(account.status), legacy: true } as BountyData);
-      } catch {
-        setBounty(null);
-      }
+      setBounty(null);
     } finally {
       setLoading(false);
     }
-  }, [newProgram, oldProgram, bountyKey]);
+  }, [newProgram, oldProgram, OLD_PROGRAM_ID, bountyKey, connection]);
 
   useEffect(() => {
     if (!newProgram || !bountyKey) return;

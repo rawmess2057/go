@@ -69,7 +69,7 @@ export default function Sidebar({
             return (
               <Link
                 key={b.publicKey.toBase58()}
-                href={`/inaam/${b.publicKey.toBase58()}`}
+                href={`/gig/${b.publicKey.toBase58()}`}
                 className="block group"
               >
                 <div className="flex items-center justify-between gap-2">

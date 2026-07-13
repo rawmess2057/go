@@ -6,12 +6,12 @@ import BountyDetail from "@/components/BountyDetail";
 import PageTransition from "@/components/PageTransition";
 import { useTranslation } from "@/lib/i18n";
 
-export default function InaamPage() {
+export default function GigPage() {
   const params = useParams();
   const router = useRouter();
   const { t } = useTranslation();
-  const inaamKey = params.inaamKey as string;
-  const { bounty, loading, refetch } = useBountyByKey(inaamKey);
+  const gigKey = params.gigKey as string;
+  const { bounty, loading, refetch } = useBountyByKey(gigKey);
 
   if (loading) {
     return (
@@ -24,12 +24,12 @@ export default function InaamPage() {
   if (!bounty) {
     return (
       <div className="text-center py-20">
-        <p className="text-zinc-500">{t("inaamPage.notFound")}</p>
+        <p className="text-zinc-500">{t("gigPage.notFound")}</p>
         <button
           onClick={() => router.push("/")}
           className="mt-4 text-sm text-brand hover:underline"
         >
-          {t("inaamPage.backHome")}
+          {t("gigPage.backHome")}
         </button>
       </div>
     );
@@ -42,7 +42,7 @@ export default function InaamPage() {
         onClick={() => router.push("/")}
         className="text-sm text-zinc-400 hover:text-brand transition-colors mb-4 inline-flex items-center gap-1"
       >
-        &larr; {t("inaamPage.back")}
+        &larr; {t("gigPage.back")}
       </button>
       <BountyDetail bounty={bounty} onRefresh={refetch} />
     </div>

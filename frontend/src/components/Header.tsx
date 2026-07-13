@@ -31,10 +31,7 @@ export default function Header() {
       <header className="sticky top-0 z-50 bg-background/70 backdrop-blur-xl border-b border-border">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-brand/20">
-              इ
-            </div>
-            <span className="text-lg font-bold tracking-tight text-foreground">इनाम</span>
+            <span className="text-lg font-bold tracking-tight text-brand">gig</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">

@@ -14,8 +14,8 @@ export default function Home() {
   const { bounties } = useBounties();
 
   useEffect(() => {
-    if (typeof window !== "undefined" && !localStorage.getItem("inaam_onboarded")) {
-      localStorage.setItem("inaam_onboarded", "true");
+    if (typeof window !== "undefined" && !        localStorage.getItem("gig_onboarded")) {
+      localStorage.setItem("gig_onboarded", "true");
       router.push("/onboarding");
     }
   }, [router]);
@@ -48,7 +48,7 @@ export default function Home() {
               {t("home.createCta")}
             </a>
             <a
-              href="#inaams"
+              href="#gigs"
               className="inline-flex items-center rounded-lg border border-white/30 px-6 py-3 text-sm font-medium text-white hover:bg-white/10 transition-colors"
             >
               {t("home.browseCta")}
@@ -78,7 +78,7 @@ export default function Home() {
         </div>
       )}
 
-      <div id="inaams">
+      <div id="gigs">
         <BountyList />
       </div>
     </div>

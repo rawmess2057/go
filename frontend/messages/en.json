@@ -12,9 +12,9 @@
       "description": "100% non-custodial escrow. No middlemen, no delays, just results."
     },
     "badge": "Built on Solana",
-    "trending": "Trending Bounties",
-    "createCta": "Create an Inaam",
-    "browseCta": "Browse Inaams",
+    "trending": "Trending Gigs",
+    "createCta": "Create a Gig",
+    "browseCta": "Browse Gigs",
     "trust": [
       { "title": "Non-Custodial", "desc": "Funds locked in escrow smart contract" },
       { "title": "Moderator Review", "desc": "Fair dispute resolution included" },
@@ -31,7 +31,7 @@
     "unknown": "Unknown"
   },
   "bountyCard": {
-    "untitled": "Inaam #",
+    "untitled": "Gig #",
     "noDescription": "No description",
     "by": "by",
     "perWinner": "per winner",
@@ -42,15 +42,15 @@
   "bountyList": {
     "all": "All",
     "refresh": "Refresh",
-    "emptyTitle": "No inaams found",
-    "emptyDescAll": "Be the first to create an inaam!",
-    "emptyDescFilter": "No inaams match this filter.",
-    "emptyAction": "Create Inaam",
+    "emptyTitle": "No gigs found",
+    "emptyDescAll": "Be the first to create a gig!",
+    "emptyDescFilter": "No gigs match this filter.",
+    "emptyAction": "Create Gig",
     "emptySearch": "No bounties match your search.",
     "loadMore": "Load More"
   },
   "create": {
-    "title": "Create an Inaam",
+    "title": "Create a Gig",
     "subtitle": "Post a task, fund the escrow, and get work done.",
     "brandHeader": "Non-custodial escrow on Solana",
     "brandDesc": "Funds are locked in a smart contract — you stay in control",
@@ -58,7 +58,9 @@
     "fields": {
       "title": "Task Title",
       "description": "Description",
-      "referenceUri": "Reference URI",
+      "tags": "Category",
+      "tagsHint": "Select up to 3 categories",
+      "referenceUri": "Reference link",
       "referenceHint": "Link to specs, designs, or reference materials",
       "thumbnail": "Thumbnail",
       "thumbnailHint": "Paste a URL or upload an image",
@@ -76,24 +78,25 @@
       "deadline": "Deadline",
       "moderator": "Moderator",
       "reference": "Reference",
-      "thumbnail": "Thumbnail"
+      "thumbnail": "Thumbnail",
+      "tags": "Categories"
     },
     "infoBox": "Funds are locked in a non-custodial escrow smart contract. Rewards are released by the moderator upon approval.",
     "aboutTo": "You are about to:",
     "aboutLines": [
-      "Create an inaam on Solana devnet",
+      "Create a gig on Solana devnet",
       "{amount} SOL to an escrow vault",
       "A {days}-day deadline with {winners} winner slot(s)"
     ],
-    "toastSuccess": "Inaam created!",
-    "toastError": "Failed to create inaam",
+    "toastSuccess": "Gig created!",
+    "toastError": "Failed to create gig",
     "next": "Next",
     "back": "Back",
-    "submit": "Post Inaam",
+    "submit": "Post Gig",
     "creating": "Creating..."
   },
   "detail": {
-    "untitled": "Untitled Inaam",
+    "untitled": "Untitled Gig",
     "rewardPool": "Reward Pool",
     "perWinner": "per winner",
     "deadline": "Deadline",
@@ -145,10 +148,10 @@
     "active": "Active",
     "completed": "Completed",
     "tabs": {
-      "myInaams": "My Inaams",
+      "myGigs": "My Gigs",
       "history": "History"
     },
-    "emptyCreated": "No inaams created yet.",
+    "emptyCreated": "No gigs created yet.",
     "emptyHistory": "No submissions yet.",
     "table": {
       "title": "Title",
@@ -162,8 +165,8 @@
     "recentActivity": "Recent Activity",
     "noActivity": "No activity yet."
   },
-  "inaamPage": {
-    "notFound": "Inaam not found",
+  "gigPage": {
+    "notFound": "Gig not found",
     "backHome": "Back to home",
     "back": "Back"
   },

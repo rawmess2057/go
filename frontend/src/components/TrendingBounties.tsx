@@ -44,7 +44,7 @@ export default function TrendingBounties({ bounties }: { bounties: BountyData[] 
           return (
             <Link
               key={b.publicKey.toBase58()}
-              href={`/inaam/${b.publicKey.toBase58()}`}
+              href={`/gig/${b.publicKey.toBase58()}`}
               className="shrink-0 w-44 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 p-3 hover:bg-white/15 transition-all hover:scale-[1.02]"
             >
               <p className="text-sm font-medium text-white truncate">

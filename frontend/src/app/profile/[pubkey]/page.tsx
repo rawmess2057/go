@@ -34,7 +34,7 @@ export default function ProfilePage() {
       <div className="text-center py-20">
         <p className="text-muted-foreground">Invalid public key</p>
         <button onClick={() => router.push("/")} className="mt-4 text-sm text-brand hover:underline">
-          {t("inaamPage.backHome")}
+          {t("gigPage.backHome")}
         </button>
       </div>
     );

@@ -8,8 +8,10 @@ import { PublicKey, SystemProgram, LAMPORTS_PER_SOL, SendTransactionError } from
 import toast from "react-hot-toast";
 import { useProgram } from "@/hooks/useProgram";
 import { SOL_MINT, bountyAddress, vaultAddress, MIN_DEADLINE_SECONDS } from "@/lib/constants";
+import { TAGS } from "@/lib/tags";
 import { useTranslation } from "@/lib/i18n";
 import { useNotifications } from "@/hooks/useNotifications";
+import { isValidSubmissionUri } from "@/lib/validate";
 
 const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 
@@ -47,6 +49,7 @@ export default function CreateBountyForm() {
   const [moderator, setModerator] = useState("");
   const [maxWinners, setMaxWinners] = useState("1");
   const [sending, setSending] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [previewUrl, setPreviewUrl] = useState("");
   const [tokenOptions, setTokenOptions] = useState<TokenOption[]>([]);
   const [selectedToken, setSelectedToken] = useState<TokenOption>({
@@ -150,10 +153,24 @@ export default function CreateBountyForm() {
       return;
     }
 
+    const trimmedRef = referenceUri.trim();
+    if (trimmedRef && selectedTags.length === 0 && !isValidSubmissionUri(trimmedRef)) {
+      toast.error("Invalid reference URI. Must be a valid https://, ipfs://, or ar:// link");
+      return;
+    }
+
     const id = new BN(Math.floor(Math.random() * 1_000_000) + 1);
 
     setSending(true);
     try {
+      let finalReferenceUri = trimmedRef;
+      if (selectedTags.length > 0) {
+        const tagStr = `tags=${selectedTags.join(",")}`;
+        finalReferenceUri = finalReferenceUri
+          ? `${tagStr}||${finalReferenceUri}`
+          : tagStr;
+      }
+
       const [bountyPda] = bountyAddress(wallet.publicKey, id);
       const [vaultPda] = vaultAddress(bountyPda);
 
@@ -180,7 +197,7 @@ export default function CreateBountyForm() {
           new BN(deadlineSecs),
           title.trim(),
           description.trim(),
-          referenceUri.trim(),
+          finalReferenceUri,
           thumbnailUri.trim(),
           maxW
         )
@@ -196,8 +213,8 @@ export default function CreateBountyForm() {
 
       await connection.confirmTransaction(tx, "confirmed");
       toast.success(t("create.toastSuccess"));
-      addNotification({ type: "created", title: "Inaam created", body: `"${title.trim() || "Untitled"}" is now live`, href: `/inaam/${bountyPda.toBase58()}` });
-      router.push(`/inaam/${bountyPda.toBase58()}`);
+      addNotification({ type: "created", title: "Gig created", body: `"${title.trim() || "Untitled"}" is now live`, href: `/gig/${bountyPda.toBase58()}` });
+      router.push(`/gig/${bountyPda.toBase58()}`);
     } catch (err: any) {
       if (err instanceof SendTransactionError) {
         console.error("Transaction simulation logs:", err.logs);
@@ -271,6 +288,39 @@ export default function CreateBountyForm() {
               placeholder="Describe the task in detail..."
             />
             <p className="mt-1 text-xs text-zinc-400">{description.length}/500</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              {t("create.fields.tags")} <span className="text-zinc-400">(optional)</span>
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {TAGS.map((tag) => {
+                const selected = selectedTags.includes(tag.key);
+                return (
+                  <button
+                    key={tag.key}
+                    type="button"
+                    onClick={() => {
+                      setSelectedTags((prev) =>
+                        selected
+                          ? prev.filter((k) => k !== tag.key)
+                          : prev.length < 3
+                            ? [...prev, tag.key]
+                            : prev
+                      );
+                    }}
+                    className={`rounded-full px-3.5 py-1.5 text-sm font-medium border transition-all ${
+                      selected
+                        ? "bg-brand text-white border-brand"
+                        : "border-border text-muted-foreground hover:text-foreground hover:border-brand/40"
+                    }`}
+                  >
+                    {tag.label}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-1.5 text-xs text-zinc-400">{t("create.fields.tagsHint")}</p>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -472,6 +522,24 @@ export default function CreateBountyForm() {
               <span className="text-zinc-500">{t("create.fields.description")}</span>
               <span className="font-medium max-w-[60%] text-right truncate">{description}</span>
             </div>
+            {selectedTags.length > 0 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-zinc-500">{t("create.review.tags")}</span>
+                <span className="flex gap-1.5">
+                  {selectedTags.map((key) => {
+                    const tag = TAGS.find((t) => t.key === key);
+                    return tag ? (
+                      <span
+                        key={key}
+                        className="rounded-full px-2 py-0.5 text-[11px] font-medium border bg-brand/10 text-brand border-brand/20"
+                      >
+                        {tag.label}
+                      </span>
+                    ) : null;
+                  })}
+                </span>
+              </div>
+            )}
             {referenceUri && (
               <div className="flex justify-between text-sm">
                 <span className="text-zinc-500">{t("create.review.reference")}</span>

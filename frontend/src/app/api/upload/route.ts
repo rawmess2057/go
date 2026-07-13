@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isValidImageFile } from "@/lib/validate";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -7,14 +8,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
-  const pinataFormData = new FormData();
-  pinataFormData.set("file", file, file.name);
+  const check = isValidImageFile(file);
+  if (!check.valid) {
+    return NextResponse.json({ error: check.error }, { status: 400 });
+  }
 
   const jwt = process.env.PINATA_JWT;
   if (!jwt) {
     console.error("PINATA_JWT not set");
     return NextResponse.json({ error: "Upload not configured" }, { status: 500 });
   }
+
+  const pinataFormData = new FormData();
+  pinataFormData.set("file", file, file.name);
 
   const res = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
     method: "POST",
