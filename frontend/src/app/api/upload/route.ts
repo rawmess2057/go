@@ -8,7 +8,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
-  const check = await isValidImageFile(file);
+  const buffer = await file.arrayBuffer();
+
+  const check = isValidImageFile(buffer, file.size);
   if (!check.valid) {
     return NextResponse.json({ error: check.error }, { status: 400 });
   }
@@ -19,7 +21,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Upload not configured" }, { status: 500 });
   }
 
-  const buffer = await file.arrayBuffer();
   const blob = new Blob([buffer], { type: file.type });
   const pinataFormData = new FormData();
   pinataFormData.set("file", blob, file.name);

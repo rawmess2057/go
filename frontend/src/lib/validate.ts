@@ -67,15 +67,17 @@ const MAGIC_BYTES: [number[], string][] = [
   [[0x3c, 0x73, 0x76, 0x67], "image/svg+xml"],
 ];
 
-export async function isValidImageFile(file: File): Promise<{ valid: boolean; error?: string }> {
-  if (file.size > MAX_IMAGE_SIZE) {
-    return { valid: false, error: `File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max: 5MB` };
+export function isValidImageFile(
+  buffer: ArrayBuffer,
+  size: number
+): { valid: boolean; error?: string } {
+  if (size > MAX_IMAGE_SIZE) {
+    return { valid: false, error: `File too large (${(size / 1024 / 1024).toFixed(1)}MB). Max: 5MB` };
   }
-  if (file.size === 0) {
+  if (size === 0) {
     return { valid: false, error: "File is empty" };
   }
 
-  const buffer = await file.arrayBuffer();
   const bytes = new Uint8Array(buffer.slice(0, 8));
 
   const validMagic = MAGIC_BYTES.some(([magic]) =>
