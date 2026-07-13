@@ -61,7 +61,7 @@ export default function Home() {
         {(t("home.trust") as unknown as any[]).map((item: any, i: number) => (
           <div
             key={i}
-            className="rounded-2xl bg-white border border-zinc-200 shadow-sm p-5 text-center"
+            className="rounded-2xl bg-card border border-border backdrop-blur-xl shadow-sm p-5 text-center"
           >
             <p className="font-semibold text-sm text-brand">{item.title}</p>
             <p className="text-xs text-brand/70 mt-1 leading-relaxed">{item.desc}</p>

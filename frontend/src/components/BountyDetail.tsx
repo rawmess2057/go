@@ -235,7 +235,7 @@ export default function BountyDetail({
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-      <div className="relative rounded-2xl border border-brand/10 bg-brand/[0.03] dark:bg-brand/[0.06] backdrop-blur-xl overflow-hidden">
+      <div className="relative rounded-2xl border border-border bg-card backdrop-blur-xl overflow-hidden">
         <div className="relative h-56">
           {thumbUrl && isValidImageUri(thumbUrl) ? (
             <img
@@ -366,7 +366,7 @@ export default function BountyDetail({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-brand/10 bg-brand/[0.03] dark:bg-brand/[0.06] backdrop-blur-xl p-6 sm:p-8">
+      <div className="rounded-2xl border border-border bg-card backdrop-blur-xl p-6 sm:p-8">
         <h2 className="text-lg font-semibold mb-4">{t("detail.actions")}</h2>
 
         {bounty.status === BountyStatus.Open && (
@@ -564,7 +564,7 @@ export default function BountyDetail({
         )}
       </div>
 
-      <div className="rounded-2xl border border-brand/10 bg-brand/[0.03] dark:bg-brand/[0.06] backdrop-blur-xl p-6 sm:p-8">
+      <div className="rounded-2xl border border-border bg-card backdrop-blur-xl p-6 sm:p-8">
         <h2 className="text-lg font-semibold mb-4">{t("detail.submissions")} ({submissions.length})</h2>
         {subsLoading ? (
           <div className="space-y-3">

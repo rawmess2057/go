@@ -47,7 +47,7 @@ export default function BountyCard({ bounty, index = 0 }: { bounty: BountyData; 
     >
       <Link
         href={`/gig/${bounty.publicKey.toBase58()}`}
-        className="group block relative rounded-2xl border border-brand/10 bg-brand/[0.03] dark:bg-brand/[0.06] backdrop-blur-xl hover:border-brand/40 hover:-translate-y-1 hover:shadow-[0_0_25px_-8px] hover:shadow-brand/30 transition-all duration-300 overflow-hidden"
+        className="group block relative rounded-2xl border border-border bg-card backdrop-blur-xl hover:border-brand/40 hover:-translate-y-1 hover:shadow-[0_0_25px_-8px] hover:shadow-brand/30 transition-all duration-300 overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-brand/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 

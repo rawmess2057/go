@@ -5,11 +5,11 @@
   --color-brand-dark: #3bb87a;
   --color-brand-light: #7be0aa;
   --color-brand-gradient: linear-gradient(135deg, #55d292, #8b5cf6);
-  --color-background: #ffffff;
+  --color-background: #e8faf1;
   --color-foreground: #171717;
-  --color-muted: #f5f5f5;
-  --color-border: #e5e5e5;
-  --color-card: #ffffff;
+  --color-muted: #d0f0dc;
+  --color-border: #b8e0c8;
+  --color-card: rgba(255,255,255,0.85);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
