@@ -147,7 +147,12 @@ export default function CreateBountyForm() {
       return;
     }
 
-    const deadlineSecs = Math.floor(Date.now() / 1000) + parseInt(deadlineDays) * 86400;
+    const deadlineDaysNum = parseInt(deadlineDays, 10);
+    if (isNaN(deadlineDaysNum) || deadlineDaysNum < 1 || deadlineDaysNum > 30) {
+      toast.error("Deadline must be between 1 and 30 days");
+      return;
+    }
+    const deadlineSecs = Math.floor(Date.now() / 1000) + deadlineDaysNum * 86400;
     if (deadlineSecs < Math.floor(Date.now() / 1000) + MIN_DEADLINE_SECONDS) {
       toast.error("Deadline must be at least 1 hour in the future");
       return;
@@ -229,29 +234,29 @@ export default function CreateBountyForm() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
-      <div className="rounded-xl bg-brand/5 border border-brand/20 p-4 mb-8 text-center">
+      <div className="rounded-xl bg-card backdrop-blur-xl border border-border p-4 mb-8 text-center">
         <p className="text-sm text-brand font-semibold">{t("create.brandHeader")}</p>
-        <p className="text-xs text-white/60 mt-0.5">{t("create.brandDesc")}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">{t("create.brandDesc")}</p>
       </div>
       <div className="flex items-center justify-center gap-2 mb-8">
         {steps.map((label, i) => (
           <div key={label} className="flex items-center gap-2">
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                i <= step ? "bg-brand text-white shadow-sm" : "bg-muted text-zinc-400"
+                i <= step ? "bg-brand text-white shadow-sm" : "bg-muted text-muted-foreground"
               }`}
             >
               {i + 1}
             </div>
             <span
               className={`text-sm ${
-                i <= step ? "text-white font-medium" : "text-white/60"
+                i <= step ? "text-foreground font-medium" : "text-muted-foreground"
               }`}
             >
               {label}
             </span>
             {i < steps.length - 1 && (
-              <div className={`w-8 h-0.5 ${i < step ? "bg-brand" : "bg-white/20"}`} />
+              <div className={`w-8 h-0.5 ${i < step ? "bg-brand" : "bg-muted"}`} />
             )}
           </div>
         ))}
@@ -259,10 +264,10 @@ export default function CreateBountyForm() {
 
       {step === 0 && (
         <div className="space-y-5">
-          <div className="rounded-2xl border border-border bg-brand/5 p-5 space-y-5">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-xl p-5 space-y-5">
           <div>
-            <label className="block text-sm font-medium mb-1 text-white">
-              {t("create.fields.title")} <span className="text-white/60">*</span>
+            <label className="block text-sm font-medium mb-1 text-foreground">
+              {t("create.fields.title")} <span className="text-muted-foreground">*</span>
             </label>
             <input
               type="text"
@@ -270,14 +275,14 @@ export default function CreateBountyForm() {
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand/50"
+              className="w-full rounded-lg border border-border bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/50"
               placeholder="What needs to be done?"
             />
-            <p className="mt-1 text-xs text-white/60">{title.length}/50</p>
+            <p className="mt-1 text-xs text-muted-foreground">{title.length}/50</p>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-white">
-              {t("create.fields.description")} <span className="text-white/60">*</span>
+            <label className="block text-sm font-medium mb-1 text-foreground">
+              {t("create.fields.description")} <span className="text-muted-foreground">*</span>
             </label>
             <textarea
               maxLength={500}
@@ -285,14 +290,14 @@ export default function CreateBountyForm() {
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand/50 resize-none"
+              className="w-full rounded-lg border border-border bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/50 resize-none"
               placeholder="Describe the task in detail..."
             />
-            <p className="mt-1 text-xs text-white/60">{description.length}/500</p>
+            <p className="mt-1 text-xs text-muted-foreground">{description.length}/500</p>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2 text-white">
-              {t("create.fields.tags")} <span className="text-white/60">(optional)</span>
+            <label className="block text-sm font-medium mb-2 text-foreground">
+              {t("create.fields.tags")} <span className="text-muted-foreground">(optional)</span>
             </label>
             <div className="flex flex-wrap gap-2">
               {TAGS.map((tag) => {
@@ -312,8 +317,8 @@ export default function CreateBountyForm() {
                     }}
                     className={`rounded-full px-3.5 py-1.5 text-sm font-medium border transition-all ${
                       selected
-                        ? "bg-white/20 text-white border-white/40"
-                        : "border-border text-white/60 hover:text-white hover:border-white/40"
+                        ? "bg-brand/10 text-brand border-brand/20"
+                        : "border-border text-muted-foreground hover:text-foreground hover:border-brand/40"
                     }`}
                   >
                     {tag.label}
@@ -321,24 +326,24 @@ export default function CreateBountyForm() {
                 );
               })}
             </div>
-            <p className="mt-1.5 text-xs text-white/60">{t("create.fields.tagsHint")}</p>
+            <p className="mt-1.5 text-xs text-muted-foreground">{t("create.fields.tagsHint")}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-white">
-              {t("create.fields.referenceUri")} <span className="text-white/60">(optional)</span>
+            <label className="block text-sm font-medium mb-1 text-foreground">
+              {t("create.fields.referenceUri")} <span className="text-muted-foreground">(optional)</span>
             </label>
             <input
               type="text"
               value={referenceUri}
               onChange={(e) => setReferenceUri(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand/50"
+              className="w-full rounded-lg border border-border bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/50"
               placeholder="ipfs://..., https://..."
             />
-            <p className="mt-1 text-xs text-white/60">{t("create.fields.referenceHint")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("create.fields.referenceHint")}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-white">
-              {t("create.fields.thumbnail")} <span className="text-white/60">(optional)</span>
+            <label className="block text-sm font-medium mb-1 text-foreground">
+              {t("create.fields.thumbnail")} <span className="text-muted-foreground">(optional)</span>
             </label>
             <div className="flex items-start gap-3">
               <div className="flex-1 space-y-2">
@@ -346,10 +351,10 @@ export default function CreateBountyForm() {
                   type="text"
                   value={thumbnailUri}
                   onChange={(e) => setThumbnailUri(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand/50"
+                  className="w-full rounded-lg border border-border bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/50"
                   placeholder="Paste image URL..."
                 />
-                <label className="flex items-center gap-2 text-sm text-white/60 cursor-pointer hover:text-white transition-colors">
+                <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
                   <input
                     type="file"
                     accept="image/*"
@@ -373,7 +378,7 @@ export default function CreateBountyForm() {
                       }
                     }}
                   />
-                  <span className="w-5 h-5 rounded border border-dashed border-white/30 flex items-center justify-center text-xs text-white/60">{uploading ? "..." : "+"}</span>
+                  <span className="w-5 h-5 rounded border border-dashed border-muted-foreground/30 flex items-center justify-center text-xs text-muted-foreground">{uploading ? "..." : "+"}</span>
                   {uploading ? "Uploading..." : t("create.fields.thumbnailUpload")}
                 </label>
               </div>
@@ -385,14 +390,14 @@ export default function CreateBountyForm() {
                 />
               )}
             </div>
-            <p className="mt-1 text-xs text-white/60">{t("create.fields.thumbnailHint")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("create.fields.thumbnailHint")}</p>
           </div>
           </div>
           <button
             type="button"
             onClick={() => canAdvance() && setStep(1)}
             disabled={!canAdvance()}
-            className="w-full rounded-lg border border-white/30 px-4 py-3 text-sm font-semibold text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full rounded-lg border border-border px-4 py-3 text-sm font-semibold text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {t("create.next")}
           </button>
@@ -401,25 +406,38 @@ export default function CreateBountyForm() {
 
       {step === 1 && (
         <div className="space-y-5">
-          <div className="rounded-2xl border border-border bg-brand/5 p-5 space-y-5">
-          <div className="rounded-lg bg-brand/5 border border-brand/20 p-4 text-sm text-white/80">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-xl p-5 space-y-5">
+          <div className="rounded-lg bg-muted/30 border border-border p-4 text-sm text-muted-foreground">
             {t("create.infoBox")}
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-white">
-              {t("create.fields.reward")} <span className="text-white/60">*</span>
+            <label className="block text-sm font-medium mb-1 text-foreground">
+              {t("create.fields.reward")} <span className="text-muted-foreground">*</span>
             </label>
             <div className="flex gap-2">
-              <input
-                type="number"
-                step={Math.pow(10, -selectedToken.decimals).toString()}
-                min={Math.pow(10, -selectedToken.decimals).toString()}
-                required
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="flex-1 rounded-lg border border-border bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand/50"
-                placeholder="1.0"
-              />
+              <div className="flex items-stretch flex-1 rounded-xl border border-border bg-muted/30 overflow-hidden focus-within:ring-2 focus-within:ring-brand/50 transition-all">
+                <button
+                  type="button"
+                  onClick={() => setAmount(v => String(Math.max(0, (Number(v) || 0) - 0.1)))}
+                  disabled={!amount || Number(amount) <= 0}
+                  className="flex items-center justify-center min-w-[44px] bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50 active:bg-muted/70 disabled:text-muted-foreground/30 disabled:pointer-events-none transition-all text-lg leading-none"
+                >−</button>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  required
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value.replace(/[eE+\-]/g, ''))}
+                  className="flex-1 bg-transparent px-3 py-3 text-base text-foreground text-center font-semibold focus:outline-none"
+                  placeholder="1.0"
+                />
+                <button
+                  type="button"
+                  onClick={() => setAmount(v => String((Number(v) || 0) + 0.1))}
+                  disabled={!amount}
+                  className="flex items-center justify-center min-w-[44px] bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50 active:bg-muted/70 disabled:text-muted-foreground/30 disabled:pointer-events-none transition-all text-lg leading-none"
+                >+</button>
+              </div>
               <select
                 value={selectedToken.mint.toBase58()}
                 onChange={(e) => {
@@ -433,7 +451,7 @@ export default function CreateBountyForm() {
                     if (found) setSelectedToken(found);
                   }
                 }}
-                className="rounded-lg border border-border bg-white/10 px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand/50"
+                className="rounded-xl border border-border bg-muted/30 px-3 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand/50"
               >
                 <option value={SOL_MINT.toBase58()}>SOL</option>
                 {tokensLoading && (
@@ -453,44 +471,70 @@ export default function CreateBountyForm() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-white">
-              {t("create.fields.maxWinners")} <span className="text-white/60">*</span>
+            <label className="block text-sm font-medium mb-1 text-foreground">
+              {t("create.fields.maxWinners")} <span className="text-muted-foreground">*</span>
             </label>
-            <input
-              type="number"
-              min="1"
-              max="10"
-              required
-              value={maxWinners}
-              onChange={(e) => setMaxWinners(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand/50"
-            />
-            <p className="mt-1 text-xs text-white/60">{t("create.fields.maxWinnersHint")}</p>
+            <div className="flex items-stretch rounded-xl border border-border bg-muted/30 overflow-hidden focus-within:ring-2 focus-within:ring-brand/50 transition-all">
+              <button
+                type="button"
+                onClick={() => setMaxWinners(v => String(Math.max(1, (Number(v) || 0) - 1)))}
+                disabled={!maxWinners || Number(maxWinners) <= 1}
+                className="flex items-center justify-center min-w-[44px] bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50 active:bg-muted/70 disabled:text-muted-foreground/30 disabled:pointer-events-none transition-all text-lg leading-none"
+              >−</button>
+              <input
+                type="text"
+                inputMode="numeric"
+                required
+                value={maxWinners}
+                onChange={(e) => setMaxWinners(e.target.value.replace(/[eE.+\-]/g, ''))}
+                className="flex-1 bg-transparent px-3 py-3 text-base text-foreground text-center font-semibold focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setMaxWinners(v => String(Math.min(10, (Number(v) || 0) + 1)))}
+                disabled={!maxWinners || Number(maxWinners) >= 10}
+                className="flex items-center justify-center min-w-[44px] bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50 active:bg-muted/70 disabled:text-muted-foreground/30 disabled:pointer-events-none transition-all text-lg leading-none"
+              >+</button>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">{t("create.fields.maxWinnersHint")}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-white">
-              {t("create.fields.deadline")} <span className="text-white/60">*</span>
+            <label className="block text-sm font-medium mb-1 text-foreground">
+              {t("create.fields.deadline")} <span className="text-muted-foreground">*</span>
             </label>
-            <input
-              type="number"
-              min="1"
-              max="30"
-              required
-              value={deadlineDays}
-              onChange={(e) => setDeadlineDays(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand/50"
-            />
+            <div className="flex items-stretch rounded-xl border border-border bg-muted/30 overflow-hidden focus-within:ring-2 focus-within:ring-brand/50 transition-all">
+              <button
+                type="button"
+                onClick={() => setDeadlineDays(v => String(Math.max(1, (Number(v) || 0) - 1)))}
+                disabled={!deadlineDays || Number(deadlineDays) <= 1}
+                className="flex items-center justify-center min-w-[44px] bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50 active:bg-muted/70 disabled:text-muted-foreground/30 disabled:pointer-events-none transition-all text-lg leading-none"
+              >−</button>
+              <input
+                type="text"
+                inputMode="numeric"
+                required
+                value={deadlineDays}
+                onChange={(e) => setDeadlineDays(e.target.value.replace(/[eE.+\-]/g, ''))}
+                className="flex-1 bg-transparent px-3 py-3 text-base text-foreground text-center font-semibold focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setDeadlineDays(v => String(Math.min(30, (Number(v) || 0) + 1)))}
+                disabled={!deadlineDays || Number(deadlineDays) >= 30}
+                className="flex items-center justify-center min-w-[44px] bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50 active:bg-muted/70 disabled:text-muted-foreground/30 disabled:pointer-events-none transition-all text-lg leading-none"
+              >+</button>
+            </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-white">
-              {t("create.fields.moderator")} <span className="text-white/60">*</span>
+            <label className="block text-sm font-medium mb-1 text-foreground">
+              {t("create.fields.moderator")} <span className="text-muted-foreground">*</span>
             </label>
             <input
               type="text"
               required
               value={moderator}
               onChange={(e) => setModerator(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white/10 px-4 py-2.5 text-sm font-mono text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand/50"
+              className="w-full rounded-lg border border-border bg-muted/30 px-4 py-2.5 text-sm font-mono text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/50"
               placeholder={t("create.fields.moderatorPlaceholder")}
             />
           </div>
@@ -499,7 +543,7 @@ export default function CreateBountyForm() {
             <button
               type="button"
               onClick={() => setStep(0)}
-              className="flex-1 rounded-lg border border-white/30 px-4 py-3 text-sm font-medium text-white hover:bg-white/10 transition-colors"
+              className="flex-1 rounded-lg border border-border px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors"
             >
               {t("create.back")}
             </button>
@@ -507,7 +551,7 @@ export default function CreateBountyForm() {
               type="button"
               onClick={() => canAdvance() && setStep(2)}
               disabled={!canAdvance()}
-              className="flex-1 rounded-lg border border-white/30 px-4 py-3 text-sm font-semibold text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 rounded-lg border border-border px-4 py-3 text-sm font-semibold text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {t("create.next")}
             </button>
@@ -517,26 +561,26 @@ export default function CreateBountyForm() {
 
       {step === 2 && (
         <div className="space-y-5">
-          <div className="rounded-2xl border border-border bg-brand/5 p-5 space-y-5">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-xl p-5 space-y-5">
           <div className="space-y-3">
             <div className="flex justify-between text-sm">
-              <span className="text-white/60">{t("create.fields.title")}</span>
-              <span className="font-medium text-white">{title}</span>
+              <span className="text-muted-foreground">{t("create.fields.title")}</span>
+              <span className="font-medium text-foreground">{title}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-white/60">{t("create.fields.description")}</span>
-              <span className="font-medium max-w-[60%] text-right truncate text-white">{description}</span>
+              <span className="text-muted-foreground">{t("create.fields.description")}</span>
+              <span className="font-medium max-w-[60%] text-right truncate text-foreground">{description}</span>
             </div>
             {selectedTags.length > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-white/60">{t("create.review.tags")}</span>
+                <span className="text-muted-foreground">{t("create.review.tags")}</span>
                 <span className="flex gap-1.5">
                   {selectedTags.map((key) => {
                     const tag = TAGS.find((t) => t.key === key);
                     return tag ? (
                       <span
                         key={key}
-                        className="rounded-full px-2 py-0.5 text-[11px] font-medium border bg-white/20 text-white border-white/40"
+                        className="rounded-full px-2 py-0.5 text-[11px] font-medium border bg-brand/10 text-brand border-brand/20"
                       >
                         {tag.label}
                       </span>
@@ -547,35 +591,35 @@ export default function CreateBountyForm() {
             )}
             {referenceUri && (
               <div className="flex justify-between text-sm">
-                <span className="text-white/60">{t("create.review.reference")}</span>
-                <span className="font-mono text-xs max-w-[50%] text-right truncate text-white">{referenceUri}</span>
+                <span className="text-muted-foreground">{t("create.review.reference")}</span>
+                <span className="font-mono text-xs max-w-[50%] text-right truncate text-foreground">{referenceUri}</span>
               </div>
             )}
             {thumbnailUri && (
               <div className="flex justify-between text-sm">
-                <span className="text-white/60">{t("create.review.thumbnail")}</span>
-                <span className="font-mono text-xs max-w-[50%] text-right truncate text-white">{thumbnailUri}</span>
+                <span className="text-muted-foreground">{t("create.review.thumbnail")}</span>
+                <span className="font-mono text-xs max-w-[50%] text-right truncate text-foreground">{thumbnailUri}</span>
               </div>
             )}
             <div className="flex justify-between text-sm">
-              <span className="text-white/60">{t("create.review.reward")}</span>
-              <span className="font-semibold text-white">{amount} {selectedToken.symbol}</span>
+              <span className="text-muted-foreground">{t("create.review.reward")}</span>
+              <span className="font-semibold text-foreground">{amount} {selectedToken.symbol}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-white/60">{t("create.review.maxWinners")}</span>
-              <span className="font-medium text-white">{maxWinners}</span>
+              <span className="text-muted-foreground">{t("create.review.maxWinners")}</span>
+              <span className="font-medium text-foreground">{maxWinners}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-white/60">{t("create.review.deadline")}</span>
-              <span className="font-medium text-white">{deadlineDays} days</span>
+              <span className="text-muted-foreground">{t("create.review.deadline")}</span>
+              <span className="font-medium text-foreground">{deadlineDays} days</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-white/60">{t("create.review.moderator")}</span>
-              <span className="font-mono text-xs max-w-[50%] text-right truncate text-white">{moderator}</span>
+              <span className="text-muted-foreground">{t("create.review.moderator")}</span>
+              <span className="font-mono text-xs max-w-[50%] text-right truncate text-foreground">{moderator}</span>
             </div>
           </div>
-          <div className="rounded-lg bg-brand/5 border border-brand/20 p-4 text-sm text-white/80">
-            <p className="font-medium text-white mb-1">{t("create.aboutTo")}</p>
+          <div className="rounded-lg bg-muted/30 border border-border p-4 text-sm text-muted-foreground">
+            <p className="font-medium text-foreground mb-1">{t("create.aboutTo")}</p>
             <ul className="list-disc list-inside space-y-1">
               {(t("create.aboutLines") as unknown as string[]).map((line: string) => (
                 <li key={line}>{line}</li>
@@ -587,14 +631,14 @@ export default function CreateBountyForm() {
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="flex-1 rounded-lg border border-white/30 px-4 py-3 text-sm font-medium text-white hover:bg-white/10 transition-colors"
+              className="flex-1 rounded-lg border border-border px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors"
             >
               {t("create.back")}
             </button>
             <button
               type="submit"
               disabled={sending}
-              className="flex-1 rounded-lg border border-white/30 px-4 py-3 text-sm font-semibold text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 rounded-lg border border-border px-4 py-3 text-sm font-semibold text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {sending ? t("create.creating") : t("create.submit")}
             </button>

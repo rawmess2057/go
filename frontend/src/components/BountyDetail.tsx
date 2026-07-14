@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
@@ -59,6 +59,16 @@ export default function BountyDetail({
   const [uri, setUri] = useState("");
   const [sending, setSending] = useState<string | null>(null);
   const { submissions, loading: subsLoading } = useSubmissions(bounty.publicKey, bounty.legacy);
+  const mySubmission = useMemo(
+    () => submissions.find(s => s.worker.toBase58() === wallet.publicKey?.toBase58()),
+    [submissions, wallet.publicKey]
+  );
+  useEffect(() => {
+    if (mySubmission && !uri) {
+      setUri(mySubmission.uri);
+    }
+  }, [mySubmission]); // only on mount — uri intentionally excluded
+  const hasSubmitted = !!mySubmission;
   const thumbUrl = useThumbnailUrl(bounty.thumbnailUri);
   const metadata = useMetadata(bounty.referenceUri);
 
@@ -390,7 +400,7 @@ export default function BountyDetail({
                   disabled={sending !== null}
                   className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {sending === "submit" ? p : t("detail.submitWork")}
+                  {sending === "submit" ? p : hasSubmitted ? "Update Submission" : t("detail.submitWork")}
                 </button>
               </>
             )}
@@ -461,6 +471,27 @@ export default function BountyDetail({
             )}
             {isCreator || isModerator ? (
               <p className="text-sm text-zinc-400">{t("detail.cannotSubmit")}</p>
+            ) : hasSubmitted ? (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">{t("detail.submissionUri")}</label>
+                  <input
+                    type="text"
+                    value={uri}
+                    onChange={(e) => setUri(e.target.value)}
+                    placeholder="ipfs://..."
+                    className="w-full rounded-lg border border-border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50"
+                  />
+                  <p className="mt-1 text-xs text-white/60">{t("detail.updateSubmissionHint") || "Update your submission URI"}</p>
+                </div>
+                <button
+                  onClick={() => exec("submit")}
+                  disabled={sending !== null}
+                  className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {sending === "submit" ? p : "Update Submission"}
+                </button>
+              </div>
             ) : (
               <div className="space-y-4">
                 <div>

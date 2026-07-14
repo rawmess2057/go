@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/lib/i18n";
-import CreateBountyForm from "@/components/CreateBountyForm";
+import GigCreateWizard from "@/forms/create/GigCreateWizard";
 import PageTransition from "@/components/PageTransition";
 
 export default function CreatePage() {
@@ -14,7 +14,7 @@ export default function CreatePage() {
         <p className="text-sm text-white/60 mb-8">
           {t("create.subtitle")}
         </p>
-        <CreateBountyForm />
+        <GigCreateWizard />
       </div>
     </PageTransition>
   );

@@ -65,12 +65,30 @@
       "thumbnail": "Thumbnail",
       "thumbnailHint": "Paste a URL or upload an image",
       "thumbnailUpload": "Upload from computer",
-      "reward": "Reward (SOL)",
+      "reward": "Reward",
       "maxWinners": "Max Winners",
       "maxWinnersHint": "Reward pool is split equally among winners",
       "deadline": "Deadline (days)",
-      "moderator": "Moderator Public Key",
-      "moderatorPlaceholder": "Enter moderator wallet address"
+      "moderator": "Moderator Wallet",
+      "moderatorPlaceholder": "Enter moderator wallet address",
+      "perWinner": "per winner"
+    },
+    "validation": {
+      "titleRequired": "Task title is required",
+      "titleMax": "Title must be 50 characters or less",
+      "descriptionRequired": "Description is required",
+      "descriptionMax": "Description must be 500 characters or less",
+      "tagsMax": "Select up to 3 categories",
+      "invalidUri": "Must be a valid https://, ipfs://, or ar:// link",
+      "invalidImage": "Must be a valid image URL",
+      "amountRequired": "Reward amount is required",
+      "amountPositive": "Amount must be greater than 0",
+      "winnersRequired": "Number of winners is required",
+      "winnersRange": "Must be between 1 and 10",
+      "deadlineRequired": "Deadline is required",
+      "deadlineRange": "Must be between 1 and 30 days",
+      "moderatorRequired": "Moderator wallet is required",
+      "moderatorInvalid": "Invalid Solana public key format"
     },
     "review": {
       "reward": "Reward",
@@ -79,9 +97,22 @@
       "moderator": "Moderator",
       "reference": "Reference",
       "thumbnail": "Thumbnail",
-      "tags": "Categories"
+      "tags": "Categories",
+      "summary": "Summary",
+      "perWinner": "Per Winner",
+      "transactionPreview": "Transaction Preview",
+      "action": "Action",
+      "destination": "Destination",
+      "networkFee": "Network Fee",
+      "rent": "Rent (refundable)",
+      "irreversibleTitle": "Irreversible Action",
+      "irreversibleDesc": "This action cannot be undone. Funds will be locked in the non-custodial escrow smart contract and can only be released by the moderator or after the deadline expires.",
+      "copied": "Copied to clipboard"
     },
-    "infoBox": "Funds are locked in a non-custodial escrow smart contract. Rewards are released by the moderator upon approval.",
+    "escrow": {
+      "title": "Secure Escrow",
+      "desc": "Funds are locked in a non-custodial escrow smart contract. Rewards are released by the moderator upon approval."
+    },
     "aboutTo": "You are about to:",
     "aboutLines": [
       "Create a gig on Solana devnet",
@@ -93,7 +124,19 @@
     "next": "Next",
     "back": "Back",
     "submit": "Post Gig",
-    "creating": "Creating..."
+    "creating": "Creating...",
+    "autoSave": {
+      "saving": "Saving...",
+      "saved": "Saved"
+    },
+    "draft": {
+      "resumePrompt": "You have an unsaved draft from {time}. Would you like to resume?",
+      "resume": "Resume draft",
+      "startFresh": "Start fresh"
+    },
+    "moderatorHelp": "An independent third party who reviews submissions and releases payments in case of disputes",
+    "connectWallet": "Connect your wallet first",
+    "waitUpload": "Wait for the image upload to finish"
   },
   "detail": {
     "untitled": "Untitled Gig",

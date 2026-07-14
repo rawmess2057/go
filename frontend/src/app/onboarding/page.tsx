@@ -37,10 +37,10 @@ export default function OnboardingPage() {
       <div className="text-center">
         <div className="text-6xl mb-6">{current.icon}</div>
         <h1 className="text-2xl font-bold mb-3">{current.title}</h1>
-        <p className="text-zinc-500 leading-relaxed">{current.desc}</p>
+        <p className="text-muted-foreground leading-relaxed">{current.desc}</p>
       </div>
 
-      <div className="rounded-xl bg-brand/5 border border-brand/20 p-4 text-sm text-zinc-600 text-center mb-8">
+      <div className="rounded-xl bg-card backdrop-blur-xl border border-border p-4 text-sm text-muted-foreground text-center mb-8">
         You're in control — funds are locked in escrow until you approve.
       </div>
       {/* Dots */}
@@ -49,7 +49,7 @@ export default function OnboardingPage() {
           <div
             key={i}
             className={`w-2 h-2 rounded-full transition-colors ${
-              i === step ? "bg-brand" : "bg-zinc-200"
+              i === step ? "bg-brand" : "bg-muted"
             }`}
           />
         ))}
@@ -59,7 +59,7 @@ export default function OnboardingPage() {
         {step > 0 && (
           <button
             onClick={() => setStep(step - 1)}
-            className="flex-1 rounded-lg border border-border px-4 py-3 text-sm font-medium text-zinc-600 hover:bg-muted transition-colors"
+            className="flex-1 rounded-lg border border-border px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors"
           >
             Back
           </button>
@@ -81,7 +81,7 @@ export default function OnboardingPage() {
       {step < STEPS.length - 1 && (
         <button
           onClick={() => router.push("/")}
-          className="w-full mt-4 text-sm text-zinc-400 hover:text-zinc-600 text-center"
+          className="w-full mt-4 text-sm text-muted-foreground hover:text-foreground text-center"
         >
           Skip
         </button>

@@ -10,8 +10,25 @@
   --color-muted: #d0f0dc;
   --color-border: #b8e0c8;
   --color-card: rgba(255,255,255,0.85);
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-vault: #1e40af;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks as expected. See https://github.com/tailwindlabs/tailwindcss/issues/15208
+*/
+*,
+::after,
+::before,
+::backdrop,
+::file-selector-button {
+  border-color: var(--color-gray-200, currentcolor);
 }
 
 body {

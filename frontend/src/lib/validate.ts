@@ -10,6 +10,13 @@ const DANGEROUS_PATTERNS = [
   /file:/i,
 ];
 
+const SOLANA_PUBKEY_REGEX = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+export function isValidSolanaAddress(address: string): boolean {
+  if (!address || typeof address !== "string") return false;
+  return SOLANA_PUBKEY_REGEX.test(address.trim());
+}
+
 export function isValidUri(uri: string): boolean {
   if (!uri || typeof uri !== "string") return false;
   if (uri.length > MAX_URI_LENGTH) return false;
