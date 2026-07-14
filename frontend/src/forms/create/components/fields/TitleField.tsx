@@ -13,11 +13,9 @@ function getCharCountColor(count: number): string {
 export default function TitleField() {
   const title = useGigCreateStore((s) => s.title);
   const setField = useGigCreateStore((s) => s.setField);
-  const setTouched = useGigCreateStore((s) => s.setTouched);
   const errors = useGigCreateStore((s) => s.errors);
-  const touched = useGigCreateStore((s) => s.touched);
 
-  const showError = touched.title && errors.title;
+  const showError = !!errors.title;
 
   return (
     <div>
@@ -35,7 +33,6 @@ export default function TitleField() {
           required
           value={title}
           onChange={(e) => setField("title", e.target.value)}
-          onBlur={() => setTouched("title")}
           className={`w-full rounded-lg border bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/50 transition-all ${
             showError
               ? "border-error ring-1 ring-error/30"
