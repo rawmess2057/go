@@ -48,13 +48,13 @@ export default function LeaderboardPage() {
   return (
     <PageTransition>
       <div>
-        <h1 className="text-2xl font-bold mb-2 text-white">{t("leaderboard.title")}</h1>
-        <p className="text-sm text-white/60 mb-8">
+        <h1 className="text-2xl font-bold mb-2 text-foreground">{t("leaderboard.title")}</h1>
+        <p className="text-sm text-muted-foreground mb-8">
           {t("leaderboard.topEarners")} &amp; {t("leaderboard.topCreators")}
         </p>
 
         <div className="grid gap-8 lg:grid-cols-2">
-          <div className="rounded-2xl border border-border bg-card backdrop-blur-xl overflow-hidden">
+          <div className="rounded-2xl border border-border bg-surface overflow-hidden">
             <div className="px-5 py-4 border-b border-border bg-muted/30">
               <h2 className="text-sm font-semibold text-foreground">{t("leaderboard.topCreators")}</h2>
             </div>
@@ -73,7 +73,7 @@ export default function LeaderboardPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground truncate group-hover:text-foreground transition-colors">{shortPk(pk)}</p>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right tabular-nums">
                         <p className="text-sm font-semibold text-brand">{(Number(data.spent) / 1e9).toFixed(1)} SOL</p>
                         <p className="text-xs text-muted-foreground">{data.count} {t("leaderboard.bounties")}</p>
                       </div>
@@ -82,7 +82,7 @@ export default function LeaderboardPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card backdrop-blur-xl overflow-hidden">
+          <div className="rounded-2xl border border-border bg-surface overflow-hidden">
             <div className="px-5 py-4 border-b border-border bg-muted/30">
               <h2 className="text-sm font-semibold text-foreground">{t("leaderboard.topEarners")}</h2>
             </div>
@@ -101,7 +101,7 @@ export default function LeaderboardPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground truncate group-hover:text-foreground transition-colors">{shortPk(pk)}</p>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right tabular-nums">
                         <p className="text-sm font-semibold text-brand">{(Number(data.earned) / 1e9).toFixed(1)} SOL</p>
                         <p className="text-xs text-muted-foreground">{data.count} {t("leaderboard.bounties")}</p>
                       </div>

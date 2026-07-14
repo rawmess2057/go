@@ -10,7 +10,7 @@ import ModeratorField from "./fields/ModeratorField";
 export default function StepPayment() {
   return (
     <div className="space-y-5">
-      <div className="rounded-2xl border border-border bg-card backdrop-blur-xl p-5 space-y-5">
+      <div className="rounded-2xl border border-border bg-surface p-5 space-y-5">
         <div className="rounded-lg bg-muted/30 border border-border p-4 text-sm text-muted-foreground">
           <p className="font-medium text-foreground mb-1">Secure Escrow</p>
           <p>

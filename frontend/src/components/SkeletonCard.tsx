@@ -2,7 +2,7 @@
 
 export default function SkeletonCard() {
   return (
-    <div className="rounded-2xl border border-border bg-card p-5 animate-pulse">
+    <div className="rounded-2xl border border-border bg-surface p-5 animate-pulse">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-muted" />
         <div className="flex-1 space-y-2">

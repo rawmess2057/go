@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppWalletProvider from "@/components/AppWalletProvider";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import I18nClient from "@/components/I18nClient";
 import ThemeProviders from "@/components/ThemeProviders";
 import { Toaster } from "react-hot-toast";
@@ -21,7 +22,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Gig",
-  description: "Solana gig platform — non-custodial escrow, instant payouts",
+  description: "Solana gig platform - non-custodial escrow, instant payouts",
   icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
 
@@ -31,7 +32,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('dark')" }} />
       <body className="min-h-screen flex flex-col antialiased bg-background text-foreground">
         <ThemeProviders>
         <AppWalletProvider>
@@ -42,6 +44,7 @@ export default function RootLayout({
                 {children}
               </ErrorBoundary>
             </main>
+            <Footer />
             <Toaster
               position="bottom-right"
               toastOptions={{

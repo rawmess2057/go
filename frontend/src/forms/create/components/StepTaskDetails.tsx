@@ -8,7 +8,7 @@ import ThumbnailUpload from "./fields/ThumbnailUpload";
 
 export default function StepTaskDetails() {
   return (
-    <div className="rounded-2xl border border-border bg-card backdrop-blur-xl p-5 space-y-5">
+    <div className="rounded-2xl border border-border bg-surface p-5 space-y-5">
       <TitleField />
       <DescriptionField />
       <TagSelector />

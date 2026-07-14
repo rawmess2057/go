@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check } from "@phosphor-icons/react";
 import { useGigCreateStore } from "@/stores/useGigCreateStore";
 
 const STEPS = [
@@ -42,7 +42,7 @@ export default function FormStepper() {
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", stiffness: 300, damping: 20 }}
                     >
-                      <Check className="w-4 h-4" />
+                      <Check size={16} weight="bold" />
                     </motion.div>
                   ) : (
                     <span>{i + 1}</span>

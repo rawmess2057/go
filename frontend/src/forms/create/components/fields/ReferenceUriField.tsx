@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink } from "lucide-react";
+import { ArrowSquareOut } from "@phosphor-icons/react";
 import { useGigCreateStore } from "@/stores/useGigCreateStore";
 
 export default function ReferenceUriField() {
@@ -20,7 +20,7 @@ export default function ReferenceUriField() {
         className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         aria-expanded={expanded}
       >
-        <ExternalLink className="w-4 h-4" />
+        <ArrowSquareOut size={16} />
         {expanded ? "Remove reference link" : "Add reference link"}
       </button>
       <AnimatePresence initial={false}>

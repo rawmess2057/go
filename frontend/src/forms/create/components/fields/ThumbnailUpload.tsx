@@ -2,7 +2,7 @@
 
 import { useState, useRef, DragEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Image as ImageIcon, X, Upload } from "lucide-react";
+import { Image, X, UploadSimple } from "@phosphor-icons/react";
 import { useGigCreateStore } from "@/stores/useGigCreateStore";
 import { isValidImageFile } from "@/lib/validate";
 import toast from "react-hot-toast";
@@ -62,7 +62,7 @@ export default function ThumbnailUpload() {
         className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         aria-expanded={expanded}
       >
-        <ImageIcon className="w-4 h-4" />
+        <Image size={16} />
         {expanded ? "Remove thumbnail" : "Add thumbnail"}
       </button>
       <AnimatePresence initial={false}>
@@ -97,7 +97,7 @@ export default function ThumbnailUpload() {
                 className={`relative flex flex-col items-center justify-center h-28 rounded-xl border-2 border-dashed cursor-pointer transition-all ${
                   dragOver
                     ? "border-brand bg-brand/5"
-                    : "border-muted-foreground/30 hover:border-brand/50 hover:bg-muted/20"
+                    : "border-border hover:border-brand/50 hover:bg-muted/20"
                 }`}
               >
                 <input
@@ -118,7 +118,7 @@ export default function ThumbnailUpload() {
                   </div>
                 ) : (
                   <>
-                    <Upload className="w-6 h-6 text-muted-foreground/60" />
+                    <UploadSimple size={24} className="text-muted-foreground/60" />
                     <span className="text-xs text-muted-foreground mt-1">Upload from computer</span>
                   </>
                 )}
@@ -140,7 +140,7 @@ export default function ThumbnailUpload() {
                     className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-error text-white flex items-center justify-center hover:bg-error/80 transition-colors"
                     aria-label="Remove thumbnail"
                   >
-                    <X className="w-3 h-3" />
+                    <X size={12} weight="bold" />
                   </button>
                 </div>
               )}

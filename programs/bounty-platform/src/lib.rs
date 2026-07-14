@@ -12,7 +12,7 @@ pub use events::*;
 pub use instructions::*;
 pub use state::*;
 
-declare_id!("7WsPtEhY89n4yj9GshwQNgqQDGfUUdvonSto3XFVGwgQ");
+declare_id!("CZvJ2JhfjYGvwUYzbaVj8JiydgEo82wKMvkx4fNurvq2");
 
 #[program]
 pub mod bounty_platform {

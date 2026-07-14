@@ -37,8 +37,8 @@ export default function DashboardPage() {
   if (!wallet.publicKey) {
     return (
       <div className="text-center py-20">
-        <h1 className="text-2xl font-bold mb-2">{t("dashboard.title")}</h1>
-        <p className="text-white/60">{t("detail.connectWallet")}</p>
+        <h1 className="text-2xl font-bold text-foreground mb-2">{t("dashboard.title")}</h1>
+        <p className="text-muted-foreground">{t("detail.connectWallet")}</p>
       </div>
     );
   }
@@ -60,10 +60,10 @@ export default function DashboardPage() {
     <PageTransition>
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">{t("dashboard.title")}</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t("dashboard.title")}</h1>
         <button
           onClick={refetch}
-          className="text-sm text-white/60 hover:text-white transition-colors"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           {t("dashboard.refresh")}
         </button>
@@ -137,7 +137,7 @@ function BountyTable({ bounties, emptyMsg }: { bounties: BountyData[]; emptyMsg:
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-card backdrop-blur-xl overflow-hidden">
+    <div className="rounded-2xl border border-border bg-surface overflow-hidden">
       <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
@@ -156,14 +156,14 @@ function BountyTable({ bounties, emptyMsg }: { bounties: BountyData[]; emptyMsg:
               <td className="py-3 px-2 font-medium text-foreground truncate max-w-[200px]">
                 {b.title || "Untitled"}
               </td>
-              <td className="py-3 px-2 text-foreground">{(Number(b.amount) / 1e9).toFixed(2)} SOL</td>
+              <td className="py-3 px-2 text-foreground tabular-nums">{(Number(b.amount) / 1e9).toFixed(2)} SOL</td>
               <td className="py-3 px-2">
                 <StatusBadge status={b.status} />
               </td>
-              <td className="py-3 px-2 text-muted-foreground">
+              <td className="py-3 px-2 text-muted-foreground tabular-nums">
                 {b.winnersSelected}/{b.maxWinners}
               </td>
-              <td className="py-3 px-2 text-muted-foreground">
+              <td className="py-3 px-2 text-muted-foreground tabular-nums">
                 {new Date(Number(b.deadline) * 1000).toLocaleDateString()}
               </td>
               <td className="py-3 px-2">
@@ -188,9 +188,9 @@ function StatusBadge({ status }: { status: number }) {
   const map: Record<number, string> = {
     [BountyStatus.Open]: "text-brand",
     [BountyStatus.Submitted]: "text-amber-500",
-    [BountyStatus.WinnerSelected]: "text-blue-500",
+    [BountyStatus.WinnerSelected]: "text-vault",
     [BountyStatus.Completed]: "text-muted-foreground",
-    [BountyStatus.Disputed]: "text-red-500",
+    [BountyStatus.Disputed]: "text-error",
     [BountyStatus.Expired]: "text-muted-foreground/60",
   };
   const labelKeys: Record<number, string> = {

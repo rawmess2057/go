@@ -42,4 +42,10 @@ pub enum BountyError {
     CreatorCannotSubmit,
     #[msg("The moderator cannot submit work to a bounty they moderate")]
     ModeratorCannotSubmit,
+    #[msg("Recipient account does not match the expected party")]
+    InvalidRecipient,
+    #[msg("Vault account does not match the expected PDA or ATA")]
+    InvalidVault,
+    #[msg("Cannot resubmit after a winner has been selected")]
+    CannotResubmitAfterSelection,
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { ClipboardPaste } from "lucide-react";
+import { Clipboard } from "@phosphor-icons/react";
 import { useGigCreateStore } from "@/stores/useGigCreateStore";
 import { isValidSolanaAddress } from "@/lib/validate";
 
@@ -50,9 +50,7 @@ export default function ModeratorField() {
               ? "border-error ring-1 ring-error/30"
               : isPotentiallyValid
                 ? "border-success"
-                : moderator.length > 0
-                  ? "border-border"
-                  : "border-border"
+                : "border-border"
           }`}
           placeholder="Enter moderator wallet address"
           aria-invalid={!!showError}
@@ -65,7 +63,7 @@ export default function ModeratorField() {
           aria-label="Paste from clipboard"
           title="Paste from clipboard"
         >
-          <ClipboardPaste className="w-4 h-4" />
+          <Clipboard size={16} />
         </button>
       </div>
 

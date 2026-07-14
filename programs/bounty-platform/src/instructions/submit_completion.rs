@@ -43,13 +43,16 @@ pub fn handler(ctx: Context<SubmitCompletion>, _bounty_id: u64, submission_uri: 
     );
     require!(
         bounty.status == BountyStatus::Open
-            || bounty.status == BountyStatus::Submitted
-            || bounty.status == BountyStatus::WinnerSelected,
+            || bounty.status == BountyStatus::Submitted,
         BountyError::InvalidStateTransition
     );
     require!(!submission_uri.is_empty(), BountyError::EmptySubmissionUri);
 
     let submission = &mut ctx.accounts.submission;
+    require!(
+        !submission.selected,
+        BountyError::SubmissionAlreadySelected
+    );
     submission.worker = ctx.accounts.worker.key();
     submission.bounty = bounty.key();
     submission.uri = submission_uri.clone();
