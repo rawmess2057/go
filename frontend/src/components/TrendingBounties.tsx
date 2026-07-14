@@ -1,11 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { BountyData } from "@/hooks/useBounties";
 import { useSolPrice } from "@/hooks/useSolPrice";
-import { LiquidGlassCard } from "@/components/ui/liquid-glass";
 import { useThumbnailUrl } from "@/hooks/useThumbnail";
 import { isValidImageUri } from "@/lib/validate";
 
@@ -19,25 +17,16 @@ function TrendingCard({ b, solPrice }: { b: BountyData; solPrice: number | null 
   const usd = solPrice ? (sol * solPrice).toFixed(2) : null;
 
   return (
-    <LiquidGlassCard
-      glowIntensity="sm"
-      shadowIntensity="sm"
-      borderRadius="12px"
-      blurIntensity="sm"
-      className="shrink-0 w-56 p-3 transition-all hover:scale-[1.02] bg-brand-dark"
-    >
-      <Link
-        href={`/gig/${b.publicKey.toBase58()}`}
-        className="flex gap-3"
-      >
+    <div className="shrink-0 w-56 rounded-xl border border-border bg-surface p-3 transition-all hover:border-brand/30 active:scale-[0.98]">
+      <Link href={`/gig/${b.publicKey.toBase58()}`} className="flex gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-white truncate">
+          <p className="text-sm font-medium text-foreground truncate">
             {b.title || "Untitled"}
           </p>
-          <p className="text-xs text-white/60 mt-1.5 font-mono">{shortPk(b.creator.toBase58())}</p>
-          <div className="mt-2 flex items-center gap-1.5">
-            <span className="text-sm font-bold text-white">{sol.toFixed(2)} SOL</span>
-            {usd && <span className="text-[10px] text-white/50">(${usd})</span>}
+          <p className="text-xs text-muted-foreground mt-1.5 font-mono">{shortPk(b.creator.toBase58())}</p>
+          <div className="mt-2 flex items-center gap-1.5 tabular-nums">
+            <span className="text-sm font-bold text-brand">{sol.toFixed(2)} SOL</span>
+            {usd && <span className="text-[10px] text-muted-foreground">(${usd})</span>}
           </div>
         </div>
         {thumbUrl && isValidImageUri(thumbUrl) && (
@@ -50,13 +39,12 @@ function TrendingCard({ b, solPrice }: { b: BountyData; solPrice: number | null 
           </div>
         )}
       </Link>
-    </LiquidGlassCard>
+    </div>
   );
 }
 
 export default function TrendingBounties({ bounties }: { bounties: BountyData[] }) {
   const solPrice = useSolPrice();
-  const [isPaused, setIsPaused] = useState(false);
 
   const top = useMemo(
     () =>
@@ -66,27 +54,15 @@ export default function TrendingBounties({ bounties }: { bounties: BountyData[] 
     [bounties]
   );
 
-  const scrollItems = useMemo(() => [...top, ...top], [top]);
-  const scrollDistance = useMemo(
-    () => -(top.length * 224 + (top.length - 1) * 12),
-    [top.length]
-  );
-
   if (top.length === 0) return null;
 
   return (
-    <div className="relative overflow-hidden">
-      <motion.div
-        className="flex gap-3"
-        animate={isPaused ? {} : { x: [0, scrollDistance] }}
-        transition={{ duration: 40, repeat: Infinity, ease: "linear", repeatDelay: 0 }}
-        onHoverStart={() => setIsPaused(true)}
-        onHoverEnd={() => setIsPaused(false)}
-      >
-        {scrollItems.map((b, i) => (
-          <TrendingCard key={`${b.publicKey.toBase58()}-${i}`} b={b} solPrice={solPrice} />
-        ))}
-      </motion.div>
+    <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-none">
+      {top.map((b, i) => (
+        <div key={b.publicKey.toBase58()} className="snap-start">
+          <TrendingCard b={b} solPrice={solPrice} />
+        </div>
+      ))}
     </div>
   );
 }

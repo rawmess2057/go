@@ -1,6 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
 
+// After anchor deploy, replace this with your new devnet program ID
 export const PROGRAM_ID = new PublicKey(
   process.env.NEXT_PUBLIC_PROGRAM_ID ||
     "J1joaPPEAzELE9jSLZajxZyAe6hrMAsMkQUjFJLLQK7P"

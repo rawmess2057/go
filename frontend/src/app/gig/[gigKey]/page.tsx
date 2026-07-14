@@ -24,7 +24,7 @@ export default function GigPage() {
   if (!bounty) {
     return (
       <div className="text-center py-20">
-        <p className="text-zinc-500">{t("gigPage.notFound")}</p>
+        <p className="text-muted-foreground">{t("gigPage.notFound")}</p>
         <button
           onClick={() => router.push("/")}
           className="mt-4 text-sm text-brand hover:underline"
@@ -40,7 +40,7 @@ export default function GigPage() {
     <div className="max-w-3xl mx-auto">
       <button
         onClick={() => router.push("/")}
-        className="text-sm text-zinc-400 hover:text-brand transition-colors mb-4 inline-flex items-center gap-1"
+        className="text-sm text-muted-foreground hover:text-brand transition-colors mb-4 inline-flex items-center gap-1"
       >
         &larr; {t("gigPage.back")}
       </button>

@@ -36,7 +36,7 @@ export default function ActivityChart({ bounties }: { bounties: BountyData[] }) 
   }, [bounties]);
 
   return (
-    <div className="rounded-2xl border border-border bg-card backdrop-blur-xl overflow-hidden">
+    <div className="rounded-2xl border border-border bg-surface overflow-hidden">
       <div className="px-5 py-4 border-b border-border bg-muted/30">
         <h3 className="text-sm font-semibold text-foreground">Activity (30d)</h3>
       </div>
@@ -44,13 +44,13 @@ export default function ActivityChart({ bounties }: { bounties: BountyData[] }) 
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={data} barGap={2}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-            <XAxis dataKey="day" tick={{ fontSize: 11, fill: "rgba(0,0,0,0.3)" }} interval={3} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 11, fill: "rgba(0,0,0,0.3)" }} axisLine={false} tickLine={false} allowDecimals={false} />
+            <XAxis dataKey="day" tick={{ fontSize: 11, fill: "var(--muted-fg)" }} interval={3} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 11, fill: "var(--muted-fg)" }} axisLine={false} tickLine={false} allowDecimals={false} />
             <Tooltip
-              contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12 }}
+              contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--fg)" }}
               labelFormatter={(_, payload) => payload?.[0]?.payload?.date ?? ""}
             />
-            <Bar dataKey="created" fill="var(--brand)" radius={[4, 4, 0, 0]} maxBarSize={8} name="Created" />
+            <Bar dataKey="created" fill="var(--color-brand)" radius={[4, 4, 0, 0]} maxBarSize={8} name="Created" />
             <Bar dataKey="completed" fill="rgba(85,210,146,0.3)" radius={[4, 4, 0, 0]} maxBarSize={8} name="Completed" />
           </BarChart>
         </ResponsiveContainer>

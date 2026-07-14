@@ -51,7 +51,7 @@ export default function RecentActivity({ bounties }: { bounties: BountyData[] })
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-card backdrop-blur-xl overflow-hidden">
+    <div className="rounded-2xl border border-border bg-surface overflow-hidden">
       <div className="px-5 py-4 border-b border-border bg-muted/30">
         <h3 className="text-sm font-semibold text-foreground">Recent Activity</h3>
       </div>
@@ -69,7 +69,7 @@ export default function RecentActivity({ bounties }: { bounties: BountyData[] })
             >
               <div className="relative shrink-0 mt-0.5">
                 <UserAvatar pubkey={a.pubkey} size={28} />
-                <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${cfg.dot}`} />
+                <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-background ${cfg.dot}`} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm truncate">

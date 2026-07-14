@@ -4,49 +4,84 @@
   --color-brand: #55d292;
   --color-brand-dark: #3bb87a;
   --color-brand-light: #7be0aa;
-  --color-brand-gradient: linear-gradient(135deg, #55d292, #8b5cf6);
-  --color-background: #55d292;
-  --color-foreground: #171717;
-  --color-muted: #d0f0dc;
-  --color-border: #b8e0c8;
-  --color-card: rgba(255,255,255,0.85);
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-fg);
+  --color-border: var(--border);
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
-  --color-vault: #1e40af;
+  --color-vault: #2563eb;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks as expected. See https://github.com/tailwindlabs/tailwindcss/issues/15208
-*/
+:root {
+  --bg: #f5f5f5;
+  --fg: #171717;
+  --surface: #ffffff;
+  --surface-elevated: #fafafa;
+  --card: #ffffff;
+  --muted: #e5e5e5;
+  --muted-fg: #737373;
+  --border: #e5e5e5;
+}
+
+.dark {
+  --bg: #0c0c0c;
+  --fg: #ededed;
+  --surface: #141414;
+  --surface-elevated: #1a1a1a;
+  --card: #141414;
+  --muted: #1f1f1f;
+  --muted-fg: #a3a3a3;
+  --border: #1f1f1f;
+}
+
 *,
 ::after,
 ::before,
 ::backdrop,
 ::file-selector-button {
-  border-color: var(--color-gray-200, currentcolor);
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--color-background);
-  color: var(--color-foreground);
+  background: var(--bg);
+  color: var(--fg);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   transition: background-color 0.3s, color 0.3s;
 }
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-brand); }
+::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--brand); }
 
-/* Wallet adapter button — brand themed */
+::selection {
+  background: #55d29240;
+  color: var(--fg);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
 .wallet-adapter-button {
-  background-color: #ffffff20 !important;
-  color: #ffffff !important;
+  background-color: rgba(255,255,255,0.08) !important;
+  color: var(--fg) !important;
   border-radius: 0.5rem !important;
   padding: 0 1.25rem !important;
   height: 2.5rem !important;
@@ -55,23 +90,34 @@ body {
   font-family: inherit !important;
   transition: all 0.15s !important;
   backdrop-filter: blur(8px) !important;
-  border: 1px solid rgba(255,255,255,0.2) !important;
+  border: 1px solid var(--border) !important;
+}
+.dark .wallet-adapter-button {
+  color: #ffffff !important;
 }
 .wallet-adapter-button:hover {
-  background-color: #ffffff30 !important;
+  background-color: rgba(255,255,255,0.12) !important;
   border-color: var(--color-brand) !important;
 }
 .wallet-adapter-button:not([disabled]):hover {
-  background-color: #ffffff30 !important;
+  background-color: rgba(255,255,255,0.12) !important;
 }
 .wallet-adapter-button-trigger {
-  background-color: #ffffff20 !important;
+  background-color: rgba(255,255,255,0.08) !important;
 }
-
 .wallet-adapter-modal-wrapper .wallet-adapter-button {
   background-color: #55d292 !important;
   color: #ffffff !important;
 }
 .wallet-adapter-modal-wrapper .wallet-adapter-button:hover {
   background-color: #3bb87a !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

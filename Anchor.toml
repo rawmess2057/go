@@ -6,13 +6,16 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-bounty_platform = "7WsPtEhY89n4yj9GshwQNgqQDGfUUdvonSto3XFVGwgQ"
+bounty_platform = "CZvJ2JhfjYGvwUYzbaVj8JiydgEo82wKMvkx4fNurvq2"
 
 [programs.localnet]
-bounty_platform = "7WsPtEhY89n4yj9GshwQNgqQDGfUUdvonSto3XFVGwgQ"
+bounty_platform = "J1joaPPEAzELE9jSLZajxZyAe6hrMAsMkQUjFJLLQK7P"
+
+[programs.testnet]
+bounty_platform = "J1joaPPEAzELE9jSLZajxZyAe6hrMAsMkQUjFJLLQK7P"
 
 [provider]
-cluster = "Devnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

@@ -14,12 +14,12 @@ import { useRouter } from "next/navigation";
 import { getTagDef } from "@/lib/tags";
 
 const STATUS_META: Record<number, { labelKey: string; color: string }> = {
-  [BountyStatus.Open]: { labelKey: "status.open", color: "bg-brand/10 text-brand border-brand/20" },
-  [BountyStatus.Submitted]: { labelKey: "status.submitted", color: "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800" },
-  [BountyStatus.WinnerSelected]: { labelKey: "status.winnerSelected", color: "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800" },
-  [BountyStatus.Completed]: { labelKey: "status.completed", color: "bg-zinc-50 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700" },
-  [BountyStatus.Disputed]: { labelKey: "status.disputed", color: "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800" },
-  [BountyStatus.Expired]: { labelKey: "status.expired", color: "bg-zinc-50 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-500 border-zinc-200 dark:border-zinc-700" },
+  [BountyStatus.Open]: { labelKey: "status.open", color: "text-brand bg-brand/10 border-brand/20" },
+  [BountyStatus.Submitted]: { labelKey: "status.submitted", color: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" },
+  [BountyStatus.WinnerSelected]: { labelKey: "status.winnerSelected", color: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800" },
+  [BountyStatus.Completed]: { labelKey: "status.completed", color: "text-muted-foreground bg-muted/50 border-border" },
+  [BountyStatus.Disputed]: { labelKey: "status.disputed", color: "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800" },
+  [BountyStatus.Expired]: { labelKey: "status.expired", color: "text-muted-foreground/60 bg-muted/30 border-border" },
 };
 
 function shortPk(pk: string) {
@@ -47,10 +47,8 @@ export default function BountyCard({ bounty, index = 0 }: { bounty: BountyData; 
     >
       <Link
         href={`/gig/${bounty.publicKey.toBase58()}`}
-        className="group block relative rounded-2xl border border-border bg-card backdrop-blur-xl hover:border-brand/40 hover:-translate-y-1 hover:shadow-[0_0_25px_-8px] hover:shadow-brand/30 transition-all duration-300 overflow-hidden"
+        className="group block relative rounded-2xl border border-border bg-surface hover:border-brand/30 hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-brand/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
         <div className="relative h-48">
           {thumbUrl && isValidImageUri(thumbUrl) ? (
             <img
@@ -59,12 +57,12 @@ export default function BountyCard({ bounty, index = 0 }: { bounty: BountyData; 
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-brand/10 via-transparent to-purple-500/10" />
+            <div className="w-full h-full bg-gradient-to-br from-brand/5 via-transparent to-brand/[0.02]" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
           <span
-            className={`absolute top-3 right-3 rounded-full px-3 py-1 text-[11px] font-medium border shadow-sm backdrop-blur-sm ${status.color}`}
+            className={`absolute top-3 right-3 rounded-full px-3 py-1 text-[11px] font-medium border shadow-sm ${status.color}`}
           >
             {t(status.labelKey)}
           </span>
@@ -91,7 +89,7 @@ export default function BountyCard({ bounty, index = 0 }: { bounty: BountyData; 
                   return (
                     <span
                       key={key}
-                      className={`rounded-full px-2 py-0.5 text-[10px] font-medium backdrop-blur-xl bg-white/70 dark:bg-black/50 border border-white/20 shadow-sm ${textOnly}`}
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-medium bg-black/40 border border-white/10 shadow-sm ${textOnly}`}
                     >
                       {tag.label}
                     </span>
@@ -111,7 +109,7 @@ export default function BountyCard({ bounty, index = 0 }: { bounty: BountyData; 
 
           <div className="mt-4 flex items-end justify-between">
             <div>
-              <div className="flex items-baseline gap-1.5">
+              <div className="flex items-baseline gap-1.5 tabular-nums">
                 <span className="font-bold text-xl text-brand">
                   {solAmount.toFixed(2)} SOL
                 </span>
@@ -119,20 +117,20 @@ export default function BountyCard({ bounty, index = 0 }: { bounty: BountyData; 
                   <span className="text-sm text-muted-foreground">(${usdAmount})</span>
                 )}
               </div>
-              <span className="text-xs text-muted-foreground/70">
+              <span className="text-xs text-muted-foreground/70 tabular-nums">
                 {t("bountyCard.perWinner")}: {(solAmount / Math.max(bounty.maxWinners, 1)).toFixed(2)} SOL
               </span>
             </div>
             <div className="text-right">
               {isExpired ? (
-                <span className="text-xs font-medium text-red-500">{t("bountyCard.expired")}</span>
+                <span className="text-xs font-medium text-error">{t("bountyCard.expired")}</span>
               ) : (
                 <CountdownTimer target={deadlineNum} />
               )}
             </div>
           </div>
 
-          <div className="mt-3 pt-3 border-t border-border/50 flex items-center justify-between text-xs text-muted-foreground">
+          <div className="mt-3 pt-3 border-t border-border/50 flex items-center justify-between text-xs text-muted-foreground tabular-nums">
             <span>
               {new Date(Number(bounty.createdAt) * 1000).toLocaleDateString(undefined, {
                 month: "short",

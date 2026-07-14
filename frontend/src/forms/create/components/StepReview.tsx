@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Copy, AlertTriangle, ExternalLink } from "lucide-react";
+import { Copy, Warning, ArrowSquareOut } from "@phosphor-icons/react";
 import { useGigCreateStore } from "@/stores/useGigCreateStore";
 import { TAGS } from "@/lib/tags";
 import toast from "react-hot-toast";
@@ -41,7 +41,7 @@ export default function StepReview() {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-2xl border border-border bg-card backdrop-blur-xl p-5 space-y-5">
+      <div className="rounded-2xl border border-border bg-surface p-5 space-y-5">
         <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Summary</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -108,10 +108,10 @@ export default function StepReview() {
         />
       </div>
 
-      <div className="rounded-2xl border border-border bg-card backdrop-blur-xl p-5 space-y-4">
+      <div className="rounded-2xl border border-border bg-surface p-5 space-y-4">
         <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Transaction Preview</h3>
 
-        <div className="rounded-lg bg-muted/30 border border-border p-4 space-y-2">
+        <div className="rounded-lg bg-muted border border-border p-4 space-y-2">
           <div className="flex justify-between text-xs">
             <span className="text-muted-foreground">Action</span>
             <span className="text-foreground font-medium">Create bounty on Solana (devnet)</span>
@@ -135,7 +135,7 @@ export default function StepReview() {
         </div>
 
         <div className="rounded-lg bg-warning/10 border border-warning/20 p-4 flex items-start gap-3">
-          <AlertTriangle className="w-4 h-4 text-warning shrink-0 mt-0.5" />
+          <Warning size={16} className="text-warning shrink-0 mt-0.5" weight="fill" />
           <div>
             <p className="text-xs font-medium text-warning mb-0.5">Irreversible Action</p>
             <p className="text-xs text-muted-foreground">
@@ -188,7 +188,7 @@ function ReviewItem({
             {isLink ? (
               <span className="inline-flex items-center gap-1 text-brand hover:underline">
                 {value}
-                <ExternalLink className="w-3 h-3" />
+                <ArrowSquareOut size={12} />
               </span>
             ) : (
               value
@@ -202,7 +202,7 @@ function ReviewItem({
             className="shrink-0 w-7 h-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
             aria-label="Copy to clipboard"
           >
-            <Copy className="w-3.5 h-3.5" />
+            <Copy size={14} />
           </button>
         )}
       </div>

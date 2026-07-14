@@ -12,7 +12,7 @@ export default function CountdownTimer({ target }: { target: number }) {
     return () => clearInterval(interval);
   }, [target]);
 
-  if (remaining <= 0) return <span className="text-red-500 text-xs font-medium">Expired</span>;
+  if (remaining <= 0) return <span className="text-error text-xs font-medium">Expired</span>;
 
   const days = Math.floor(remaining / 86400);
   const hours = Math.floor((remaining % 86400) / 3600);
@@ -24,7 +24,7 @@ export default function CountdownTimer({ target }: { target: number }) {
   parts.push(`${mins}m`);
 
   return (
-    <span className="text-xs font-medium text-zinc-500">
+    <span className="text-xs font-medium tabular-nums text-muted-foreground">
       {parts.join(" ")}
     </span>
   );

@@ -45,7 +45,7 @@ export default function Sidebar({
   if (loading) {
     return (
       <div className="space-y-6 animate-pulse">
-        <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
+        <div className="rounded-2xl border border-border bg-surface p-5 space-y-4">
           <div className="h-4 bg-muted rounded w-24" />
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="space-y-2">
@@ -60,7 +60,7 @@ export default function Sidebar({
 
   return (
     <div className="space-y-6 sticky top-24">
-      <div className="rounded-2xl border border-border bg-card p-5">
+      <div className="rounded-2xl border border-border bg-surface p-5">
         <h3 className="text-sm font-semibold mb-4 text-foreground">{t("sidebar.highestValue")}</h3>
         <div className="space-y-3">
           {highestValue.map((b) => {
@@ -77,7 +77,7 @@ export default function Sidebar({
                     {b.title || "Untitled"}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 mt-0.5">
+                <div className="flex items-center gap-2 mt-0.5 tabular-nums">
                   <span className="text-xs font-medium text-brand">{sol.toFixed(2)} SOL</span>
                   {usd && <span className="text-xs text-muted-foreground/50">(${usd})</span>}
                 </div>
@@ -87,7 +87,7 @@ export default function Sidebar({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-5">
+      <div className="rounded-2xl border border-border bg-surface p-5">
         <h3 className="text-sm font-semibold mb-4 text-foreground">{t("sidebar.topCreators")}</h3>
         <div className="space-y-3">
           {topCreators.map(([pk, data], i) => (
@@ -100,7 +100,7 @@ export default function Sidebar({
                   {shortPk(pk)}
                 </span>
               </div>
-              <div className="text-right shrink-0">
+              <div className="text-right shrink-0 tabular-nums">
                 <p className="text-xs font-medium text-foreground">
                   {(Number(data.total) / 1e9).toFixed(1)} SOL
                 </p>

@@ -2,27 +2,28 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Compass, Wallet, Briefcase, ShieldCheck } from "@phosphor-icons/react";
 
 const STEPS = [
   {
     title: "Welcome to Gigs",
-    desc: "Decentralized bounty platform on Solana. Post tasks, claim bounties, and get paid — all without a middleman.",
-    icon: "🎉",
+    desc: "Decentralized bounty platform on Solana. Post tasks, claim bounties, and get paid - all without a middleman.",
+    icon: Compass,
   },
   {
     title: "Connect Your Wallet",
     desc: "Click the 'Connect Wallet' button in the top right. We support Phantom and other Solana wallets.",
-    icon: "🔌",
+    icon: Wallet,
   },
   {
     title: "Create or Claim",
     desc: "Creators can post bounties with SOL rewards. Workers can browse, claim tasks, and earn by completing them.",
-    icon: "💼",
+    icon: Briefcase,
   },
   {
     title: "Stay Safe",
     desc: "Funds are locked in a non-custodial escrow smart contract. Disputes are resolved by an arbiter. You're always in control.",
-    icon: "🛡️",
+    icon: ShieldCheck,
   },
 ];
 
@@ -31,19 +32,22 @@ export default function OnboardingPage() {
   const router = useRouter();
 
   const current = STEPS[step];
+  const Icon = current.icon;
 
   return (
     <div className="max-w-lg mx-auto py-16">
       <div className="text-center">
-        <div className="text-6xl mb-6">{current.icon}</div>
-        <h1 className="text-2xl font-bold mb-3">{current.title}</h1>
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-brand/10 border border-brand/20 flex items-center justify-center mb-6">
+          <Icon size={32} className="text-brand" />
+        </div>
+        <h1 className="text-2xl font-bold text-foreground mb-3">{current.title}</h1>
         <p className="text-muted-foreground leading-relaxed">{current.desc}</p>
       </div>
 
-      <div className="rounded-xl bg-card backdrop-blur-xl border border-border p-4 text-sm text-muted-foreground text-center mb-8">
-        You're in control — funds are locked in escrow until you approve.
+      <div className="rounded-xl bg-surface border border-border p-4 text-sm text-muted-foreground text-center mt-6">
+        You're in control - funds are locked in escrow until you approve.
       </div>
-      {/* Dots */}
+
       <div className="flex items-center justify-center gap-2 mt-8">
         {STEPS.map((_, i) => (
           <div

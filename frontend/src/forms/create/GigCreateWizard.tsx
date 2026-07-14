@@ -238,7 +238,7 @@ export default function GigCreateWizard() {
       className="max-w-2xl mx-auto relative"
       aria-label="Create gig"
     >
-      <div className="rounded-xl bg-card backdrop-blur-xl border border-border p-4 mb-8 text-center">
+      <div className="rounded-xl bg-surface border border-border p-4 mb-8 text-center">
         <p className="text-sm text-brand font-semibold">
           Non-custodial escrow on Solana
         </p>

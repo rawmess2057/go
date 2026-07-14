@@ -43,17 +43,17 @@ export default function ProfilePage() {
   return (
     <PageTransition>
       <div className="max-w-4xl mx-auto">
-        <div className="relative rounded-2xl border border-border bg-card overflow-hidden mb-8">
-          <div className="absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-purple-500/10" />
+        <div className="relative rounded-2xl border border-border bg-surface overflow-hidden mb-8">
+          <div className="absolute inset-0 bg-gradient-to-br from-brand/5 via-transparent to-brand/[0.02]" />
           <div className="relative p-6 sm:p-8 flex items-center gap-5">
             <UserAvatar pubkey={pubkey} size={64} className="ring-2 ring-border" />
             <div className="min-w-0">
-              <h1 className="text-xl font-bold truncate font-mono">{pubkey}</h1>
+              <h1 className="text-xl font-bold text-foreground truncate font-mono">{pubkey}</h1>
               <p className="text-sm text-muted-foreground/60 mt-1">
                 {t("profile.created")}: {created.length} bounties
               </p>
             </div>
-            <div className="ml-auto text-right shrink-0">
+            <div className="ml-auto text-right shrink-0 tabular-nums">
               <p className="text-2xl font-bold text-brand">{totalSpent.toFixed(2)} SOL</p>
               <p className="text-xs text-muted-foreground/60">{t("profile.totalSpent")}</p>
             </div>
@@ -63,7 +63,7 @@ export default function ProfilePage() {
         {loading ? (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="rounded-2xl border border-border bg-card p-5 animate-pulse space-y-3">
+              <div key={i} className="rounded-2xl border border-border bg-surface p-5 animate-pulse space-y-3">
                 <div className="h-4 bg-muted rounded w-3/4" />
                 <div className="h-3 bg-muted rounded w-1/2" />
               </div>

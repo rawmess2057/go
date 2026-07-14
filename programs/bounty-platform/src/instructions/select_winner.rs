@@ -56,12 +56,27 @@ pub fn handler(ctx: Context<SelectWinner>, _bounty_id: u64) -> Result<()> {
     require!(reward_per_winner > 0, BountyError::InvalidAmount);
 
     let bounty_key = bounty.key();
-    let vault_bump = Pubkey::find_program_address(
-        &[bounty_key.as_ref(), VAULT_SEED],
-        ctx.program_id,
-    ).1;
 
     if bounty.token_mint == SOL_MINT {
+        let vault_pda = Pubkey::find_program_address(
+            &[bounty_key.as_ref(), VAULT_SEED],
+            ctx.program_id,
+        ).0;
+        require_keys_eq!(
+            ctx.accounts.vault.key(),
+            vault_pda,
+            BountyError::InvalidVault
+        );
+        require_keys_eq!(
+            ctx.accounts.recipient.key(),
+            submission.worker,
+            BountyError::InvalidRecipient
+        );
+
+        let vault_bump = Pubkey::find_program_address(
+            &[bounty_key.as_ref(), VAULT_SEED],
+            ctx.program_id,
+        ).1;
         let vault_signer = &[
             bounty_key.as_ref(),
             VAULT_SEED,
@@ -79,6 +94,25 @@ pub fn handler(ctx: Context<SelectWinner>, _bounty_id: u64) -> Result<()> {
             reward_per_winner,
         )?;
     } else {
+        let vault_ata = anchor_spl::associated_token::get_associated_token_address(
+            &bounty_key,
+            &bounty.token_mint,
+        );
+        require_keys_eq!(
+            ctx.accounts.vault.key(),
+            vault_ata,
+            BountyError::InvalidVault
+        );
+        let recipient_ata = anchor_spl::associated_token::get_associated_token_address(
+            &submission.worker,
+            &bounty.token_mint,
+        );
+        require_keys_eq!(
+            ctx.accounts.recipient.key(),
+            recipient_ata,
+            BountyError::InvalidRecipient
+        );
+
         let bounty_signer = &[
             BOUNTY_SEED,
             bounty.creator.as_ref(),

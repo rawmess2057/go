@@ -25,9 +25,9 @@ const STATUS_META: Record<number, { labelKey: string; color: string }> = {
   [BountyStatus.Open]: { labelKey: "status.open", color: "bg-brand/10 text-brand border-brand/20" },
   [BountyStatus.Submitted]: { labelKey: "status.submitted", color: "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800" },
   [BountyStatus.WinnerSelected]: { labelKey: "status.winnerSelected", color: "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800" },
-  [BountyStatus.Completed]: { labelKey: "status.completed", color: "bg-zinc-50 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700" },
+  [BountyStatus.Completed]: { labelKey: "status.completed", color: "bg-muted/50 text-muted-foreground border-border" },
   [BountyStatus.Disputed]: { labelKey: "status.disputed", color: "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800" },
-  [BountyStatus.Expired]: { labelKey: "status.expired", color: "bg-zinc-50 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-500 border-zinc-200 dark:border-zinc-700" },
+  [BountyStatus.Expired]: { labelKey: "status.expired", color: "bg-muted/30 text-muted-foreground/60 border-border" },
 };
 
 function shortPk(pk: string) {
@@ -39,7 +39,7 @@ function fireConfetti() {
     particleCount: 100,
     spread: 70,
     origin: { y: 0.6 },
-    colors: ["#55d292", "#8b5cf6", "#f59e0b"],
+    colors: ["#55d292", "#3bb87a", "#f59e0b"],
   });
 }
 
@@ -245,7 +245,7 @@ export default function BountyDetail({
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-      <div className="relative rounded-2xl border border-border bg-card backdrop-blur-xl overflow-hidden">
+      <div className="relative rounded-2xl border border-border bg-surface overflow-hidden">
         <div className="relative h-56">
           {thumbUrl && isValidImageUri(thumbUrl) ? (
             <img
@@ -254,7 +254,7 @@ export default function BountyDetail({
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-brand/10 via-transparent to-purple-500/10" />
+            <div className="w-full h-full bg-gradient-to-br from-brand/5 via-transparent to-brand/[0.02]" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
@@ -376,13 +376,13 @@ export default function BountyDetail({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card backdrop-blur-xl p-6 sm:p-8">
+      <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
         <h2 className="text-lg font-semibold mb-4">{t("detail.actions")}</h2>
 
         {bounty.status === BountyStatus.Open && (
           <div className="space-y-4">
             {isCreator || isModerator ? (
-              <p className="text-sm text-zinc-400">{t("detail.cannotSubmit")}</p>
+              <p className="text-sm text-muted-foreground">{t("detail.cannotSubmit")}</p>
             ) : (
               <>
                 <div>
@@ -411,12 +411,12 @@ export default function BountyDetail({
           <div className="space-y-4">
             {isModerator && (
               <div className="space-y-4 pt-4 border-t border-border">
-                <p className="text-sm font-medium text-zinc-700">{t("detail.moderatorActions")}</p>
+                <p className="text-sm font-medium text-foreground">{t("detail.moderatorActions")}</p>
                 <div className="space-y-3">
                   {subsLoading ? (
-                    <p className="text-sm text-zinc-400">{t("common.loading")}</p>
+                    <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
                   ) : submissions.length === 0 ? (
-                    <p className="text-sm text-zinc-400">{t("detail.noSubmissions")}</p>
+                    <p className="text-sm text-muted-foreground">{t("detail.noSubmissions")}</p>
                   ) : (
                     submissions.map((sub) => (
                       <div
@@ -424,14 +424,14 @@ export default function BountyDetail({
                         className={`rounded-lg border p-4 text-sm space-y-1 ${
                           sub.selected
                             ? "border-green-300 bg-green-50"
-                            : "border-border bg-white"
+                            : "border-border bg-surface"
                         }`}
                       >
                         <p className="font-mono text-xs break-all">
                           {shortPk(sub.worker.toBase58())}
                         </p>
                         <p className="text-xs break-all text-blue-600">{sub.uri}</p>
-                        <p className="text-xs text-zinc-400">
+                        <p className="text-xs text-muted-foreground">
                           {new Date(Number(sub.submittedAt) * 1000).toLocaleString()}
                         </p>
                         {sub.selected ? (
@@ -459,7 +459,7 @@ export default function BountyDetail({
                           </div>
                         )}
                         {sub.rejected && (
-                          <span className="text-xs text-zinc-400 font-medium">
+                          <span className="text-xs text-muted-foreground font-medium">
                             {t("detail.rejectedBadge")}
                           </span>
                         )}
@@ -470,7 +470,7 @@ export default function BountyDetail({
               </div>
             )}
             {isCreator || isModerator ? (
-              <p className="text-sm text-zinc-400">{t("detail.cannotSubmit")}</p>
+              <p className="text-sm text-muted-foreground">{t("detail.cannotSubmit")}</p>
             ) : hasSubmitted ? (
               <div className="space-y-4">
                 <div>
@@ -527,23 +527,23 @@ export default function BountyDetail({
 
         {bounty.status === BountyStatus.Disputed && isModerator && (
           <div className="space-y-4">
-            <p className="text-sm font-medium text-zinc-700">{t("detail.moderatorResolve")}</p>
+            <p className="text-sm font-medium text-foreground">{t("detail.moderatorResolve")}</p>
             <div className="space-y-3">
               {subsLoading ? (
-                <p className="text-sm text-zinc-400">{t("common.loading")}</p>
+                <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
               ) : submissions.length === 0 ? (
-                <p className="text-sm text-zinc-400">{t("detail.noSubmissions")}</p>
+                <p className="text-sm text-muted-foreground">{t("detail.noSubmissions")}</p>
               ) : (
                 submissions.map((sub) => (
                   <div
                     key={sub.publicKey.toBase58()}
-                    className="rounded-lg border border-border bg-white p-4 text-sm space-y-1"
+                    className="rounded-lg border border-border bg-surface p-4 text-sm space-y-1"
                   >
                     <p className="font-mono text-xs break-all">
                       {shortPk(sub.worker.toBase58())}
                     </p>
                     <p className="text-xs break-all text-blue-600">{sub.uri}</p>
-                    <p className="text-xs text-zinc-400">
+                    <p className="text-xs text-muted-foreground">
                       {new Date(Number(sub.submittedAt) * 1000).toLocaleString()}
                     </p>
                     <div className="flex flex-wrap gap-2 mt-2">
@@ -576,7 +576,7 @@ export default function BountyDetail({
             <button
               onClick={() => exec("refund")}
               disabled={sending !== null}
-              className="rounded-lg bg-zinc-800 px-5 py-2.5 text-sm font-medium text-white hover:bg-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="rounded-lg bg-muted text-foreground px-5 py-2.5 text-sm font-medium hover:bg-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {sending === "refund" ? p : t("detail.refundExpired")}
             </button>
@@ -587,7 +587,7 @@ export default function BountyDetail({
             <button
               onClick={() => exec("close")}
               disabled={sending !== null}
-              className="rounded-lg border border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {sending === "close" ? p : t("detail.closeBounty")}
             </button>
@@ -595,7 +595,7 @@ export default function BountyDetail({
         )}
       </div>
 
-      <div className="rounded-2xl border border-border bg-card backdrop-blur-xl p-6 sm:p-8">
+      <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
         <h2 className="text-lg font-semibold mb-4">{t("detail.submissions")} ({submissions.length})</h2>
         {subsLoading ? (
           <div className="space-y-3">
