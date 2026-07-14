@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 const STEPS = [
   {
-    title: "Welcome to BountyFlow",
+    title: "Welcome to Gigs",
     desc: "Decentralized bounty platform on Solana. Post tasks, claim bounties, and get paid — all without a middleman.",
     icon: "🎉",
   },

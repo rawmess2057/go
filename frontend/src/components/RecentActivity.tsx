@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { BountyData } from "@/hooks/useBounties";
 import UserAvatar from "./UserAvatar";
+import { LiquidGlassCard } from "@/components/ui/liquid-glass";
 
 function shortPk(pk: string) {
   return `${pk.slice(0, 4)}...${pk.slice(-4)}`;
@@ -51,13 +52,13 @@ export default function RecentActivity({ bounties }: { bounties: BountyData[] })
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-white overflow-hidden">
-      <div className="px-5 py-4 border-b border-border bg-muted/30">
-        <h3 className="text-sm font-semibold text-brand">Recent Activity</h3>
+    <LiquidGlassCard glowIntensity="sm" shadowIntensity="sm" borderRadius="16px" blurIntensity="sm" className="bg-brand-dark">
+      <div className="px-5 py-4 border-b border-white/20 bg-white/10">
+        <h3 className="text-sm font-semibold text-white">Recent Activity</h3>
       </div>
-      <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
+      <div className="divide-y divide-white/20 max-h-[400px] overflow-y-auto">
         {activities.length === 0 && (
-          <p className="text-sm text-brand/60 text-center py-8">No activity yet.</p>
+          <p className="text-sm text-white/60 text-center py-8">No activity yet.</p>
         )}
         {activities.map((a) => {
           const cfg = typeConfig[a.type];
@@ -65,7 +66,7 @@ export default function RecentActivity({ bounties }: { bounties: BountyData[] })
             <Link
               key={a.id}
               href={`/profile/${a.pubkey}`}
-              className="flex items-start gap-3 px-5 py-3 hover:bg-muted/30 transition-colors group"
+              className="flex items-start gap-3 px-5 py-3 hover:bg-white/10 transition-colors group"
             >
               <div className="relative shrink-0 mt-0.5">
                 <UserAvatar pubkey={a.pubkey} size={28} />
@@ -73,11 +74,11 @@ export default function RecentActivity({ bounties }: { bounties: BountyData[] })
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm truncate">
-                  <span className="font-medium text-brand group-hover:text-brand transition-colors">{shortPk(a.pubkey)}</span>{" "}
-                  <span className="text-brand/60">{cfg.label}</span>{" "}
-                  <span className="font-medium text-brand">{a.title}</span>
+                  <span className="font-medium text-white group-hover:text-white transition-colors">{shortPk(a.pubkey)}</span>{" "}
+                  <span className="text-white/60">{cfg.label}</span>{" "}
+                  <span className="font-medium text-white">{a.title}</span>
                 </p>
-                <p className="text-xs text-brand/40 mt-0.5">
+                <p className="text-xs text-white/40 mt-0.5">
                   {formatTimeAgo(a.time)}
                 </p>
               </div>
@@ -85,7 +86,7 @@ export default function RecentActivity({ bounties }: { bounties: BountyData[] })
           );
         })}
       </div>
-    </div>
+    </LiquidGlassCard>
   );
 }
 

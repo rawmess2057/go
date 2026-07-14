@@ -12,6 +12,7 @@ import Link from "next/link";
 import { BountyStatus } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n";
 import { useSolPrice } from "@/hooks/useSolPrice";
+import { LiquidGlassCard } from "@/components/ui/liquid-glass";
 
 type Tab = "created" | "history";
 
@@ -95,7 +96,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="flex gap-1 border-b border-border mb-6">
+      <div className="flex gap-1 border-b border-white/20 mb-6">
         {tabs.map((tabItem) => (
           <button
             key={tabItem.key}
@@ -108,7 +109,7 @@ export default function DashboardPage() {
           >
             {t(tabItem.labelKey)}
             {tabItem.count > 0 && (
-              <span className="ml-1.5 text-xs bg-muted px-1.5 py-0.5 rounded-full">
+              <span className="ml-1.5 text-xs bg-white/20 px-1.5 py-0.5 rounded-full">
                 {tabItem.count}
               </span>
             )}
@@ -132,16 +133,16 @@ function BountyTable({ bounties, emptyMsg }: { bounties: BountyData[]; emptyMsg:
 
   if (bounties.length === 0) {
     return (
-      <div className="text-center py-12 text-brand/60 text-sm">{emptyMsg}</div>
+      <div className="text-center py-12 text-white/60 text-sm">{emptyMsg}</div>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-white overflow-hidden">
+    <LiquidGlassCard glowIntensity="sm" shadowIntensity="sm" borderRadius="16px" blurIntensity="sm" className="bg-brand-dark">
       <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-border text-brand/60 text-xs uppercase tracking-wider">
+          <tr className="border-b border-white/20 text-white/60 text-xs uppercase tracking-wider">
             <th className="text-left py-3 px-2 font-medium">{t("dashboard.table.title")}</th>
             <th className="text-left py-3 px-2 font-medium">{t("dashboard.table.reward")}</th>
             <th className="text-left py-3 px-2 font-medium">{t("dashboard.table.status")}</th>
@@ -152,24 +153,24 @@ function BountyTable({ bounties, emptyMsg }: { bounties: BountyData[]; emptyMsg:
         </thead>
         <tbody>
           {bounties.map((b) => (
-            <tr key={b.publicKey.toBase58()} className="border-b border-border hover:bg-muted/50">
-              <td className="py-3 px-2 font-medium text-brand truncate max-w-[200px]">
+            <tr key={b.publicKey.toBase58()} className="border-b border-white/20 hover:bg-white/10">
+              <td className="py-3 px-2 font-medium text-white truncate max-w-[200px]">
                 {b.title || "Untitled"}
               </td>
-              <td className="py-3 px-2 text-brand">{(Number(b.amount) / 1e9).toFixed(2)} SOL</td>
+              <td className="py-3 px-2 text-white">{(Number(b.amount) / 1e9).toFixed(2)} SOL</td>
               <td className="py-3 px-2">
                 <StatusBadge status={b.status} />
               </td>
-              <td className="py-3 px-2 text-brand/60">
+              <td className="py-3 px-2 text-white/60">
                 {b.winnersSelected}/{b.maxWinners}
               </td>
-              <td className="py-3 px-2 text-brand/60">
+              <td className="py-3 px-2 text-white/60">
                 {new Date(Number(b.deadline) * 1000).toLocaleDateString()}
               </td>
               <td className="py-3 px-2">
                 <Link
                   href={`/gig/${b.publicKey.toBase58()}`}
-                  className="text-brand text-xs hover:underline"
+                  className="text-white/60 text-xs hover:text-white"
                 >
                   {t("dashboard.table.view")}
                 </Link>
@@ -179,19 +180,19 @@ function BountyTable({ bounties, emptyMsg }: { bounties: BountyData[]; emptyMsg:
         </tbody>
       </table>
     </div>
-    </div>
+    </LiquidGlassCard>
   );
 }
 
 function StatusBadge({ status }: { status: number }) {
   const { t } = useTranslation();
   const map: Record<number, string> = {
-    [BountyStatus.Open]: "text-brand",
+    [BountyStatus.Open]: "text-white",
     [BountyStatus.Submitted]: "text-amber-500",
     [BountyStatus.WinnerSelected]: "text-blue-500",
-    [BountyStatus.Completed]: "text-muted-foreground",
+    [BountyStatus.Completed]: "text-white/60",
     [BountyStatus.Disputed]: "text-red-500",
-    [BountyStatus.Expired]: "text-muted-foreground/60",
+    [BountyStatus.Expired]: "text-white/40",
   };
   const labelKeys: Record<number, string> = {
     [BountyStatus.Open]: "status.open",

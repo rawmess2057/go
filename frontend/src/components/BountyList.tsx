@@ -6,16 +6,18 @@ import BountyCard from "./BountyCard";
 import SearchBar from "./SearchBar";
 import SortDropdown, { type SortKey } from "./SortDropdown";
 import Sidebar from "./Sidebar";
-import { BountyStatus } from "@/lib/constants";
 import EmptyState from "./EmptyState";
 import SkeletonCard from "./SkeletonCard";
 import { useTranslation } from "@/lib/i18n";
+import { TAGS, type TagKey } from "@/lib/tags";
+import { parseReferenceUri } from "@/hooks/useMetadata";
 
-const FILTERS = [
-  { labelKey: "bountyList.all", value: -1 },
-  { labelKey: "status.open", value: BountyStatus.Open },
-  { labelKey: "status.submitted", value: BountyStatus.Submitted },
-  { labelKey: "status.completed", value: BountyStatus.Completed },
+const ALL = -1;
+type FilterValue = typeof ALL | TagKey;
+
+const CATEGORY_FILTERS = [
+  { type: "all" as const, key: ALL, label: "bountyList.all" },
+  ...TAGS.map(tag => ({ type: "tag" as const, key: tag.key, label: tag.label })),
 ] as const;
 
 const PAGE_SIZE = 12;
@@ -39,7 +41,7 @@ function sortBounties(bounties: BountyData[], sort: SortKey): BountyData[] {
 export default function BountyList() {
   const { t } = useTranslation();
   const { bounties, loading, refetch } = useBounties();
-  const [activeFilter, setActiveFilter] = useState(-1);
+  const [activeFilter, setActiveFilter] = useState<FilterValue>(ALL);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortKey>("reward-desc");
   const [page, setPage] = useState(1);
@@ -56,9 +58,12 @@ export default function BountyList() {
   }, []);
 
   const processed = useMemo(() => {
-    let result = activeFilter === -1
+    let result = activeFilter === ALL
       ? bounties
-      : bounties.filter((b) => b.status === activeFilter);
+      : bounties.filter((b) => {
+          const parsed = parseReferenceUri(b.referenceUri);
+          return parsed.tags.includes(activeFilter);
+        });
     if (search) result = result.filter((b) => searchMatch(b, search));
     result = sortBounties(result, sort);
     return result;
@@ -91,17 +96,17 @@ export default function BountyList() {
         </div>
 
         <div className="flex gap-2 mb-6 flex-wrap">
-          {FILTERS.map((f) => (
+          {CATEGORY_FILTERS.map((f) => (
             <button
-              key={f.value}
-              onClick={() => { setActiveFilter(f.value); setPage(1); }}
+              key={f.key}
+              onClick={() => { setActiveFilter(f.key as FilterValue); setPage(1); }}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                activeFilter === f.value
+                activeFilter === f.key
                   ? "bg-brand text-white shadow-sm shadow-brand/20"
                   : "border border-border text-muted-foreground hover:text-foreground hover:border-brand/40"
               }`}
             >
-              {t(f.labelKey)}
+              {f.type === "all" ? t(f.label) : f.label}
             </button>
           ))}
         </div>
