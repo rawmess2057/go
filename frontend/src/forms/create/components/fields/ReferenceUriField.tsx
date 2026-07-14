@@ -37,10 +37,19 @@ export default function ReferenceUriField() {
                 type="text"
                 value={referenceUri}
                 onChange={(e) => setField("referenceUri", e.target.value)}
-                className="w-full rounded-lg border border-border bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/50 transition-all"
+                className={`w-full rounded-lg border bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/50 transition-all ${
+                  errors.referenceUri ? "border-error ring-1 ring-error/30" : "border-border"
+                }`}
                 placeholder="https://... or ipfs://..."
+                aria-invalid={!!errors.referenceUri}
+                aria-describedby={errors.referenceUri ? "ref-error" : undefined}
               />
-              {referenceUri && (
+              {errors.referenceUri && (
+                <p id="ref-error" className="text-xs text-error mt-1" role="alert">
+                  {errors.referenceUri}
+                </p>
+              )}
+              {!errors.referenceUri && referenceUri && (
                 <p className="text-xs text-success mt-1">Valid link</p>
               )}
               <p className="mt-1 text-xs text-muted-foreground">
