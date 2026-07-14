@@ -342,7 +342,7 @@ export default function BountyDetail({
           <div className="mt-6 pt-6 border-t border-border">
             <h3 className="text-sm font-semibold mb-4">{t("detail.timeline")}</h3>
             <div className="relative">
-              <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-brand via-purple-500 to-muted rounded-full" />
+              <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-brand/30 rounded-full" />
               <div className="space-y-5">
                 <TimelineItem label={t("detail.timelineCreated")} time={new Date(Number(bounty.createdAt) * 1000).toLocaleString()} active />
                 {bounty.status >= BountyStatus.Submitted && (
@@ -661,8 +661,8 @@ function TimelineItem({
           warning
             ? "bg-red-500"
             : active
-            ? "bg-gradient-to-br from-brand to-purple-500"
-            : "bg-muted"
+            ? "bg-brand"
+            : "bg-white/20"
         }`}
       >
         {active && !warning && (
