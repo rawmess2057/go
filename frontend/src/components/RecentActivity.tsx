@@ -51,13 +51,13 @@ export default function RecentActivity({ bounties }: { bounties: BountyData[] })
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-card overflow-hidden">
+    <div className="rounded-2xl border border-border bg-white overflow-hidden">
       <div className="px-5 py-4 border-b border-border bg-muted/30">
-        <h3 className="text-sm font-semibold">Recent Activity</h3>
+        <h3 className="text-sm font-semibold text-brand">Recent Activity</h3>
       </div>
       <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
         {activities.length === 0 && (
-          <p className="text-sm text-muted-foreground/60 text-center py-8">No activity yet.</p>
+          <p className="text-sm text-brand/60 text-center py-8">No activity yet.</p>
         )}
         {activities.map((a) => {
           const cfg = typeConfig[a.type];
@@ -69,15 +69,15 @@ export default function RecentActivity({ bounties }: { bounties: BountyData[] })
             >
               <div className="relative shrink-0 mt-0.5">
                 <UserAvatar pubkey={a.pubkey} size={28} />
-                <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-card ${cfg.dot}`} />
+                <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${cfg.dot}`} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm truncate">
-                  <span className="font-medium group-hover:text-brand transition-colors">{shortPk(a.pubkey)}</span>{" "}
-                  <span className="text-muted-foreground/60">{cfg.label}</span>{" "}
-                  <span className="font-medium">{a.title}</span>
+                  <span className="font-medium text-brand group-hover:text-brand transition-colors">{shortPk(a.pubkey)}</span>{" "}
+                  <span className="text-brand/60">{cfg.label}</span>{" "}
+                  <span className="font-medium text-brand">{a.title}</span>
                 </p>
-                <p className="text-xs text-muted-foreground/40 mt-0.5">
+                <p className="text-xs text-brand/40 mt-0.5">
                   {formatTimeAgo(a.time)}
                 </p>
               </div>

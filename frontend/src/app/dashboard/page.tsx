@@ -38,7 +38,7 @@ export default function DashboardPage() {
     return (
       <div className="text-center py-20">
         <h1 className="text-2xl font-bold mb-2">{t("dashboard.title")}</h1>
-        <p className="text-zinc-500">{t("detail.connectWallet")}</p>
+        <p className="text-white/60">{t("detail.connectWallet")}</p>
       </div>
     );
   }
@@ -60,10 +60,10 @@ export default function DashboardPage() {
     <PageTransition>
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">{t("dashboard.title")}</h1>
+        <h1 className="text-2xl font-bold text-white">{t("dashboard.title")}</h1>
         <button
           onClick={refetch}
-          className="text-sm text-zinc-400 hover:text-brand transition-colors"
+          className="text-sm text-white/60 hover:text-white transition-colors"
         >
           {t("dashboard.refresh")}
         </button>
@@ -102,8 +102,8 @@ export default function DashboardPage() {
             onClick={() => setTab(tabItem.key as Tab)}
             className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
               tab === tabItem.key
-                ? "border-brand text-brand"
-                : "border-transparent text-zinc-400 hover:text-zinc-600"
+                ? "border-brand text-white"
+                : "border-transparent text-white/60 hover:text-white"
             }`}
           >
             {t(tabItem.labelKey)}
@@ -118,7 +118,7 @@ export default function DashboardPage() {
 
       {tab === "created" && <BountyTable bounties={created} emptyMsg={t("dashboard.emptyCreated")} />}
       {tab === "history" && (
-        <div className="text-center py-12 text-zinc-400 text-sm">
+        <div className="text-center py-12 text-white/60 text-sm">
           {t("dashboard.historyComing")}
         </div>
       )}
@@ -132,15 +132,16 @@ function BountyTable({ bounties, emptyMsg }: { bounties: BountyData[]; emptyMsg:
 
   if (bounties.length === 0) {
     return (
-      <div className="text-center py-12 text-zinc-400 text-sm">{emptyMsg}</div>
+      <div className="text-center py-12 text-brand/60 text-sm">{emptyMsg}</div>
     );
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="rounded-2xl border border-border bg-white overflow-hidden">
+      <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-border text-zinc-400 text-xs uppercase tracking-wider">
+          <tr className="border-b border-border text-brand/60 text-xs uppercase tracking-wider">
             <th className="text-left py-3 px-2 font-medium">{t("dashboard.table.title")}</th>
             <th className="text-left py-3 px-2 font-medium">{t("dashboard.table.reward")}</th>
             <th className="text-left py-3 px-2 font-medium">{t("dashboard.table.status")}</th>
@@ -152,17 +153,17 @@ function BountyTable({ bounties, emptyMsg }: { bounties: BountyData[]; emptyMsg:
         <tbody>
           {bounties.map((b) => (
             <tr key={b.publicKey.toBase58()} className="border-b border-border hover:bg-muted/50">
-              <td className="py-3 px-2 font-medium truncate max-w-[200px]">
+              <td className="py-3 px-2 font-medium text-brand truncate max-w-[200px]">
                 {b.title || "Untitled"}
               </td>
-              <td className="py-3 px-2">{(Number(b.amount) / 1e9).toFixed(2)} SOL</td>
+              <td className="py-3 px-2 text-brand">{(Number(b.amount) / 1e9).toFixed(2)} SOL</td>
               <td className="py-3 px-2">
                 <StatusBadge status={b.status} />
               </td>
-              <td className="py-3 px-2 text-zinc-400">
+              <td className="py-3 px-2 text-brand/60">
                 {b.winnersSelected}/{b.maxWinners}
               </td>
-              <td className="py-3 px-2 text-zinc-400">
+              <td className="py-3 px-2 text-brand/60">
                 {new Date(Number(b.deadline) * 1000).toLocaleDateString()}
               </td>
               <td className="py-3 px-2">
@@ -178,6 +179,7 @@ function BountyTable({ bounties, emptyMsg }: { bounties: BountyData[]; emptyMsg:
         </tbody>
       </table>
     </div>
+    </div>
   );
 }
 
@@ -187,9 +189,9 @@ function StatusBadge({ status }: { status: number }) {
     [BountyStatus.Open]: "text-brand",
     [BountyStatus.Submitted]: "text-amber-500",
     [BountyStatus.WinnerSelected]: "text-blue-500",
-    [BountyStatus.Completed]: "text-zinc-400",
+    [BountyStatus.Completed]: "text-muted-foreground",
     [BountyStatus.Disputed]: "text-red-500",
-    [BountyStatus.Expired]: "text-zinc-300",
+    [BountyStatus.Expired]: "text-muted-foreground/60",
   };
   const labelKeys: Record<number, string> = {
     [BountyStatus.Open]: "status.open",
@@ -201,7 +203,7 @@ function StatusBadge({ status }: { status: number }) {
   };
 
   return (
-    <span className={`text-xs font-medium ${map[status] || ""}`}>
+    <span className={`text-xs font-medium ${map[status] || "text-brand"}`}>
       {t(labelKeys[status] || "status.unknown")}
     </span>
   );

@@ -31,7 +31,7 @@ export default function Header() {
       <header className="sticky top-0 z-50 bg-background/70 backdrop-blur-xl border-b border-border">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="text-lg font-bold tracking-tight text-brand">gig</span>
+            <span className="text-lg font-bold tracking-tight text-white">gig</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -43,8 +43,8 @@ export default function Header() {
                   href={link.href}
                   className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-all ${
                     active
-                      ? "text-brand bg-brand/10"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "text-white bg-white/20"
+                      : "text-white/70 hover:text-white hover:bg-white/20"
                   }`}
                 >
                   {t(`nav.${link.key}`)}
@@ -64,7 +64,7 @@ export default function Header() {
                 el?.focus();
                 el?.scrollIntoView({ behavior: "smooth", block: "center" });
               }}
-              className="hidden sm:inline-flex w-9 h-9 rounded-lg border border-border text-foreground/60 hover:text-foreground hover:bg-muted items-center justify-center transition-all"
+              className="hidden sm:inline-flex w-9 h-9 rounded-lg border border-white/20 text-white/60 hover:text-white hover:bg-white/20 items-center justify-center transition-all"
               aria-label="Search"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -73,7 +73,7 @@ export default function Header() {
 
             <button
               onClick={() => setLocale(locale === "en" ? "ne" : "en")}
-              className="hidden sm:inline-flex h-9 px-3 items-center text-xs font-medium text-foreground/60 hover:text-foreground border border-border rounded-lg hover:bg-muted transition-all"
+              className="hidden sm:inline-flex h-9 px-3 items-center text-xs font-medium text-white/60 hover:text-white border border-white/20 rounded-lg hover:bg-white/20 transition-all"
             >
               {t("header.switchLanguage")}
             </button>
@@ -84,7 +84,7 @@ export default function Header() {
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden w-9 h-9 rounded-lg border border-border text-foreground/60 hover:text-foreground hover:bg-muted flex items-center justify-center transition-all"
+              className="md:hidden w-9 h-9 rounded-lg border border-white/20 text-white/60 hover:text-white hover:bg-white/20 flex items-center justify-center transition-all"
               aria-label="Menu"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,8 +110,8 @@ export default function Header() {
                     onClick={() => setMenuOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
                       active
-                        ? "text-brand bg-brand/10"
-                        : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                        ? "text-white bg-white/20"
+                        : "text-white/70 hover:text-white hover:bg-white/20"
                     }`}
                   >
                     <span className="w-6 text-center">{link.icon}</span>

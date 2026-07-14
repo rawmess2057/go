@@ -5,7 +5,7 @@
   --color-brand-dark: #3bb87a;
   --color-brand-light: #7be0aa;
   --color-brand-gradient: linear-gradient(135deg, #55d292, #8b5cf6);
-  --color-background: #e8faf1;
+  --color-background: #55d292;
   --color-foreground: #171717;
   --color-muted: #d0f0dc;
   --color-border: #b8e0c8;
@@ -28,8 +28,8 @@ body {
 
 /* Wallet adapter button — brand themed */
 .wallet-adapter-button {
-  background-color: #17171720 !important;
-  color: #171717 !important;
+  background-color: #ffffff20 !important;
+  color: #ffffff !important;
   border-radius: 0.5rem !important;
   padding: 0 1.25rem !important;
   height: 2.5rem !important;
@@ -38,17 +38,17 @@ body {
   font-family: inherit !important;
   transition: all 0.15s !important;
   backdrop-filter: blur(8px) !important;
-  border: 1px solid rgba(0,0,0,0.1) !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
 }
 .wallet-adapter-button:hover {
-  background-color: #17171730 !important;
+  background-color: #ffffff30 !important;
   border-color: var(--color-brand) !important;
 }
 .wallet-adapter-button:not([disabled]):hover {
-  background-color: #17171730 !important;
+  background-color: #ffffff30 !important;
 }
 .wallet-adapter-button-trigger {
-  background-color: #17171720 !important;
+  background-color: #ffffff20 !important;
 }
 
 .wallet-adapter-modal-wrapper .wallet-adapter-button {

@@ -24,7 +24,7 @@ export default function MobileNav() {
             key={item.href}
             href={item.href}
             className={`flex flex-col items-center justify-center gap-0.5 px-4 py-1.5 rounded-lg transition-all ${
-              active ? "text-brand" : "text-foreground/40 hover:text-foreground/70"
+              active ? "text-white" : "text-white/40 hover:text-white/70"
             }`}
           >
             <span className="text-lg leading-none">{item.icon}</span>

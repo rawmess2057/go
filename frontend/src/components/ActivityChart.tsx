@@ -36,30 +36,30 @@ export default function ActivityChart({ bounties }: { bounties: BountyData[] }) 
   }, [bounties]);
 
   return (
-    <div className="rounded-2xl border border-border bg-card overflow-hidden">
+    <div className="rounded-2xl border border-border bg-white overflow-hidden">
       <div className="px-5 py-4 border-b border-border bg-muted/30">
-        <h3 className="text-sm font-semibold">Activity (30d)</h3>
+        <h3 className="text-sm font-semibold text-brand">Activity (30d)</h3>
       </div>
       <div className="p-5">
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={data} barGap={2}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-            <XAxis dataKey="day" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} interval={3} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} allowDecimals={false} />
+            <XAxis dataKey="day" tick={{ fontSize: 11, fill: "rgba(85,210,146,0.5)" }} interval={3} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 11, fill: "rgba(85,210,146,0.5)" }} axisLine={false} tickLine={false} allowDecimals={false} />
             <Tooltip
               contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12 }}
               labelFormatter={(_, payload) => payload?.[0]?.payload?.date ?? ""}
             />
             <Bar dataKey="created" fill="var(--brand)" radius={[4, 4, 0, 0]} maxBarSize={8} name="Created" />
-            <Bar dataKey="completed" fill="var(--muted-foreground)" radius={[4, 4, 0, 0]} maxBarSize={8} name="Completed" />
+            <Bar dataKey="completed" fill="rgba(85,210,146,0.3)" radius={[4, 4, 0, 0]} maxBarSize={8} name="Completed" />
           </BarChart>
         </ResponsiveContainer>
-        <div className="flex gap-4 mt-3 text-xs text-muted-foreground/60">
+        <div className="flex gap-4 mt-3 text-xs text-brand/60">
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-sm bg-brand" /> Created
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-muted-foreground/40" /> Completed
+            <span className="w-2.5 h-2.5 rounded-sm bg-brand/30" /> Completed
           </span>
         </div>
       </div>

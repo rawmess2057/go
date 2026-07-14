@@ -29,12 +29,12 @@ export default function NotificationBell() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-muted transition-colors"
+        className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-white/20 transition-colors"
         aria-label="Notifications"
       >
         <Bell className="w-4 h-4" />
         {unreadCount > 0 && (
-          <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-brand rounded-full ring-2 ring-background" />
+          <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-brand rounded-full ring-2 ring-white" />
         )}
       </button>
 

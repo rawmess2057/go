@@ -48,15 +48,15 @@ export default function LeaderboardPage() {
   return (
     <PageTransition>
       <div>
-        <h1 className="text-2xl font-bold mb-2">{t("leaderboard.title")}</h1>
-        <p className="text-sm text-muted-foreground/60 mb-8">
+        <h1 className="text-2xl font-bold mb-2 text-white">{t("leaderboard.title")}</h1>
+        <p className="text-sm text-white/60 mb-8">
           {t("leaderboard.topEarners")} &amp; {t("leaderboard.topCreators")}
         </p>
 
         <div className="grid gap-8 lg:grid-cols-2">
-          <div className="rounded-2xl border border-border bg-card overflow-hidden">
+          <div className="rounded-2xl border border-border bg-white overflow-hidden">
             <div className="px-5 py-4 border-b border-border bg-muted/30">
-              <h2 className="text-sm font-semibold">{t("leaderboard.topCreators")}</h2>
+              <h2 className="text-sm font-semibold text-brand">{t("leaderboard.topCreators")}</h2>
             </div>
             <div className="divide-y divide-border">
               {loading
@@ -68,23 +68,23 @@ export default function LeaderboardPage() {
                   ))
                 : topCreators.map(([pk, data], i) => (
                     <Link key={pk} href={`/profile/${pk}`} className="flex items-center gap-3 px-5 py-3 hover:bg-muted/30 transition-colors group">
-                      <span className="w-6 text-center text-sm font-bold text-muted-foreground/40">{i + 1}</span>
+                      <span className="w-6 text-center text-sm font-bold text-brand/40">{i + 1}</span>
                       <UserAvatar pubkey={pk} size={32} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate group-hover:text-brand transition-colors">{shortPk(pk)}</p>
+                        <p className="text-sm font-medium text-brand truncate group-hover:text-brand transition-colors">{shortPk(pk)}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-semibold">{(Number(data.spent) / 1e9).toFixed(1)} SOL</p>
-                        <p className="text-xs text-muted-foreground/60">{data.count} {t("leaderboard.bounties")}</p>
+                        <p className="text-sm font-semibold text-brand">{(Number(data.spent) / 1e9).toFixed(1)} SOL</p>
+                        <p className="text-xs text-brand/60">{data.count} {t("leaderboard.bounties")}</p>
                       </div>
                     </Link>
                   ))}
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card overflow-hidden">
+          <div className="rounded-2xl border border-border bg-white overflow-hidden">
             <div className="px-5 py-4 border-b border-border bg-muted/30">
-              <h2 className="text-sm font-semibold">{t("leaderboard.topEarners")}</h2>
+              <h2 className="text-sm font-semibold text-brand">{t("leaderboard.topEarners")}</h2>
             </div>
             <div className="divide-y divide-border">
               {loading
@@ -96,14 +96,14 @@ export default function LeaderboardPage() {
                   ))
                 : topEarners.map(([pk, data], i) => (
                     <Link key={pk} href={`/profile/${pk}`} className="flex items-center gap-3 px-5 py-3 hover:bg-muted/30 transition-colors group">
-                      <span className="w-6 text-center text-sm font-bold text-muted-foreground/40">{i + 1}</span>
+                      <span className="w-6 text-center text-sm font-bold text-brand/40">{i + 1}</span>
                       <UserAvatar pubkey={pk} size={32} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate group-hover:text-brand transition-colors">{shortPk(pk)}</p>
+                        <p className="text-sm font-medium text-brand truncate group-hover:text-brand transition-colors">{shortPk(pk)}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-semibold">{(Number(data.earned) / 1e9).toFixed(1)} SOL</p>
-                        <p className="text-xs text-muted-foreground/60">{data.count} {t("leaderboard.bounties")}</p>
+                        <p className="text-sm font-semibold text-brand">{(Number(data.earned) / 1e9).toFixed(1)} SOL</p>
+                        <p className="text-xs text-brand/60">{data.count} {t("leaderboard.bounties")}</p>
                       </div>
                     </Link>
                   ))}
