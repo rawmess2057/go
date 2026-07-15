@@ -6,6 +6,7 @@ import { PublicKey } from "@solana/web3.js";
 import { useGigCreateStore } from "@/stores/useGigCreateStore";
 import { TokenOption, DEFAULT_TOKEN } from "@/forms/create/types";
 import { SOL_MINT } from "@/lib/constants";
+import TokenDropdown from "./TokenDropdown";
 
 const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 
@@ -59,31 +60,16 @@ export default function TokenSelector() {
     return () => { cancelled = true; };
   }, [wallet.publicKey, connection]);
 
+  const handleChange = (token: TokenOption) => {
+    setField("selectedToken", token);
+  };
+
   return (
-    <select
-      value={selectedToken.mint.toBase58()}
-      onChange={(e) => {
-        const mintStr = e.target.value;
-        if (mintStr === SOL_MINT.toBase58()) {
-          setField("selectedToken", DEFAULT_TOKEN);
-        } else {
-          const found = tokenOptions.find((t) => t.mint.toBase58() === mintStr);
-          if (found) setField("selectedToken", found);
-        }
-      }}
-      className="rounded-xl border border-border bg-muted/30 px-3 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand/50 min-w-[100px]"
-      aria-label="Select token"
-    >
-      <option value={SOL_MINT.toBase58()}>SOL</option>
-      {loading && <option disabled>Loading...</option>}
-      {tokenOptions.map((t) => (
-        <option key={t.mint.toBase58()} value={t.mint.toBase58()}>
-          {t.symbol}
-        </option>
-      ))}
-      {!loading && tokenOptions.length === 0 && (
-        <option value="" disabled>No SPL tokens</option>
-      )}
-    </select>
+    <TokenDropdown
+      selected={selectedToken}
+      options={tokenOptions}
+      loading={loading}
+      onChange={handleChange}
+    />
   );
 }
