@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import AppWalletProvider from "@/components/AppWalletProvider";
 import Header from "@/components/Header";
@@ -33,8 +34,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
-      <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('dark')" }} />
       <body className="min-h-screen flex flex-col antialiased bg-background text-foreground">
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: "document.documentElement.classList.add('dark')"
+          }}
+        />
         <ThemeProviders>
         <AppWalletProvider>
           <I18nClient>

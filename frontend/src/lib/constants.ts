@@ -1,15 +1,11 @@
 import { PublicKey } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
 
-// After anchor deploy, replace this with your new devnet program ID
 export const PROGRAM_ID = new PublicKey(
   process.env.NEXT_PUBLIC_PROGRAM_ID ||
-    "J1joaPPEAzELE9jSLZajxZyAe6hrMAsMkQUjFJLLQK7P"
+    "CZvJ2JhfjYGvwUYzbaVj8JiydgEo82wKMvkx4fNurvq2"
 );
-export const OLD_PROGRAM_ID = new PublicKey(
-  process.env.NEXT_PUBLIC_OLD_PROGRAM_ID ||
-    "C7eNdMTe876bUCFYcjBcY3f6VixfiitHodxp2rTm9HgU"
-);
+export const OLD_PROGRAM_ID = PROGRAM_ID;
 export const SOL_MINT = new PublicKey("11111111111111111111111111111111");
 export const RPC_URL =
   process.env.NEXT_PUBLIC_SOLANA_RPC_URL || "https://api.devnet.solana.com";
