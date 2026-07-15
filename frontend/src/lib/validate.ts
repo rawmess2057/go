@@ -1,4 +1,4 @@
-const ALLOWED_SCHEMES = ["https:", "http:", "ipfs:", "ar:"];
+const ALLOWED_SCHEMES = ["https:", "ipfs:", "ar:"];
 const IMAGE_SCHEMES = ["https:", "http:", "ipfs:", "ar:"];
 const MAX_URI_LENGTH = 200;
 
@@ -11,6 +11,38 @@ const DANGEROUS_PATTERNS = [
 ];
 
 const SOLANA_PUBKEY_REGEX = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+const BLOCKED_HOSTNAMES = [
+  "localhost", "127.0.0.1", "0.0.0.0", "[::1]", "::1",
+];
+
+const PRIVATE_IP_PATTERNS = [
+  /^10\./,
+  /^172\.(1[6-9]|2\d|3[01])\./,
+  /^192\.168\./,
+  /^127\./,
+  /^0\./,
+  /^169\.254\./,
+  /^\[?::1\]?$/i,
+  /^\[?f[cd]/i,
+];
+
+const VALID_HOSTNAME_REGEX = /^([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
+const HOSTNAME_INVALID_CHARS = /[,\s_]/;
+
+export interface ValidationResult {
+  valid: boolean;
+  error?: string;
+}
+
+function isValidHostname(hostname: string): boolean {
+  if (!hostname) return false;
+  const lower = hostname.toLowerCase();
+  if (BLOCKED_HOSTNAMES.includes(lower)) return false;
+  if (PRIVATE_IP_PATTERNS.some((p) => p.test(lower))) return false;
+  if (HOSTNAME_INVALID_CHARS.test(hostname)) return false;
+  return VALID_HOSTNAME_REGEX.test(hostname);
+}
 
 export function isValidSolanaAddress(address: string): boolean {
   if (!address || typeof address !== "string") return false;
@@ -29,16 +61,25 @@ export function isValidUri(uri: string): boolean {
   }
 }
 
-export function isValidSubmissionUri(uri: string): boolean {
-  if (!uri || typeof uri !== "string") return false;
-  if (uri.length > MAX_URI_LENGTH) return false;
-  if (DANGEROUS_PATTERNS.some((p) => p.test(uri))) return false;
+export function validateSubmissionUri(uri: string): ValidationResult {
+  if (!uri) return { valid: false, error: "URI is required" };
+  const trimmed = uri.trim();
+  if (trimmed !== uri) return { valid: false, error: "URI must not have leading or trailing whitespace" };
+  if (uri.length > MAX_URI_LENGTH) return { valid: false, error: `URI must be ${MAX_URI_LENGTH} characters or fewer` };
+  if (DANGEROUS_PATTERNS.some((p) => p.test(uri))) return { valid: false, error: "URI contains forbidden characters or patterns" };
+
   try {
     const url = new URL(uri);
-    return ALLOWED_SCHEMES.includes(url.protocol);
+    if (!ALLOWED_SCHEMES.includes(url.protocol)) return { valid: false, error: "Only https://, ipfs://, and ar:// links are allowed" };
+    if (url.protocol === "https:" && !isValidHostname(url.hostname)) return { valid: false, error: "Invalid, blocked, or private hostname" };
+    return { valid: true };
   } catch {
-    return false;
+    return { valid: false, error: "Invalid URI format — check for typos or missing parts" };
   }
+}
+
+export function isValidSubmissionUri(uri: string): boolean {
+  return validateSubmissionUri(uri).valid;
 }
 
 export function isValidImageUri(uri: string): boolean {

@@ -18,6 +18,7 @@ import { useThumbnailUrl } from "@/hooks/useThumbnail";
 import { useMetadata } from "@/hooks/useMetadata";
 import { useTranslation } from "@/lib/i18n";
 import { isValidUri, isValidSubmissionUri, isValidImageUri } from "@/lib/validate";
+import SubmissionUriField from "./SubmissionUriField";
 import { TAGS } from "@/lib/tags";
 import { useNotifications } from "@/hooks/useNotifications";
 
@@ -385,19 +386,14 @@ export default function BountyDetail({
               <p className="text-sm text-muted-foreground">{t("detail.cannotSubmit")}</p>
             ) : (
               <>
-                <div>
-                  <label className="block text-sm font-medium mb-1">{t("detail.submissionUri")}</label>
-                  <input
-                    type="text"
-                    value={uri}
-                    onChange={(e) => setUri(e.target.value)}
-                    placeholder="ipfs://..."
-                    className="w-full rounded-lg border border-border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50"
-                  />
-                </div>
+                <SubmissionUriField
+                  value={uri}
+                  onChange={setUri}
+                  hint={hasSubmitted ? t("detail.updateSubmissionHint") || "Update your submission URI" : undefined}
+                />
                 <button
                   onClick={() => exec("submit")}
-                  disabled={sending !== null}
+                  disabled={sending !== null || (uri.length > 0 && !isValidSubmissionUri(uri))}
                   className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {sending === "submit" ? p : hasSubmitted ? "Update Submission" : t("detail.submitWork")}
@@ -471,45 +467,19 @@ export default function BountyDetail({
             )}
             {isCreator || isModerator ? (
               <p className="text-sm text-muted-foreground">{t("detail.cannotSubmit")}</p>
-            ) : hasSubmitted ? (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">{t("detail.submissionUri")}</label>
-                  <input
-                    type="text"
-                    value={uri}
-                    onChange={(e) => setUri(e.target.value)}
-                    placeholder="ipfs://..."
-                    className="w-full rounded-lg border border-border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50"
-                  />
-                  <p className="mt-1 text-xs text-white/60">{t("detail.updateSubmissionHint") || "Update your submission URI"}</p>
-                </div>
-                <button
-                  onClick={() => exec("submit")}
-                  disabled={sending !== null}
-                  className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {sending === "submit" ? p : "Update Submission"}
-                </button>
-              </div>
             ) : (
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">{t("detail.submissionUri")}</label>
-                  <input
-                    type="text"
-                    value={uri}
-                    onChange={(e) => setUri(e.target.value)}
-                    placeholder="ipfs://..."
-                    className="w-full rounded-lg border border-border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50"
-                  />
-                </div>
+                <SubmissionUriField
+                  value={uri}
+                  onChange={setUri}
+                  hint={hasSubmitted ? t("detail.updateSubmissionHint") || "Update your submission URI" : undefined}
+                />
                 <button
                   onClick={() => exec("submit")}
-                  disabled={sending !== null}
+                  disabled={sending !== null || (uri.length > 0 && !isValidSubmissionUri(uri))}
                   className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {sending === "submit" ? p : t("detail.submitWork")}
+                  {sending === "submit" ? p : hasSubmitted ? "Update Submission" : t("detail.submitWork")}
                 </button>
               </div>
             )}
