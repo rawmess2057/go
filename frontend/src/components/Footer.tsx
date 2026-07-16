@@ -14,12 +14,12 @@ export default function Footer() {
           <Link href="/create" className="hover:text-foreground transition-colors">
             Create
           </Link>
-          <a href="#" className="hover:text-foreground transition-colors">
+          <Link href="/privacy" className="hover:text-foreground transition-colors">
             Privacy
-          </a>
-          <a href="#" className="hover:text-foreground transition-colors">
+          </Link>
+          <Link href="/terms" className="hover:text-foreground transition-colors">
             Terms
-          </a>
+          </Link>
         </div>
       </div>
     </footer>
