@@ -1,12 +1,17 @@
 "use client";
 
+import { useMemo } from "react";
 import { useGigCreateStore } from "@/stores/useGigCreateStore";
 
-const LIMIT = 500;
+const WORD_LIMIT = 500;
 
-function getCharCountColor(count: number): string {
-  if (count >= LIMIT) return "text-error";
-  if (count >= LIMIT - 20) return "text-warning";
+function wordCount(s: string): number {
+  return s.trim() ? s.trim().split(/\s+/).length : 0;
+}
+
+function getCountColor(count: number): string {
+  if (count >= WORD_LIMIT) return "text-error";
+  if (count >= WORD_LIMIT * 0.8) return "text-warning";
   return "text-muted-foreground";
 }
 
@@ -16,6 +21,7 @@ export default function DescriptionField() {
   const errors = useGigCreateStore((s) => s.errors);
 
   const showError = !!errors.description;
+  const wc = useMemo(() => wordCount(description), [description]);
 
   return (
     <div>
@@ -27,11 +33,11 @@ export default function DescriptionField() {
       </label>
       <textarea
         id="gig-description"
-        maxLength={LIMIT}
+        maxLength={3000}
         required
         rows={5}
         value={description}
-          onChange={(e) => setField("description", e.target.value)}
+        onChange={(e) => setField("description", e.target.value)}
         className={`w-full rounded-lg border bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/50 resize-y min-h-[120px] transition-all ${
           showError
             ? "border-error ring-1 ring-error/30"
@@ -49,9 +55,9 @@ export default function DescriptionField() {
         )}
         <span
           id="description-counter"
-          className={`text-xs ml-auto transition-colors ${getCharCountColor(description.length)}`}
+          className={`text-xs ml-auto transition-colors ${getCountColor(wc)}`}
         >
-          {description.length}/{LIMIT}
+          {wc}/{WORD_LIMIT} words
         </span>
       </div>
     </div>

@@ -7,11 +7,17 @@ export const taskDetailsSchema = z.object({
   title: z
     .string()
     .min(1, "Task title is required")
-    .max(50, "Title must be 50 characters or less"),
+    .refine(
+      (val) => val.trim().split(/\s+/).filter(Boolean).length <= 50,
+      "Title must be 50 words or less"
+    ),
   description: z
     .string()
     .min(1, "Description is required")
-    .max(500, "Description must be 500 characters or less"),
+    .refine(
+      (val) => val.trim().split(/\s+/).filter(Boolean).length <= 500,
+      "Description must be 500 words or less"
+    ),
   selectedTags: z
     .array(z.string())
     .max(3, "Select up to 3 categories")
