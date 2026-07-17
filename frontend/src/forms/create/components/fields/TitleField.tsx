@@ -1,12 +1,17 @@
 "use client";
 
+import { useMemo } from "react";
 import { useGigCreateStore } from "@/stores/useGigCreateStore";
 
-const LIMIT = 50;
+const WORD_LIMIT = 50;
 
-function getCharCountColor(count: number): string {
-  if (count >= LIMIT) return "text-error";
-  if (count >= LIMIT - 10) return "text-warning";
+function wordCount(s: string): number {
+  return s.trim() ? s.trim().split(/\s+/).length : 0;
+}
+
+function getCountColor(count: number): string {
+  if (count >= WORD_LIMIT) return "text-error";
+  if (count >= WORD_LIMIT * 0.8) return "text-warning";
   return "text-muted-foreground";
 }
 
@@ -16,6 +21,7 @@ export default function TitleField() {
   const errors = useGigCreateStore((s) => s.errors);
 
   const showError = !!errors.title;
+  const wc = useMemo(() => wordCount(title), [title]);
 
   return (
     <div>
@@ -29,7 +35,7 @@ export default function TitleField() {
         <input
           id="gig-title"
           type="text"
-          maxLength={LIMIT}
+          maxLength={300}
           required
           value={title}
           onChange={(e) => setField("title", e.target.value)}
@@ -51,9 +57,9 @@ export default function TitleField() {
         )}
         <span
           id="title-counter"
-          className={`text-xs ml-auto transition-colors ${getCharCountColor(title.length)}`}
+          className={`text-xs ml-auto transition-colors ${getCountColor(wc)}`}
         >
-          {title.length}/{LIMIT}
+          {wc}/{WORD_LIMIT} words
         </span>
       </div>
     </div>
