@@ -1,0 +1,52 @@
+diff --git a/node_modules/@coral-xyz/anchor/dist/cjs/coder/borsh/accounts.js b/node_modules/@coral-xyz/anchor/dist/cjs/coder/borsh/accounts.js
+index 824a9e5..c2a1b82 100644
+--- a/node_modules/@coral-xyz/anchor/dist/cjs/coder/borsh/accounts.js
++++ b/node_modules/@coral-xyz/anchor/dist/cjs/coder/borsh/accounts.js
+@@ -37,7 +37,7 @@ class BorshAccountsCoder {
+         this.accountLayouts = new Map(layouts);
+     }
+     async encode(accountName, account) {
+-        const buffer = buffer_1.Buffer.alloc(1000); // TODO: use a tighter buffer.
++        const buffer = buffer_1.Buffer.alloc(32000); // TODO: use a tighter buffer.
+         const layout = this.accountLayouts.get(accountName);
+         if (!layout) {
+             throw new Error(`Unknown account: ${accountName}`);
+diff --git a/node_modules/@coral-xyz/anchor/dist/cjs/coder/borsh/instruction.js b/node_modules/@coral-xyz/anchor/dist/cjs/coder/borsh/instruction.js
+index 2b5293a..2b5c887 100644
+--- a/node_modules/@coral-xyz/anchor/dist/cjs/coder/borsh/instruction.js
++++ b/node_modules/@coral-xyz/anchor/dist/cjs/coder/borsh/instruction.js
+@@ -50,7 +50,7 @@ class BorshInstructionCoder {
+      * Encodes a program instruction.
+      */
+     encode(ixName, ix) {
+-        const buffer = buffer_1.Buffer.alloc(1000); // TODO: use a tighter buffer.
++        const buffer = buffer_1.Buffer.alloc(32000); // TODO: use a tighter buffer.
+         const encoder = this.ixLayouts.get(ixName);
+         if (!encoder) {
+             throw new Error(`Unknown method: ${ixName}`);
+diff --git a/node_modules/@coral-xyz/anchor/dist/esm/coder/borsh/accounts.js b/node_modules/@coral-xyz/anchor/dist/esm/coder/borsh/accounts.js
+index 339ebde..19e0d1e 100644
+--- a/node_modules/@coral-xyz/anchor/dist/esm/coder/borsh/accounts.js
++++ b/node_modules/@coral-xyz/anchor/dist/esm/coder/borsh/accounts.js
+@@ -31,7 +31,7 @@ export class BorshAccountsCoder {
+         this.accountLayouts = new Map(layouts);
+     }
+     async encode(accountName, account) {
+-        const buffer = Buffer.alloc(1000); // TODO: use a tighter buffer.
++        const buffer = Buffer.alloc(32000); // TODO: use a tighter buffer.
+         const layout = this.accountLayouts.get(accountName);
+         if (!layout) {
+             throw new Error(`Unknown account: ${accountName}`);
+diff --git a/node_modules/@coral-xyz/anchor/dist/esm/coder/borsh/instruction.js b/node_modules/@coral-xyz/anchor/dist/esm/coder/borsh/instruction.js
+index e545dde..6851991 100644
+--- a/node_modules/@coral-xyz/anchor/dist/esm/coder/borsh/instruction.js
++++ b/node_modules/@coral-xyz/anchor/dist/esm/coder/borsh/instruction.js
+@@ -21,7 +21,7 @@ export class BorshInstructionCoder {
+      * Encodes a program instruction.
+      */
+     encode(ixName, ix) {
+-        const buffer = Buffer.alloc(1000); // TODO: use a tighter buffer.
++        const buffer = Buffer.alloc(32000); // TODO: use a tighter buffer.
+         const encoder = this.ixLayouts.get(ixName);
+         if (!encoder) {
+             throw new Error(`Unknown method: ${ixName}`);

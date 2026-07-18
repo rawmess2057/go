@@ -7,11 +7,11 @@ export const taskDetailsSchema = z.object({
   title: z
     .string()
     .min(1, "Task title is required")
-    .max(50, "Title must be 50 characters or less"),
+    .max(500, "Title must be 500 characters or less"),
   description: z
     .string()
     .min(1, "Description is required")
-    .max(500, "Description must be 500 characters or less"),
+    .max(25000, "Description must be 25000 characters or less"),
   selectedTags: z
     .array(z.string())
     .max(3, "Select up to 3 categories")
