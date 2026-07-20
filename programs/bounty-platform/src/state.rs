@@ -33,9 +33,9 @@ pub struct Bounty {
     pub amount: u64,
     pub deadline: i64,
     pub created_at: i64,
-    #[max_len(50)]
-    pub title: String,
     #[max_len(500)]
+    pub title: String,
+    #[max_len(25000)]
     pub description: String,
     #[max_len(200)]
     pub reference_uri: String,

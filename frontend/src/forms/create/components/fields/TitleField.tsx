@@ -2,11 +2,11 @@
 
 import { useGigCreateStore } from "@/stores/useGigCreateStore";
 
-const LIMIT = 50;
+const LIMIT = 500;
 
 function getCountColor(count: number): string {
   if (count >= LIMIT) return "text-error";
-  if (count >= LIMIT - 10) return "text-warning";
+  if (count >= LIMIT - 100) return "text-warning";
   return "text-muted-foreground";
 }
 
