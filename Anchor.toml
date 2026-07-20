@@ -18,6 +18,9 @@ bounty_platform = "J1joaPPEAzELE9jSLZajxZyAe6hrMAsMkQUjFJLLQK7P"
 cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
+# Add this section for a faster RPC
+[provider.devnet]
+url='https://devnet.helius-rpc.com/?api-key=d9b9a17e-14dc-4e55-996f-02e096dc0c53'
 [scripts]
 test = "npx ts-mocha tests/**/*.ts --exit --timeout 30000"
 
