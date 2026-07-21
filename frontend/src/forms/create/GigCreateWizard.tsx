@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 import { useProgram } from "@/hooks/useProgram";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useGigCreateStore } from "@/stores/useGigCreateStore";
-import { GigCreateData } from "@/forms/create/types";
+import { GigCreateData, DEFAULT_TOKEN } from "@/forms/create/types";
 import { SOL_MINT, bountyAddress, vaultAddress, MIN_DEADLINE_SECONDS } from "@/lib/constants";
 import { isValidSubmissionUri } from "@/lib/validate";
 import FormStepper from "./components/FormStepper";
@@ -62,6 +62,15 @@ export default function GigCreateWizard() {
         (Object.keys(draft.data) as Array<keyof GigCreateData>).forEach((key) => {
           store.setField(key, draft.data[key]);
         });
+        const sel = draft.data.selectedToken;
+        if (sel && typeof sel.mint === "string") {
+          store.setField("selectedToken", {
+            ...sel,
+            mint: new PublicKey(sel.mint),
+          });
+        } else if (sel) {
+          store.setField("selectedToken", DEFAULT_TOKEN);
+        }
       } else {
         clearDraft();
       }
@@ -96,7 +105,15 @@ export default function GigCreateWizard() {
         return;
       }
 
-      const isSol = state.selectedToken.mint.equals(SOL_MINT);
+      let mint: PublicKey;
+      try {
+        mint = state.selectedToken.mint instanceof PublicKey
+          ? state.selectedToken.mint
+          : new PublicKey(state.selectedToken.mint);
+      } catch {
+        mint = SOL_MINT;
+      }
+      const isSol = mint.equals(SOL_MINT);
       const decimals = state.selectedToken.decimals;
       const multiplier = Math.pow(10, decimals);
       const rawAmount = Math.floor(parseFloat(state.amount) * multiplier);

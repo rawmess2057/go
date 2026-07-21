@@ -51,7 +51,7 @@ pub fn handler(
     );
     require!(!title.is_empty(), BountyError::EmptyTitle);
     require!(title.len() <= 500, BountyError::TitleTooLong);
-    require!(description.len() <= 25000, BountyError::DescriptionTooLong);
+    require!(description.len() <= 8000, BountyError::DescriptionTooLong);
     require!(reference_uri.len() <= 200, BountyError::ReferenceUriTooLong);
     require!(thumbnail_uri.len() <= 200, BountyError::ThumbnailUriTooLong);
     require!(max_winners > 0, BountyError::InvalidMaxWinners);

@@ -4,10 +4,12 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/lib/i18n";
+import { FileText, Eye, CheckCircle, ArrowRight } from "@phosphor-icons/react";
 import BountyList from "@/components/BountyList";
 import TrendingBounties from "@/components/TrendingBounties";
 import PageTransition from "@/components/PageTransition";
 import { useBounties, BountyData } from "@/hooks/useBounties";
+import Link from "next/link";
 import { useThumbnailUrl } from "@/hooks/useThumbnail";
 import { isValidImageUri } from "@/lib/validate";
 import { BountyStatus } from "@/lib/constants";
@@ -69,6 +71,16 @@ export default function Home() {
 
   const current = bounties.length > 0 ? bounties[cardIndex] : null;
 
+  const howItWorksSteps = (t("howItWorks.steps") as unknown as any[]) || [];
+  const whyGigPoints = (t("whyGig.points") as unknown as any[]) || [];
+  const completed = useMemo(() =>
+    bounties
+      .filter((b) => b.status === BountyStatus.Completed || b.status === BountyStatus.WinnerSelected)
+      .reverse()
+      .slice(0, 6),
+    [bounties]
+  );
+
   return (
     <PageTransition>
     <div>
@@ -91,7 +103,7 @@ export default function Home() {
                 {t("home.createCta")}
               </a>
               <a
-                href="#gigs"
+                href="/browse"
                 className="inline-flex items-center rounded-xl border border-border px-6 py-3 text-sm font-medium text-foreground hover:bg-muted active:scale-[0.98] transition-all"
               >
                 {t("home.browseCta")}
@@ -172,6 +184,89 @@ export default function Home() {
             ))}
           </div>
         )}
+      </div>
+
+      <div className="mb-16">
+        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground mb-8 text-center">
+          {t("howItWorks.title")}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {howItWorksSteps.map((step: any, i: number) => {
+            const icons = [FileText, Eye, CheckCircle];
+            const Icon = icons[i] || CheckCircle;
+            return (
+              <div key={i} className="relative rounded-2xl border border-border bg-surface p-6 text-center">
+                <div className="w-12 h-12 rounded-xl bg-brand/10 flex items-center justify-center mx-auto mb-4">
+                  <Icon size={22} className="text-brand" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-brand text-white text-xs font-bold flex items-center justify-center">
+                  {i + 1}
+                </div>
+                <h3 className="font-semibold text-foreground mb-1.5">{step.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {completed.length > 0 && (
+        <div className="mb-16">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground mb-6">
+            {t("recentlyCompleted.title")}
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {completed.map((b) => (
+              <Link
+                key={b.publicKey.toBase58()}
+                href={`/gig/${b.publicKey.toBase58()}`}
+                className="rounded-xl border border-border bg-surface p-4 hover:border-brand/40 transition-all group"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-semibold text-foreground truncate group-hover:text-brand transition-colors">
+                      {b.title || "Untitled"}
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {(Number(b.amount) / 1e9).toFixed(2)} SOL
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-[10px] font-medium text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
+                    {t("status.completed")}
+                  </span>
+                </div>
+                <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">
+                  <span>{b.creator.toBase58().slice(0, 4)}...{b.creator.toBase58().slice(-4)}</span>
+                  <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="mb-16">
+        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground mb-8 text-center">
+          {t("whyGig.title")}
+        </h2>
+        <div className="max-w-3xl mx-auto space-y-3">
+          {whyGigPoints.map((point: any, i: number) => (
+            <div
+              key={i}
+              className="grid grid-cols-[1fr_auto_1fr] gap-3 items-center rounded-xl border border-border bg-surface p-4"
+            >
+              <div className="text-right">
+                <p className="text-sm font-medium text-foreground">{point.us}</p>
+              </div>
+              <div className="shrink-0 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-wider px-2">
+                {t("whyGig.vs")}
+              </div>
+              <div className="text-left">
+                <p className="text-sm text-muted-foreground">{point.them}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {bounties.length > 0 && (

@@ -3,20 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import { Compass, PlusCircle, Trophy, Layout, MagnifyingGlass, List, X, Sun, Moon } from "@phosphor-icons/react";
 import { useTheme } from "next-themes";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "./MobileNav";
 import NotificationBell from "./NotificationBell";
-
-const WalletMultiButtonDynamic = dynamic(
-  async () => (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
-  { ssr: false }
-);
+import WalletDropdown from "./WalletDropdown";
 
 const navLinks = [
-  { href: "/", key: "browse", icon: Compass },
+  { href: "/browse", key: "browse", icon: Compass },
   { href: "/create", key: "create", icon: PlusCircle },
   { href: "/leaderboard", key: "leaderboard", icon: Trophy },
   { href: "/dashboard", key: "dashboard", icon: Layout },
@@ -89,7 +84,7 @@ export default function Header() {
             </button>
 
             <div className="hidden md:block">
-              <WalletMultiButtonDynamic />
+              <WalletDropdown />
             </div>
 
             <button
@@ -132,7 +127,7 @@ export default function Header() {
                   {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
                   {theme === "dark" ? "Light Mode" : "Dark Mode"}
                 </button>
-                <WalletMultiButtonDynamic />
+                <WalletDropdown />
               </div>
             </div>
           </div>

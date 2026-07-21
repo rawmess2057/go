@@ -14,13 +14,50 @@ import { parseReferenceUri } from "@/hooks/useMetadata";
 
 const ALL = -1;
 type FilterValue = typeof ALL | TagKey;
+type PriceFilter = "all" | "under1" | "1to5" | "5to10" | "over10";
+type DeadlineFilter = "all" | "week" | "month";
 
 const CATEGORY_FILTERS = [
   { type: "all" as const, key: ALL, label: "bountyList.all" },
   ...TAGS.map(tag => ({ type: "tag" as const, key: tag.key, label: tag.label })),
 ] as const;
 
+const PRICE_FILTERS: { key: PriceFilter; label: string }[] = [
+  { key: "all", label: "bountyList.all" },
+  { key: "under1", label: "Under 1 SOL" },
+  { key: "1to5", label: "1–5 SOL" },
+  { key: "5to10", label: "5–10 SOL" },
+  { key: "over10", label: "10+ SOL" },
+];
+
+const DEADLINE_FILTERS: { key: DeadlineFilter; labelKey: string }[] = [
+  { key: "all", labelKey: "bountyList.all" },
+  { key: "week", labelKey: "bountyList.thisWeek" },
+  { key: "month", labelKey: "bountyList.thisMonth" },
+];
+
 const PAGE_SIZE = 12;
+
+function applyPriceFilter(b: BountyData, filter: PriceFilter): boolean {
+  if (filter === "all") return true;
+  const sol = Number(b.amount) / 1e9;
+  switch (filter) {
+    case "under1": return sol < 1;
+    case "1to5": return sol >= 1 && sol <= 5;
+    case "5to10": return sol >= 5 && sol <= 10;
+    case "over10": return sol > 10;
+  }
+}
+
+function applyDeadlineFilter(b: BountyData, filter: DeadlineFilter): boolean {
+  if (filter === "all") return true;
+  const now = Math.floor(Date.now() / 1000);
+  const deadline = Number(b.deadline);
+  switch (filter) {
+    case "week": return deadline > now && deadline <= now + 7 * 86400;
+    case "month": return deadline > now && deadline <= now + 30 * 86400;
+  }
+}
 
 function sortBounties(bounties: BountyData[], sort: SortKey): BountyData[] {
   const copy = [...bounties];
@@ -42,8 +79,10 @@ export default function BountyList() {
   const { t } = useTranslation();
   const { bounties, loading, refetch } = useBounties();
   const [activeFilter, setActiveFilter] = useState<FilterValue>(ALL);
+  const [priceRange, setPriceRange] = useState<PriceFilter>("all");
+  const [deadlineRange, setDeadlineRange] = useState<DeadlineFilter>("all");
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<SortKey>("reward-desc");
+  const [sort, setSort] = useState<SortKey>("newest");
   const [page, setPage] = useState(1);
 
   const searchMatch = useCallback((b: BountyData, q: string) => {
@@ -64,10 +103,12 @@ export default function BountyList() {
           const parsed = parseReferenceUri(b.referenceUri);
           return parsed.tags.includes(activeFilter);
         });
+    if (priceRange !== "all") result = result.filter((b) => applyPriceFilter(b, priceRange));
+    if (deadlineRange !== "all") result = result.filter((b) => applyDeadlineFilter(b, deadlineRange));
     if (search) result = result.filter((b) => searchMatch(b, search));
     result = sortBounties(result, sort);
     return result;
-  }, [bounties, activeFilter, search, sort, searchMatch]);
+  }, [bounties, activeFilter, priceRange, deadlineRange, search, sort, searchMatch]);
 
   const visible = useMemo(() => processed.slice(0, page * PAGE_SIZE), [processed, page]);
   const hasMore = visible.length < processed.length;
@@ -95,7 +136,7 @@ export default function BountyList() {
           </div>
         </div>
 
-        <div className="flex gap-2 mb-6 flex-wrap">
+        <div className="flex gap-2 mb-3 flex-wrap">
           {CATEGORY_FILTERS.map((f) => (
             <button
               key={f.key}
@@ -107,6 +148,37 @@ export default function BountyList() {
               }`}
             >
               {f.type === "all" ? t(f.label) : f.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          <span className="text-xs text-muted-foreground font-medium mr-1">Price:</span>
+          {PRICE_FILTERS.map((f) => (
+            <button
+              key={f.key}
+              onClick={() => { setPriceRange(f.key); setPage(1); }}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                priceRange === f.key
+                  ? "bg-brand/10 text-brand border border-brand/30"
+                  : "border border-border text-muted-foreground hover:text-foreground hover:border-brand/40"
+              }`}
+            >
+              {f.key === "all" ? t(f.label) : f.label}
+            </button>
+          ))}
+          <span className="text-xs text-muted-foreground font-medium ml-2 mr-1">Deadline:</span>
+          {DEADLINE_FILTERS.map((f) => (
+            <button
+              key={f.key}
+              onClick={() => { setDeadlineRange(f.key); setPage(1); }}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                deadlineRange === f.key
+                  ? "bg-brand/10 text-brand border border-brand/30"
+                  : "border border-border text-muted-foreground hover:text-foreground hover:border-brand/40"
+              }`}
+            >
+              {t(f.labelKey)}
             </button>
           ))}
         </div>
