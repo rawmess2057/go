@@ -119,7 +119,13 @@ export default function DashboardPage() {
       {tab === "created" && <BountyTable bounties={created} emptyMsg={t("dashboard.emptyCreated")} />}
       {tab === "history" && (
         <div className="text-center py-12 text-muted-foreground text-sm">
-          {t("dashboard.historyComing")}
+          <p>Submission history coming soon.</p>
+          <Link
+            href={`/profile/${wallet.publicKey.toBase58()}`}
+            className="inline-block mt-3 text-sm text-brand hover:underline"
+          >
+            View your full profile
+          </Link>
         </div>
       )}
     </div>

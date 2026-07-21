@@ -6,7 +6,7 @@ import { Compass, PlusCircle, Trophy, Layout } from "@phosphor-icons/react";
 import { useTranslation } from "@/lib/i18n";
 
 const items = [
-  { href: "/", key: "browse", icon: Compass },
+  { href: "/browse", key: "browse", icon: Compass },
   { href: "/create", key: "create", icon: PlusCircle },
   { href: "/leaderboard", key: "leaderboard", icon: Trophy },
   { href: "/dashboard", key: "dashboard", icon: Layout },

@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import { GigCreateData, DEFAULT_TOKEN, ValidationErrors } from "@/forms/create/types";
+import { GigCreateData, DEFAULT_TOKEN, ValidationErrors, type TokenOption } from "@/forms/create/types";
 
 const DRAFT_KEY = "gig-create-draft";
 const DRAFT_TTL = 24 * 60 * 60 * 1000;
@@ -74,21 +74,22 @@ export const useGigCreateStore = create<GigCreateState>((set, get) => ({
 
   saveDraft: () => {
     const state = get();
-    const draft: DraftData = {
-      data: {
-        title: state.title,
-        description: state.description,
-        selectedTags: state.selectedTags,
-        referenceUri: state.referenceUri,
-        thumbnailUri: state.thumbnailUri,
-        amount: state.amount,
-        selectedToken: state.selectedToken,
-        maxWinners: state.maxWinners,
-        deadlineDays: state.deadlineDays,
-        moderator: state.moderator,
+    const draftData: Record<string, unknown> = {
+      title: state.title,
+      description: state.description,
+      selectedTags: state.selectedTags,
+      referenceUri: state.referenceUri,
+      thumbnailUri: state.thumbnailUri,
+      amount: state.amount,
+      selectedToken: {
+        ...state.selectedToken,
+        mint: state.selectedToken.mint.toBase58(),
       },
-      savedAt: Date.now(),
+      maxWinners: state.maxWinners,
+      deadlineDays: state.deadlineDays,
+      moderator: state.moderator,
     };
+    const draft: DraftData = { data: draftData as unknown as GigCreateData, savedAt: Date.now() };
     localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
     set({ isAutoSaving: false, lastSavedAt: Date.now(), draftId: DRAFT_KEY });
   },

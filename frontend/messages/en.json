@@ -21,6 +21,29 @@
       { "title": "Instant Payout", "desc": "Automatic on Solana in seconds" }
     ]
   },
+  "howItWorks": {
+    "title": "How It Works",
+    "steps": [
+      { "title": "Post a Gig", "desc": "Describe your task, set a reward, and fund the escrow smart contract." },
+      { "title": "Freelancers Apply", "desc": "Browse open gigs, submit your work on-chain before the deadline." },
+      { "title": "Get Paid Instantly", "desc": "Moderator approves — funds are released automatically. No delays." }
+    ]
+  },
+  "whyGig": {
+    "title": "Why Gig on Solana?",
+    "vs": "VS",
+    "points": [
+      { "us": "Non-custodial escrow — you control the funds", "them": "Platform holds your money for weeks" },
+      { "us": "Instant payouts on Solana in seconds", "them": "5-7 business day withdrawal delays" },
+      { "us": "On-chain reputation — portable and transparent", "them": "Siloed ratings locked inside one platform" },
+      { "us": "Transparent dispute ledger — every case is public", "them": "Black-box appeals with no accountability" },
+      { "us": "Low fees — Solana network cost is pennies", "them": "20% platform fees are standard" }
+    ]
+  },
+  "recentlyCompleted": {
+    "title": "Recently Completed",
+    "empty": "No completed gigs yet. Be the first!"
+  },
   "status": {
     "open": "Open",
     "submitted": "Submitted",
@@ -47,7 +70,9 @@
     "emptyDescFilter": "No gigs match this filter.",
     "emptyAction": "Create Gig",
     "emptySearch": "No bounties match your search.",
-    "loadMore": "Load More"
+    "loadMore": "Load More",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month"
   },
   "create": {
     "title": "Create a Gig",
@@ -77,7 +102,7 @@
       "titleRequired": "Task title is required",
       "titleMax": "Title must be 50 characters or less",
       "descriptionRequired": "Description is required",
-      "descriptionMax": "Description must be 500 characters or less",
+      "descriptionMax": "Description must be 8000 characters or less",
       "tagsMax": "Select up to 3 categories",
       "invalidUri": "Must be a valid https://, ipfs://, or ar:// link",
       "invalidImage": "Must be a valid image URL",
@@ -225,6 +250,10 @@
     "earned": "Earned",
     "spent": "Spent",
     "bounties": "Bounties"
+  },
+  "browse": {
+    "title": "Browse Gigs",
+    "description": "Find work that matches your skills. Filter by category, reward, or deadline."
   },
   "search": {
     "placeholder": "Search bounties..."
