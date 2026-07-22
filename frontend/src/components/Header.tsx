@@ -29,7 +29,7 @@ export default function Header() {
       <header className="sticky top-0 z-50 bg-background border-b border-border">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="text-lg font-bold tracking-tight text-foreground">gig</span>
+            <img src="/logo.png" alt="Gig" className="h-8 w-auto" />
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
